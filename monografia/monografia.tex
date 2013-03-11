@@ -7,7 +7,7 @@
 % ------------------------------------------------------------------------
 % ------------------------------------------------------------------------
 
-\documentclass[12pt,openright,twoside,a4paper]{abntex2}	% frente e verso
+\documentclass[12pt,openright,oneside,a4paper]{abntex2}	% frente e verso
 %\documentclass[12pt,oneside,a4paper]{abntex2}			% apenas frente
 
 % ---
@@ -73,7 +73,7 @@
   Centro Tecnológico
   \par
   Departamento de Informática}
-\tipotrabalho{Tese (Doutorado)}
+\tipotrabalho{Trabalho de Conclusão de Curso}
 % O preambulo deve conter o tipo do trabalho, o objetivo, 
 % o nome da instituição e a área de concentração 
 \preambulo{Monografia apresentada para obtenção do Grau de Bacharel em Engenharia de Computação pela Universidade Federal do Espírito Santo.}
@@ -171,39 +171,6 @@
 % \begin{fichacatalografica}
 %     \includepdf{fig_ficha_catalografica.pdf}
 % \end{fichacatalografica}
-\begin{fichacatalografica}
-	\vspace*{\fill}					% Posição vertical
-	\hrule							% Linha horizontal
-	\begin{center}					% Minipage Centralizado
-	\begin{minipage}[c]{12.5cm}		% Largura
-	
-	\imprimirautor
-	
-	\hspace{0.5cm} \imprimirtitulo  / \imprimirautor. --
-	\imprimirlocal, \imprimirdata-
-	
-	\hspace{0.5cm} \pageref{LastPage} p. : il. (algumas color.) ; 30 cm.\\
-	
-	\hspace{0.5cm} \imprimirorientadorRotulo~\imprimirorientador\\
-	
-	\hspace{0.5cm}
-	\parbox[t]{\textwidth}{\imprimirtipotrabalho~--~\imprimirinstituicao,
-	\imprimirdata.}\\
-	
-	\hspace{0.5cm}
-		1. Palavra-chave1.
-		2. Palavra-chave2.
-		I. Orientador.
-		II. Universidade xxx.
-		III. Faculdade de xxx.
-		IV. Título\\ 			
-	
-	\hspace{8.75cm} CDU 02:141:005.7\\
-	
-	\end{minipage}
-	\end{center}
-	\hrule
-\end{fichacatalografica}
 % ---
 
 
@@ -259,10 +226,12 @@
 % ---
 \begin{dedicatoria}
    \vspace*{\fill}
-   \centering
    \noindent
-   \textit{ Este trabalho é dedicado às crianças adultas que,\\
-   quando pequenas, sonharam em se tornar cientistas.} \vspace*{\fill}
+   \begin{flushright}
+   
+   \textit{ Este trabalho é dedicado aos meus pais,  que sempre estiveram comigo, \\ por toda a sua dedicação.}
+   \end{flushright}
+   
 \end{dedicatoria}
 % ---
 
@@ -280,16 +249,7 @@ Agradecimentos especiais são direcionados a ...
 % ---
 % Epígrafe
 % ---
-\begin{epigrafe}
-    \vspace*{\fill}
-	\begin{flushright}
-		\textit{``Não vos amoldeis às estruturas deste mundo, \\
-		mas transformai-vos pela renovação da mente, \\
-		a fim de distinguir qual é a vontade de Deus: \\
-		o que é bom, o que Lhe é agradável, o que é perfeito.\\
-		(Bíblia Sagrada, Romanos 12, 2)}
-	\end{flushright}
-\end{epigrafe}
+
 % ---
 
 % ---
@@ -425,61 +385,34 @@ Equipe \abnTeX
 Lauro César Araujo
 
 
+
 % ----------------------------------------------------------
 % PARTE - preparação da pesquisa
 % ----------------------------------------------------------
-\part{Preparação da pesquisa}
+\part{Fundamentação Teórica}
 
-% ----------------------------------------------------------
-% Capitulo com exemplos de comandos inseridos de arquivo externo 
-% ----------------------------------------------------------
 
-\include{abntex2-modelo-include-comandos}
+
+
 
 % ----------------------------------------------------------
 % Parte de revisãod e literatura
 % ----------------------------------------------------------
-\part{Revisão de Literatura}
+\part{Desenvolvimento}
 
 % ---
 % Capitulo de revisão de literatura
 % ---
-\chapter{Lorem ipsum dolor sit amet}
 
-% ---
-\section{Aliquam vestibulum fringilla lorem}
-% ---
-
-\lipsum[1]
-
-\lipsum[2-3]
 
 % ----------------------------------------------------------
 % Resultados
 % ----------------------------------------------------------
 \part{Resultados}
+% ----------------------------------------------------------
+% Capitulo com exemplos de comandos inseridos de arquivo externo 
+% ----------------------------------------------------------
 
-% ---
-% primeiro capitulo de Resultados
-% ---
-\chapter{Lectus lobortis condimentum}
-
-% ---
-\section{Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
-posuere cubilia Curae}
-% ---
-
-\lipsum[21-22]
-
-% ---
-% segundo capitulo de Resultados
-% ---
-\chapter{Nam sed tellus sit amet lectus urna ullamcorper tristique interdum
-elementum}
-
-\section{Pellentesque sit amet pede ac sem eleifend consectetuer}
-
-\lipsum[24]
 
 % ---
 % Finaliza a parte no bookmark do PDF, para que se inicie o bookmark na raiz
@@ -494,6 +427,9 @@ elementum}
 \addcontentsline{toc}{chapter}{Conclusão}
 
 \lipsum[31-33]
+
+
+
 
 % ----------------------------------------------------------
 % ELEMENTOS PÓS-TEXTUAIS
@@ -526,17 +462,6 @@ elementum}
 % Imprime uma página indicando o início dos apêndices
 \partapendices
 
-% ----------------------------------------------------------
-\chapter{Quisque libero justo}
-% ----------------------------------------------------------
-
-\lipsum[50]
-
-% ----------------------------------------------------------
-\chapter{Nullam elementum urna vel imperdiet sodales elit ipsum pharetra ligula
-ac pretium ante justo a nulla curabitur tristique arcu eu metus}
-% ----------------------------------------------------------
-\lipsum[55-57]
 
 \end{apendicesenv}
 % ---
@@ -554,23 +479,7 @@ ac pretium ante justo a nulla curabitur tristique arcu eu metus}
 % Imprime uma página indicando o início dos anexos
 \partanexos
 
-% ---
-\chapter{Morbi ultrices rutrum lorem.}
-% ---
-\lipsum[30]
-
-% ---
-\chapter{Cras non urna sed feugiat cum sociis natoque penatibus et magnis dis
-parturient montes nascetur ridiculus mus}
-% ---
-
-\lipsum[31]
-
-% ---
-\chapter{Fusce facilisis lacinia dui}
-% ---
-
-\lipsum[32]
+\include{abntex2-modelo-include-comandos}
 
 \end{anexosenv}
 

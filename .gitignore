@@ -32,3 +32,5 @@
 *.tdo
 .DS_Store
 monografia.pdf
+*.brf
+*.nls
