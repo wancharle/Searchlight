@@ -1,30 +1,61 @@
 \section{Contextualização}
-Crowdsourcing é a prática de obtenção de serviços necessários, idéias ou conteúdo solicitando contribuições de um grande grupo de pessoas e, especialmente, a partir de uma comunidade on-line, ao invés de funcionários ou fornecedores tradicionais \footnote{\label{wiki-crowd} \url{http://en.wikipedia.org/wiki/Crowdsourcing}}.
-Existem diversos tipos de crowdsourcing, mas nesse trabalho iremos nos focar no crowdsoucing conhecido como \emph{Wisdom of the Crowd} que é um tipo de crowdsourcing que coleta grandes quantidades de informação e as agrega para obter uma imagem completa e precisa sobre um determinado tema. Nesse tipo de crowdsourcing se, por exemplo, a taxa de criminalidade de uma cidade for considerada como tema, podemos obter uma imagem completa e precisa sobre o tema através de mapas de crowdsourcing, que exibam claramente as zonas com maior e menor indices de incidentes na cidade.
+Crowdsourcing é a prática de obtenção de serviços necessários, idéias ou conteúdo solicitando contribuições de um grande grupo de pessoas e, especialmente, a partir de uma comunidade on-line, ao invés de funcionários ou fornecedores tradicionais \footnote{\label{wiki-crowd} Definição completa de crowdsourcing \url{ http://en.wikipedia.org/wiki/Crowdsourcing}}.
+Existem diversos tipos de crowdsourcing, mas nesse trabalho iremos nos focar no crowdsourcing conhecido como \emph{Wisdom of the Crowd} que é um tipo de crowdsourcing que coleta grandes quantidades de informação e as agrega para obter uma visão completa e precisa sobre um determinado tema. Essa visão, dependo do tema de estudo, pode ser representada por um mapa de crowdsourcing.
 
 A produção de mapas crowdsourcing é geralmente feita de forma automática, usualmente temos algum software e/ou site que coleta as informações e as agrupa por meio de algum algorítimo desenvolvido especificamente para o mapa.
 
-A coleta dessas informações pode ocorrer de várias formas, tanto manual como automática. Por exemplo, no site \url{http://portoalegre.cc} os usuários podem adicionar novas informações através do site, ou seja, ela é feita de forma manual. Alguns sistemas podem coletar informações de forma automática usando programas de computadores, aplicativos de smartphones \cite{thiagarajan_cooperative_2010}  e até mesmo a própria internet, como exemplo informações do twitter\footnote{Trends do twitter em tempo real: \url{http://trendsmap.com}}.
+A coleta dessas informações pode ocorrer de várias formas, tanto manual como automática. Por exemplo, no site \citeauthoronline{portoalegre} os usuários podem adicionar novas informações através do site, ou seja, ela é feita de forma manual. Alguns sistemas podem coletar informações de forma automática usando programas de computadores, aplicativos de smartphones \cite{thiagarajan_cooperative_2010}  e até mesmo da internet\footnote{ Mapa com informações coletadas do Twitter \url{http://trendsmap.com}}.
 
-Uma vez coletada, essa informção é analisada e exibida em um mapa de crowdsourcing, mas as vezes o mapa em si não é o produto final e sim algumas informações específicas retiradas dele. Por exemplo, podemos ter mapas que mostrem os congestionamentos no trânsito de uma cidade e um sistema \cite{thiagarajan_vtrack:_2009} que através desse mapa consegue identificar  uma rota mais eficiente com menor consumo de energia, evitando assim ficar parado no congestionamento gastando gasolina.
+Uma vez coletada, essa informação é analisada e exibida em um mapa, mas as vezes o mapa em si não é o produto final e sim algumas informações específicas retiradas dele. Por exemplo, podemos ter mapas que mostrem os congestionamentos no trânsito de uma cidade e um sistema \cite{thiagarajan_vtrack:_2009} que através desse mapa consegue identificar  uma rota mais eficiente com menor consumo de energia, evitando assim ficar parado no congestionamento gastando gasolina.
 
-Mapas de crowdsourcing geralmente possuem informações posicionadas em regiões muito próximas entre si, que devido a quantidade elevada, acabam poluindo a visualização e dificultando a compreensão do mapa. Esse problema pode ser resolvido quando os mapas oferecem mecanismos para agrupar e filtrar essas informações. Um mecanismo ideal é um zoom contextual ou zoom em grupo, que filtre informações irrelevantes, em determinados níveis de zoom, deixando o mapa mais leve e compreensível.
+Em alguns casos, mapas de crowdsourcing possuem informações posicionadas em regiões muito próximas entre si, que devido a quantidade elevada, acabam poluindo a visualização e dificultando a compreensão do mapa. Esse problema pode ser resolvido quando os mapas oferecem mecanismos para agrupar e filtrar essas informações. Um mecanismo ideal é o zoom contextual ou zoom em grupo, que filtra informações irrelevantes, em determinados níveis de zoom, deixando o mapa mais leve e compreensível.
 
 O Projeto Searchlight pretende ser uma ferramenta para auxiliar e melhorar a visualização de mapas de crowdsourcing.
 
 O escopo do projeto atinge a criação de uma ferramenta que visualize mapas de crowdsourcing em um navegador de internet, tanto desktop quanto mobile, usando recursos de visualização de mapas já disponíveis em HTML5 mas que ainda não possuem zoom contextual e outras opções úteis que permitam uma melhor visualização do mapa.
 
 
-\section{Definição do Problema}
 
-Mapas de crowdsourcing, por lidar com informações coletadas de um grande número de pessoas,  tendem a mostrar uma enorme quantidade de informação. 
-Essa caracteristica faz com que a visualização e a compreensão do mapa seja comprometida.
+\section{Definição do Problema}
+Mapas de crowdsourcing tendem a mostrar uma enorme quantidade de informação. Essa característica faz com que, em alguns casos, a visualização e a compreensão do mapa seja comprometida.
  
-Ao trabalhar com mapas de crowdsourcing, geralmente encontramos 2 grandes problemas: a sobreposição de informações e o zoom arbitrário. 
+Ao trabalhar com mapas de crowdsourcing, geralmente encontramos 2 problemas: a sobreposição de informações e o zoom arbitrário. 
+
+
 
 \subsection{Sobreposição de Informações}
+O site \citeauthoronline{portoalegre} é um exemplo da importância do mapas de crowdsourcing no contexto governamental e na sociedade. Por meio desse site os cidadãos de porto alegre podem relatar os problemas de sua cidade para que as autoridades tomem as devidas providências. 
+
+Um dos principais objetivos do site é identificar as áreas prioritárias em que o governo deveria atuar. Mas a sobreposição de informações dificulta essa tarefa, pois ocorre frequentemente nesse site. 
+
+\begin{figure}[htb]
+	\caption{\label{fig-porto-alegre} Sobreposição de informações no mapa do site PortoAlegre.cc}
+	\begin{center}
+	    \includegraphics[scale=0.4]{portoalegre-cc}
+	\end{center}
+	\legend{Fonte: \citeonline{portoalegre}}
+\end{figure}
+
+Esse problema fica evidente na \autoref{fig-porto-alegre} quando consideramos, a possibilidade, que um grupo de 5 marcadores reunidos numa região específica, podem sobrepor dezenas ou até milhares de outros marcadores. Ou seja, o mapa não consegue mostrar, com clareza e precisão, as áreas de maior ocorrência de determinado incidente. 
+
+O site fornece um filtro por categorias, que diminui de forma significativa a quantidade de informação exibida.  Mas infelizmente não resolve o problema, pois a sobreposição de informação ainda pode ocorrer com informações de uma mesma categoria.
+
+
 
 \subsection{Zoom arbitrário}
+Alguns sites criam mecanismos que minimizam e, até certo ponto, conseguem resolver o problema da sobreposição de informações. Como exemplo, temos o \citeonline{crimemapatl}  mostrado na \autoref{fig-mapatl} que mostra um mapa com a taxa de crimes em Atlanta. 
+
+O site fornece filtros por categoria, data e zoom. Mas o principal responsável pela eliminação da sobreposição de informação é o filtro por zoom. Esse filtro agrupa todos os marcadores que estão sobrepostos, no zoom atual, em um único marcador que exibe a informação somada dos marcadores que o compõem.
+ 
+\begin{figure}[htb]
+	\caption{\label{fig-mapatl} MapATL não possui sobreposição de informação devido ao filtro por zoom}
+	\begin{center}
+	    \includegraphics[scale=0.4]{crime-mapatl-com-filtro}
+	\end{center}
+	\legend{Fonte: \citeonline{crimemapatl}}
+\end{figure}
+
+O processo de agrupamento é em tempo real, e um pouco lento,  podendo ser observado no primeiro segundo após a mudança de zoom se o computador do observador não for muito rápido. 
 
 \section{Objetivos}
 
