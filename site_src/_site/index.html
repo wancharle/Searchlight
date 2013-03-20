@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Searchlight Facilitando a visualização de informações crowdsourcing em Mapas Web através de Zoom.." />
+ 
+    <link rel="stylesheet" type="text/css" media="screen" href="css/stylesheet.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/exemplos.css">
+  
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+    <!--[if lte IE 8]>
+     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
+    <![endif]-->
+     <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+
+    <!-- marker cluster -->
+
+	<link rel="stylesheet" href="libs/Leaflet.markercluster/dist/MarkerCluster.css" />
+	<link rel="stylesheet" href="libs/Leaflet.markercluster/dist/MarkerCluster.Default.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="libs/Leaflet.markercluser/dist/MarkerCluster.Default.ie.css" /><![endif]-->
+	<script src="libs/Leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+    <script src="js/exemplo-markercluster.js"></script>
+
+     <script src="js/exemplos.js"></script>
+    <title>Searchlight</title>
+  </head>
+
+  <body onload="javascript:exemplos();">
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/wancharle/Searchlight">View on GitHub</a>
+
+          <h1 id="project_title">Searchlight</h1>
+          <h2 id="project_tagline">Facilitando a visualização de informações crowdsourcing em Mapas Web através de Zoom.</h2> 
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+      <h2 id='sobre'>Sobre</h2>
+
+<p>Searchlight é um framework que pretende iluminar uma das partes mais importante dos mapas web: o conteúdo.</p>
+
+<p>Para isso ele oferece recursos para facilitar a visualização e compreensão de mapas web. Tendo como foco os mapas com informações de crowdsourcing que geralmente trabalham com quantidades elevadas de dados.</p>
+
+<p>A missão do projeto é agrupar, numa única ferramenta, técnicas de visualização de mapas que permitam um melhor aproveitamento dos dados. Fornecendo assim uma melhor compreensão das informações exibidas pelo mapa.</p>
+
+<p>O projeto tem 3 objetivos principais:</p>
+
+<ul>
+<li>Organizar os dados: por camadas, grupos e categorias.</li>
+
+<li>Filtrar os dados: por zoom contextual, conteudo, categorias, tempo e hierarquia.</li>
+
+<li>Usabilidade: fácil acesso para programadores mas também para usuários finais.</li>
+</ul>
+
+<h2 id='exemplos'>Exemplos</h2>
+
+<p>Alguns exemplos, dos recursos fornecidos pelo framework, podem ser vistos a seguir.</p>
+
+<h3 id='escolha_de_camadas'>Escolha de camadas</h3>
+
+<p>No mapa abaixo, alguns marcadores não são exibidos se desabilitarmos a visualização da camada &#8216;centros&#8217;. <div id='map'> </div></p>
+
+<h3 id='zoom_inteligente'>Zoom Inteligente</h3>
+
+<p>Um problema irritante dos mapas atuais é quantidade de zooms necessários para se chegar ao lugar de interesse no mapa.</p>
+
+<p>Um forma de contornar isso é evitando zooms intermediários. No exemplo abaixo é possivel diminuir o zoom do mapa, mas ao tentar aumentá-lo , o mapa pula para um zoom específico e mais relevante. <div id='map2'> </div></p>
+
+<h3 id='agrupamento_e_zoom_contextual'>Agrupamento e Zoom Contextual</h3>
+
+<p>Quando temos muitos marcadores podemos agrupá-los para melhorar a visualização. Além disso, algumas informações são irrelevantes para determinados níveis de zoom, e podem ser agrupadas de acordo com o zoom.</p>
+<div id='map_cluster'> </div>
+<p>Um recurso interessante é o zoom contextual. No mapa acima, esse zoom pode ser feito ao clicarmos em um grupo. Observe que nesse caso é feito um zoom inteligente que mostra toda a area do agrupamento.</p>
+
+<p>No mapa anterior usamos o agrupamento como contexto, mas outros contextos podem ser usados como parâmetro de zoom. Podemos efeutar um zoom baseado num atributo, categoria ou região dos marcadores.</p>
+
+<p>O mapa abaixo exemplifica isso:</p>
+
+<p>&#8212;&#8212;&#8211; Em construção &#8212;&#8212;&#8212;&#8212;-</p>
+
+<h3 id='bales_de_resumo'>Balões de Resumo</h3>
+
+<p>No mapa abaixo observamos o uso de balões para mostrar o conteúdo resumido de um agrupamento de marcadores.</p>
+
+<p>O balão exibe as categorias em que os membros do grupo pertecem assim como o número de membros por categoria.</p>
+
+<p>&#8212;&#8212;&#8211; Em construção &#8212;&#8212;&#8212;&#8212;-</p>
+
+<h3 id='filtro_por_categoria_e_tempo'>Filtro por Categoria e Tempo</h3>
+
+<p>No mapa abaixo podemos filtrar os marcadores e exibir apenas os que pertencem as categorias escolhidos e com atributo data dentro do período de tempo escolhido.</p>
+
+<p>&#8212;&#8212;&#8211; Em construção &#8212;&#8212;&#8212;&#8212;-</p>
+
+<h3 id='buscar_em_mapa'>Buscar em mapa</h3>
+
+<p>No mapa abaixo podemos buscar por um marcador, ou um conjunto de marcadores, usando o seu título e/ou outros atributos no campo de busca.</p>
+
+<p>&#8212;&#8212;&#8211; Em construção &#8212;&#8212;&#8212;&#8212;-</p>
+
+<h3 id='planilhas_eletrnicas'>Planilhas eletrônicas</h3>
+
+<p>Searchlight permite o uso de planilhas eletrônicas do google docs como base de dados para o seu mapa.</p>
+
+<p>Neste caso não é preciso programar o mapa e toda a configuração é feita por colunas específicas da planilha eletrõnica.</p>
+
+<p>&#8212;&#8212;&#8211; Em construção &#8212;&#8212;&#8212;&#8212;-</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Searchlight maintained by <a href="https://github.com/wancharle">wancharle</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
