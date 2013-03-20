@@ -16,14 +16,18 @@
      <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 
     <!-- marker cluster -->
-
 	<link rel="stylesheet" href="libs/Leaflet.markercluster/MarkerCluster.css" />
 	<link rel="stylesheet" href="libs/Leaflet.markercluster/MarkerCluster.Default.css" />
 	<!--[if lte IE 8]><link rel="stylesheet" href="libs/Leaflet.markercluser/MarkerCluster.Default.ie.css" /><![endif]-->
 	<script src="libs/Leaflet.markercluster/leaflet.markercluster-src.js"></script>
     <script src="js/exemplo-markercluster.js"></script>
+    
+    <!-- tabletop -->
+	<script src="libs/tabletop.js"></script>
+    <script src="js/exemplo_gdoc.js"></script>
 
-     <script src="js/exemplos.js"></script>
+
+    <script src="js/exemplos.js"></script>
     <title>Searchlight</title>
   </head>
 
@@ -44,11 +48,11 @@
       <section id="main_content" class="inner">
       <h2 id='sobre'>Sobre</h2>
 
-<p>Searchlight é um framework que pretende iluminar uma das partes mais importante dos mapas web: o conteúdo.</p>
+<p>Searchlight é um framework que pretende iluminar uma das partes mais importantes dos mapas web: o conteúdo.</p>
 
 <p>Para isso ele oferece recursos para facilitar a visualização e compreensão de mapas web. Tendo como foco os mapas com informações de crowdsourcing que geralmente trabalham com quantidades elevadas de dados.</p>
 
-<p>A missão do projeto é agrupar, numa única ferramenta, técnicas de visualização de mapas que permitam um melhor aproveitamento dos dados. Fornecendo assim uma melhor compreensão das informações exibidas pelo mapa.</p>
+<p>A missão do projeto é agrupar, numa única ferramenta, técnicas de visualização de mapas que permitam um melhor aproveitamento dos dados e compreensão das informações exibidas pelo mapa.</p>
 
 <p>O projeto tem 3 objetivos principais:</p>
 
@@ -86,6 +90,14 @@
 
 <p>&#8212;&#8212;&#8211; Em construção &#8212;&#8212;&#8212;&#8212;-</p>
 
+<h3 id='gerao_automtica_de_mapa'>Geração automática de mapa</h3>
+
+<p>Searchlight permite o uso de planilhas eletrônicas do google docs como base de dados para o seu mapa automaticamente (não é preciso saber programar).</p>
+<div id='map_gdoc'> </div>
+<p>Os marcadores do mapa acima foram obtidos através de um planilha do google docs (<a href='https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&amp;single=true&amp;gid=0&amp;output=html'>planilha</a>) que tem como coteudo as posições e os titulos dos marcadores.</p>
+
+<p>Qualquer alteração na planilha é refletida automaticamente no mapa. Se adicionarmos uma nova linha na planilha, com dados de um marcador, o mapa automaticamente exibe o novo marcador, se tirarmos uma linha o marcador respectivo some.</p>
+
 <h3 id='bales_de_resumo'>Balões de Resumo</h3>
 
 <p>No mapa abaixo observamos o uso de balões para mostrar o conteúdo resumido de um agrupamento de marcadores.</p>
@@ -103,14 +115,6 @@
 <h3 id='buscar_em_mapa'>Buscar em mapa</h3>
 
 <p>No mapa abaixo podemos buscar por um marcador, ou um conjunto de marcadores, usando o seu título e/ou outros atributos no campo de busca.</p>
-
-<p>&#8212;&#8212;&#8211; Em construção &#8212;&#8212;&#8212;&#8212;-</p>
-
-<h3 id='planilhas_eletrnicas'>Planilhas eletrônicas</h3>
-
-<p>Searchlight permite o uso de planilhas eletrônicas do google docs como base de dados para o seu mapa.</p>
-
-<p>Neste caso não é preciso programar o mapa e toda a configuração é feita por colunas específicas da planilha eletrõnica.</p>
 
 <p>&#8212;&#8212;&#8211; Em construção &#8212;&#8212;&#8212;&#8212;-</p>
       </section>
