@@ -1,0 +1,5 @@
+git checkout gh-pages
+git merge -s subtree master
+git push origin master gh-pages
+git checkout master
+
