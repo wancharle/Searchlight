@@ -6,11 +6,11 @@ title: searchlight
 Sobre
 -----
 
-Searchlight é um framework que pretende iluminar uma das partes mais importante dos mapas web: o conteúdo.
+Searchlight é um framework que pretende iluminar uma das partes mais importantes dos mapas web: o conteúdo.
 
- Para isso ele oferece recursos para facilitar a visualização e compreensão de mapas web. Tendo como foco os mapas com informações de crowdsourcing que geralmente trabalham com quantidades elevadas de dados.
+Para isso ele oferece recursos para facilitar a visualização e compreensão de mapas web. Tendo como foco os mapas com informações de crowdsourcing que geralmente trabalham com quantidades elevadas de dados.
 
-A missão do projeto é agrupar, numa única ferramenta, técnicas de visualização de mapas que permitam um melhor aproveitamento dos dados. Fornecendo assim uma melhor compreensão das informações exibidas pelo mapa.
+A missão do projeto é agrupar, numa única ferramenta, técnicas de visualização de mapas que permitam um melhor aproveitamento dos dados e compreensão das informações exibidas pelo mapa.
 
 O projeto tem 3 objetivos principais:
 
@@ -48,7 +48,15 @@ O mapa abaixo exemplifica isso:
 
 -------- Em construção ------------- 
 
+### Geração automática de mapa
+Searchlight permite o uso de planilhas eletrônicas do google docs como base de dados para o seu mapa automaticamente (não é preciso saber programar).
 
+<div id='map_gdoc'> </div>
+
+Os marcadores do mapa acima foram obtidos através de um planilha do google docs ([planilha](https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html))  que tem como coteudo as posições e os titulos dos marcadores.
+
+Qualquer alteração na planilha é refletida automaticamente no mapa. Se adicionarmos uma nova linha na planilha, com dados de um marcador, o mapa automaticamente exibe o novo marcador, se tirarmos uma linha o marcador respectivo some.
+ 
 ### Balões de Resumo 
 No mapa abaixo observamos o uso de balões para mostrar o conteúdo resumido de um agrupamento de marcadores.
 
@@ -69,10 +77,3 @@ No mapa abaixo podemos buscar por um marcador, ou um conjunto de marcadores, usa
 -------- Em construção ------------- 
 
 
-### Planilhas eletrônicas
-Searchlight permite o uso de planilhas eletrônicas do google docs como base de dados para o seu mapa.
-
-Neste caso não é preciso programar o mapa e toda a configuração é feita por colunas específicas da planilha eletrõnica.
-
--------- Em construção ------------- 
- 
