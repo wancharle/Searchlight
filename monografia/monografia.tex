@@ -237,12 +237,12 @@
 % ---
 % Agradecimentos
 % ---
-\begin{agradecimentos}
-Os agradecimentos principais são direcionados a  ...
+%\begin{agradecimentos}
+%Os agradecimentos principais são direcionados a  ...
 
-Agradecimentos especiais são direcionados a ...
+%Agradecimentos especiais são direcionados a ...
 
-\end{agradecimentos}
+%\end{agradecimentos}
 % ---
 
 % ---
@@ -256,31 +256,31 @@ Agradecimentos especiais são direcionados a ...
 % ---
 
 % resumo em português
-\begin{resumo}
- Segundo a citeonline[3.1-3.2]{NBR6028:2003}, o resumo deve ressaltar o
- objetivo, o método, os resultados e as conclusões do documento. A ordem e a extensão
- destes itens dependem do tipo de resumo (informativo ou indicativo) e do
- tratamento que cada item recebe no documento original. O resumo deve ser
- precedido da referência do documento, com exceção do resumo inserido no
- próprio documento. (\ldots) As palavras-chave devem figurar logo abaixo do
- resumo, antecedidas da expressão Palavras-chave:, separadas entre si por
- ponto e finalizadas também por ponto.
+%\begin{resumo}
+% Segundo a citeonline[3.1-3.2]{NBR6028:2003}, o resumo deve ressaltar o
+% objetivo, o método, os resultados e as conclusões do documento. A ordem e a extensão
+% destes itens dependem do tipo de resumo (informativo ou indicativo) e do
+% tratamento que cada item recebe no documento original. O resumo deve ser
+% precedido da referência do documento, com exceção do resumo inserido no
+% próprio documento. (\ldots) As palavras-chave devem figurar logo abaixo do
+% resumo, antecedidas da expressão Palavras-chave:, separadas entre si por
+% ponto e finalizadas também por ponto.
 
- \vspace{\onelineskip}
+% \vspace{\onelineskip}
     
- \noindent
- \textbf{Palavras-chaves}: latex. abntex. editoração de texto.
-\end{resumo}
+% \noindent
+% \textbf{Palavras-chaves}: latex. abntex. editoração de texto.
+%\end{resumo}
 
 % resumo em inglês
-\begin{resumo}[Abstract]
- This is the english abstract.
+%\begin{resumo}[Abstract]
+% This is the english abstract.
 
- \vspace{\onelineskip}
+% \vspace{\onelineskip}
  
- \noindent 
- \textbf{Key-words}: latex. abntex. text editoration.
-\end{resumo}
+% \noindent 
+% \textbf{Key-words}: latex. abntex. text editoration.
+%\end{resumo}
 
 % ---
 
@@ -305,12 +305,12 @@ Agradecimentos especiais são direcionados a ...
 % A lista de Abreviaturas e Siglas pode ser facilmente montada com o pacote 
 % nomencl. Abaixo segue um exemplo.
 % ---
-\nomenclature{Fig.}{Figura}
-\nomenclature{$A_i$}{Area of the $i^{th}$ component} 
-\nomenclature{456}{Isto é um número}
-\nomenclature{123}{Isto é outro número}
-\nomenclature{a}{primeira letra do alfabeto}
-\nomenclature{lauro}{este é meu nome} 
+%\nomenclature{Fig.}{Figura}
+%\nomenclature{$A_i$}{Area of the $i^{th}$ component} 
+%\nomenclature{456}{Isto é um número}
+%\nomenclature{123}{Isto é outro número}
+%\nomenclature{a}{primeira letra do alfabeto}
+%\nomenclature{lauro}{este é meu nome} 
 
 \renewcommand{\nomname}{Lista de abreviaturas e siglas}
 \pdfbookmark[0]{\nomname}{las}
@@ -348,39 +348,20 @@ Agradecimentos especiais são direcionados a ...
 \include{introducao-include}
 
 
-% ----------------------------------------------------------
-% PARTE - preparação da pesquisa
-% ----------------------------------------------------------
-\chapter{Pesquisa}
+\chapter{Revisão}
 
-
-
-
-
-% ----------------------------------------------------------
-% Parte de revisãod e literatura
-% ----------------------------------------------------------
-\chapter{Desenvolvimento}
+% -------------------------------------
+\chapter{Implementação}
 \section{Arquitetura do Framework}
 \section{Ferramentas Utilizadas no Desenvolvimento}
-\subsection{Leaftetjs}
-\subsection{GeoDjango}
+\subsection{Github}
+\subsection{Leaflet.js}
+\subsubsection{Agrupamento de marcadores}
+\subsection{Django}
+\subsubsection{GeoDjango}
 
 
-% ---
-% Capitulo de revisão de literatura
-% ---
-
-
-% ----------------------------------------------------------
-% Resultados
-% ----------------------------------------------------------
 \chapter{Resultados}
-% ----------------------------------------------------------
-% Capitulo com exemplos de comandos inseridos de arquivo externo 
-% ----------------------------------------------------------
-
-%\include{abntex2-modelo-include-comandos}
 
 % ---
 % Finaliza a parte no bookmark do PDF, para que se inicie o bookmark na raiz
@@ -394,7 +375,6 @@ Agradecimentos especiais são direcionados a ...
 \chapter*[Conclusão]{Conclusão}
 \addcontentsline{toc}{chapter}{Conclusão}
 
-\lipsum[31-33]
 
 
 
