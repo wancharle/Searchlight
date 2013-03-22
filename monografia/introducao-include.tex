@@ -43,7 +43,7 @@ O site fornece um filtro por categorias, que diminui de forma significativa a qu
 
 
 \subsection{Zoom arbitrário}
-Alguns sites criam mecanismos que minimizam e, até certo ponto, conseguem resolver o problema da sobreposição de informações. Como exemplo, temos o \citeonline{crimemapatl}  mostrado na \autoref{fig-mapatl} que mostra um mapa com a taxa de crimes em Atlanta. 
+Alguns sites criam mecanismos que minimizam o problema da sobreposição de informações. Como exemplo, temos o \citeonline{crimemapatl}  mostrado na \autoref{fig-mapatl} que mostra um mapa com a taxa de crimes em Atlanta. 
 
 O site fornece filtros por categoria, data e zoom. Mas o principal responsável pela eliminação da sobreposição de informação é o filtro por zoom. Esse filtro agrupa todos os marcadores que estão sobrepostos, no zoom atual, em um único marcador que exibe a informação somada dos marcadores que o compõem.
  
@@ -55,7 +55,30 @@ O site fornece filtros por categoria, data e zoom. Mas o principal responsável 
 	\legend{Fonte: \citeonline{crimemapatl}}
 \end{figure}
 
-O processo de agrupamento é em tempo real, e um pouco lento,  podendo ser observado no primeiro segundo após a mudança de zoom se o computador do observador não for muito rápido. 
+Segundo \cite[42,44]{silva2010solap+} esse tipo de agrupamento, baseado em grelha, pode ser implementado a partir do algorítimo WaveCluster\cite{wavecluster}. 
+
+ 
+
+\begin{figure}[htb]
+	\caption{\label{fig-zoomab} Entre ZOOM A e ZOOM C existem muitos níveis intermediários e não apenas 1 (ZOOM B).}
+	\begin{center}
+	    \includegraphics[scale=0.6]{zoomab}
+	\end{center}
+	\legend{Fonte: \citeonline{crimemapatl}}
+\end{figure}
+
+Esse algorítimo resolve o problema de sobreposição de informações. Porém o problema do zoom arbitrário permanece, ilustrado na \autoref{fig-zoomab}, permanece.
+
+O usuário precisa aplicar vários zoons para ir do ZOOM A para o ZOOM C. Mas durante essa interação é gasto tempo e banda, da conexão deinternet, do usuário para exibir os zoons intermediários, quando o ideal seria exibir apenas o ZOOM B.
+
+Esse gasto de banda, prejudica\footnote{dispositivos móveis que usam mapas vetoriais, como o iphone da apple, não sofrem desse problema.} a usabilidade de mapas em dispositivos móveis pois, geralmente, eles possuem pouca banda de internet.
+
+Uma abordagem para esse problema é o uso de um zoom inteligente que siga uma hierarquia espacial invés de de simplesmente dobrar a visualização espacial. 
+ 
+
+
+
+
 
 \section{Objetivos}
 
