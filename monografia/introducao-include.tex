@@ -42,6 +42,8 @@ O site fornece um filtro por categorias, que diminui de forma significativa a qu
 
 
 
+
+
 \subsection{Zoom arbitrário}
 Alguns sites criam mecanismos que minimizam o problema da sobreposição de informações. Como exemplo, temos o \citeonline{crimemapatl}  mostrado na \autoref{fig-mapatl} que mostra um mapa com a taxa de crimes em Atlanta. 
 
@@ -73,15 +75,27 @@ O usuário precisa aplicar vários zoons para ir do ZOOM A para o ZOOM C. Mas du
 
 Esse gasto de banda, prejudica\footnote{dispositivos móveis que usam mapas vetoriais, como o iphone da apple, não sofrem desse problema.} a usabilidade de mapas em dispositivos móveis pois, geralmente, eles possuem pouca banda de internet.
 
-Uma abordagem para esse problema é o uso de um zoom inteligente que siga uma hierarquia espacial invés de de simplesmente dobrar a visualização espacial. 
- 
+Uma abordagem para esse problema é o uso de um zoom inteligente que siga uma hierarquia espacial invés de de simplesmente dobrar a visualização atual. 
 
-
-
-
+\subsubsection{Informações arbitrárias}
+Um subproblema do zoom arbitrário é a exibição de informações desnecessárias em todos os níveis de zoom. Na \autoref{fig-mapaufes} podemos observar o problema, que neste caso, a arbitrariedade esta na exibição de informações e não no numero de zoons. 
+ \begin{figure}[htb]
+	\caption{\label{fig-mapaufes}Informações necessárias em níveis superiores, de zoom, visualizadas em níveis inferiores}
+	\begin{center}
+	    \includegraphics[scale=0.4]{ufes_map}
+	\end{center}
+	\legend{Fonte: http://maps.google.com}
+\end{figure}
+Os marcadores desse mapa exibem informações sobre os departamentos internos da UFES, mas essas informações são úteis apenas em certos níveis de zoom. Em níveis mais baixos, onde a área dessa universidade seja desprezível, a informação perde seu valor e fica poluindo o mapa. Neste caso, um único marcador representando o grupo seria mais útil.
 
 \section{Objetivos}
+Com base nas informações da definição do problema, o objetivo deste trabalho é desenvolver uma ferramenta que: agrupe marcadores de forma inteligente eliminando a sobreposição; forneça um zoom inteligente que não exiba níveis intermediários desnecessários; esconda marcadores quando sua informação não seja mais necessária ao nível observado.
 
+O objetivo principal desse trabalho é facilitar a visualização de informação em mapas crowdsourcing. Isso devido a importância sócio-econômica das informações que geralmente são exibidas nessa classe de mapas. Mas a ferramenta poderia implementar recursos que também facilite a divulgação dessas informações. Por isso, o objetivo secundário é fornecer um mecanismo para gerar mapas a partir de planilhas de dados, e compartilhá-los sem que o autor precise programar ou ter algum conhecimento de programação. Para este trabalho a divulgação dos mapas é um objetivo secundário, mas poderia ser melhor abordado em trabalhos futuros.
+  
 \section{Contribuições}
+A contribuição deste trabalho é o desenvolvimento de um framework para exibição de mapas em paginas web facilitando a visualização de informações crowdsourcing.
+
+Além disso também foi criado um website do projeto\cite{gitsite} que explica e documenta o framework. O website fornece também um pagina de geração e compartilhamento de mapas por pessoas que não sabem programar.
 
 \section{Estrutura da Monografia}
