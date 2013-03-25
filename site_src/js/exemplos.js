@@ -65,4 +65,6 @@ function exemplos(){
     exemplo2();
     exemplo_markercluster();
     exemplo_gdoc();
+    exemplo_geocoding();
 }
+
