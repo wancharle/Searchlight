@@ -56,7 +56,14 @@ Searchlight permite o uso de planilhas eletrônicas do google docs como base de 
 Os marcadores do mapa acima foram obtidos através de um planilha do google docs ([planilha](https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html))  que tem como coteudo as posições e os titulos dos marcadores.
 
 Qualquer alteração na planilha é refletida automaticamente no mapa. Se adicionarmos uma nova linha na planilha, com dados de um marcador, o mapa automaticamente exibe o novo marcador, se tirarmos uma linha o marcador respectivo some.
- 
+#### Gerando e compartilhando um mapa
+Para criar e compartilhar seu próprio mapa, basta criar uma planilha publica no google docs contendo os dados geograficos que deseja compartilhar. Observe, é claro, a convenção de nomes para as colunas da planilha. 
+
+Após criar a planilha, cole o link publico no campo abaixo e clique em compartilhar.
+<form method="GET" action="view.html">Endereço da planilha:  <input type="text" style="width:600px" name="data" value="https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html" />
+  <input type="submit" value="compartilhar" />
+</form>
+
 ### Balões de Resumo 
 No mapa abaixo observamos o uso de balões para mostrar o conteúdo resumido de um agrupamento de marcadores.
 

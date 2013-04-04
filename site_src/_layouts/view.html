@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Searchlight Facilitando a visualização de informações crowdsourcing em Mapas Web através de Zoom.." />
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script> 
+    <link rel="stylesheet" type="text/css" media="screen" href="css/stylesheet.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/exemplos.css">
+  
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+    <!--[if lte IE 8]>
+     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
+    <![endif]-->
+     <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+
+    <!-- marker cluster -->
+	<link rel="stylesheet" href="libs/Leaflet.markercluster/MarkerCluster.css" />
+	<link rel="stylesheet" href="libs/Leaflet.markercluster/MarkerCluster.Default.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="libs/Leaflet.markercluser/MarkerCluster.Default.ie.css" /><![endif]-->
+	<script src="libs/Leaflet.markercluster/leaflet.markercluster-src.js"></script>
+    <script src="js/exemplo-markercluster.js"></script>
+    
+    <!-- tabletop -->
+	<script src="libs/tabletop.js"></script>
+
+    
+	<script src="js/jquery-1.9.1.min.js"></script>
+	<script src="js/jquery.getUrlParam.js"></script>
+
+
+    <script src="js/searchlight.js"></script>
+    <title>Searchlight</title>
+  </head>
+
+  <body onload="javascript:main();">
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <h1 id="project_title">Searchlight</h1>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+      {{ content }}
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Searchlight maintained by <a href="https://github.com/wancharle">wancharle</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
