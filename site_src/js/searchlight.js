@@ -767,13 +767,6 @@ var MyControl = L.Control.extend({
     }
 });
 
-L.Icon.Default.imagePath = "images/leaflet";
-UFES = [(-20.277233), (-40.303752)];
-CT = [(-20.27353), (-40.305448)];
-CEMUNI = [(-20.279483), (-40.30269)];
-BIBLIOTECA = [(-20.276519), (-40.304503)];
-public_spreadsheet_url = "https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html";
-map_gdoc = null;
 portoalegrecc_json = "http://portoalegre.cc/causes/visibles?topLeftY=-29.993308319952344&topLeftX=-51.05793032165525&bottomRightY=-30.127023880027313&bottomRightX=-51.34906801696775&currentZoom=1&maxZoom=6";
 pacc_jsonp = "https://dl.dropbox.com/u/877911/portoalegre.js";
 Icones = {
@@ -851,7 +844,7 @@ Icones["12"] = new L.icon({
   iconAnchor: [22, 58],
   popupAnchor: [(-3), (-76)]
 });
-main = function() {
+portoalegre_cc = function() {
   var add_item, mps;
   add_item = (function(item) {
     var item_convertido;
@@ -865,7 +858,24 @@ main = function() {
     item_convertido.cat_id = item.cause.category_id;
     referencia_atual.add_item(referencia_atual, item_convertido);
   });
-  mps = new Searchlight(pacc_jsonp, add_item);
+  mps = new Searchlight(pacc_jsonp, add_item, "map_gdoc", Icones);
+};
+
+L.Icon.Default.imagePath = "images/leaflet";
+UFES = [(-20.277233), (-40.303752)];
+CT = [(-20.27353), (-40.305448)];
+CEMUNI = [(-20.279483), (-40.30269)];
+BIBLIOTECA = [(-20.276519), (-40.304503)];
+public_spreadsheet_url = "https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html";
+main = function() {
+  var mainf, mps;
+  mainf = getURLParameter("mainf");
+  if (mainf) {
+    eval((mainf + "()"));
+  } else {
+    mps = new Searchlight();
+  }
+
 };
 
 getURLParameter = function(name) {
@@ -888,11 +898,13 @@ getJSONP = function(url, func) {
 urlosm = "http://{s}.tile.osm.org/{z}/{x}/{y}.png";
 attribution = "Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery \u00a9 <a href=\"http://cloudmade.com\">CloudMade</a>";
 referencia_atual = null;
-Searchlight = function(url, add_func, map_id) {
+Searchlight = function(url, add_func, map_id, icones) {
   if (typeof url === "undefined") {url = null};
   if (typeof add_func === "undefined") {add_func = null};
   if (typeof map_id === "undefined") {map_id = "map_gdoc"};
+  if (typeof icones === "undefined") {icones = null};
   this.map_id = map_id;
+  this.Icones = icones;
   if (url) {
     this.url = url;
   } else {
@@ -926,8 +938,9 @@ Searchlight.prototype.get_data = (function() {
   
   if ((this.url.indexOf("docs.google.com/spreadsheet") > (-1))) {
     main = this;
+    this.basel = new L.featureGroup();
     add_itens = (function(data) {
-      main.add_itens(data);
+      main.add_itens_gdoc(data);
     });
     Tabletop.init({
       "key": this.url,
@@ -940,26 +953,41 @@ Searchlight.prototype.get_data = (function() {
   }
 
 });
-Searchlight.prototype.add_itens = (function(data) {
-  var baseMaps, d, l, overlayMaps;
-  this.markers = {
-    
-  };
+Searchlight.prototype.add_itens_gdoc = (function(data) {
+  var d, p;
   var _$tmp1_data = _$rapyd$_iter(data);
   var _$tmp2_len = _$tmp1_data.length;
   for (var _$tmp3_index = 0; _$tmp3_index < _$tmp2_len; _$tmp3_index++) {
     d = _$tmp1_data[_$tmp3_index];
 
+    p = [parseFloat(d.latitude.replace(",", ".")), parseFloat(d.longitude.replace(",", "."))];
+    L.marker(p).addTo(this.basel).bindPopup(d.textomarcador);
+  }
+
+  this.map.addLayer(this.basel);
+  this.map.fitBounds(this.basel.getBounds());
+});
+Searchlight.prototype.add_itens = (function(data) {
+  var baseMaps, d, l, overlayMaps;
+  this.markers = {
+    
+  };
+  var _$tmp4_data = _$rapyd$_iter(data);
+  var _$tmp5_len = _$tmp4_data.length;
+  for (var _$tmp6_index = 0; _$tmp6_index < _$tmp5_len; _$tmp6_index++) {
+    d = _$tmp4_data[_$tmp6_index];
+
     this.add_func(d);
   }
 
-  var _$tmp4_data = _$rapyd$_iter(this.markers);
-  var _$tmp5_len = _$tmp4_data.length;
-  for (var _$tmp6_index = 0; _$tmp6_index < _$tmp5_len; _$tmp6_index++) {
-    l = _$tmp4_data[_$tmp6_index];
+  var _$tmp7_data = _$rapyd$_iter(this.markers);
+  var _$tmp8_len = _$tmp7_data.length;
+  for (var _$tmp9_index = 0; _$tmp9_index < _$tmp8_len; _$tmp9_index++) {
+    l = _$tmp7_data[_$tmp9_index];
 
     if ((l.indexOf("gura") > (-1))) {
       this.map.addLayer(this.markers[l]);
+      this.map.fitBounds(this.markers[l].getBounds());
     }
 
   }
@@ -980,9 +1008,9 @@ Searchlight.prototype.add_item = (function(obj, item) {
     this.center = true;
   }
 
-  if (Icones) {
+  if (this.Icones) {
     m = new L.Marker(p, {
-      icon: Icones[item.cat_id]
+      icon: this.Icones[item.cat_id]
     });
   } else {
     m = new L.Marker(p);

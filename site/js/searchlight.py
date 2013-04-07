@@ -12,6 +12,7 @@ import libs.jquery191min
 import libs.jquery.getUrlParam
 import libs.tabletop
 import control
+import exemplos.portoalegre
 
 # ---------- exemplo view -------------------------
 # marcadores
@@ -21,37 +22,13 @@ CEMUNI = [ -20.279483,-40.302690]
 BIBLIOTECA = [-20.276519, -40.304503]
 
 public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html'
-map_gdoc= None
-portoalegrecc_json = "http://portoalegre.cc/causes/visibles?topLeftY=-29.993308319952344&topLeftX=-51.05793032165525&bottomRightY=-30.127023880027313&bottomRightX=-51.34906801696775&currentZoom=1&maxZoom=6"
-pacc_jsonp = "https://dl.dropbox.com/u/877911/portoalegre.js"
-
-
-Icones = {}
-Icones["1"] = new L.icon({ iconUrl:"images/pin_1.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
-Icones["2"] = new L.icon({ iconUrl:"images/pin_2.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
-Icones["3"] = new L.icon({ iconUrl:"images/pin_3.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
-Icones["4"] = new L.icon({ iconUrl:"images/pin_4.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
-Icones["5"] = new L.icon({ iconUrl:"images/pin_5.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
-Icones["6"] = new L.icon({ iconUrl:"images/pin_6.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
-Icones["7"] = new L.icon({ iconUrl:"images/pin_7.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
-Icones["8"] = new L.icon({ iconUrl:"images/pin_8.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
-Icones["9"] = new L.icon({ iconUrl:"images/pin_9.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
-Icones["10"] = new L.icon({ iconUrl:"images/pin_10.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
-Icones["11"] = new L.icon({ iconUrl:"images/pin_11.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
-Icones["12"] = new L.icon({ iconUrl:"images/pin_12.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
 
 def main():
-
-    add_item = def (item):
-        item_convertido = {}
-        item_convertido.longitude = ""+item.cause.longitude
-        item_convertido.latitude = "" +item.cause.latitude
-        item_convertido.textomarcador = item.cause.category_name
-        item_convertido.cat = item.cause.category_name
-        item_convertido.cat_id = item.cause.category_id
-        referencia_atual.add_item(referencia_atual, item_convertido)
-
-    mps = new Searchlight(pacc_jsonp,add_item)
+    mainf = getURLParameter("mainf") # define uma funcao de inicializacao
+    if mainf:
+       eval(mainf+"()")
+    else:
+        mps = new Searchlight()
 
 def getURLParameter(name):
     return $(document).getUrlParam(name)
@@ -69,8 +46,9 @@ attribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap<
 referencia_atual = None
 
 class Searchlight:
-    def __init__(self, url=None,add_func=None,map_id="map_gdoc"):
+    def __init__(self, url=None,add_func=None,map_id="map_gdoc",icones = None):
         self.map_id= map_id
+        self.Icones = icones
         # se nao for informada a fonte de dados procura no parametro data
         if url:
             self.url = url
@@ -95,12 +73,19 @@ class Searchlight:
         nonlocal referencia_atual
         if self.url.indexOf("docs.google.com/spreadsheet") > -1 :
             main = self
+            self.basel= new L.featureGroup()
             add_itens = def (data):
-                main.add_itens(data)
+                main.add_itens_gdoc(data)
             Tabletop.init( { 'key': self.url, 'callback': add_itens, 'simpleSheet': true } )
         else:
             referencia_atual = self
             getJSONP(self.url, searchlight_callback)
+    def add_itens_gdoc(self,data):
+        for d in data:
+            p =  [parseFloat(d.latitude.replace(',','.')), parseFloat(d.longitude.replace(',','.'))] 
+            L.marker(p).addTo(self.basel).bindPopup(d.textomarcador)
+        self.map.addLayer(self.basel);
+        self.map.fitBounds(self.basel.getBounds())
 
     def add_itens(self, data):
         self.markers = {}
@@ -109,6 +94,7 @@ class Searchlight:
         for l in self.markers:
             if l.indexOf("gura") >-1 :#or l.indexOf("ecno") > -1 or l.indexOf("Bem")>-1:
                 self.map.addLayer(self.markers[l])
+                self.map.fitBounds(self.markers[l].getBounds())
         baseMaps = {};
         overlayMaps = {"markers": self.markers};
         L.control.layers(baseMaps,self.markers).addTo(self.map)
@@ -120,8 +106,8 @@ class Searchlight:
         if not self.center :
             self.map.panTo(p)
             self.center = True
-        if Icones:
-            m = new L.Marker(p,{icon:Icones[item.cat_id]})
+        if self.Icones:
+            m = new L.Marker(p,{icon:self.Icones[item.cat_id]})
         else:
             m = new L.Marker(p)
         m.bindPopup(item.textomarcador)

@@ -1,0 +1,30 @@
+
+portoalegrecc_json = "http://portoalegre.cc/causes/visibles?topLeftY=-29.993308319952344&topLeftX=-51.05793032165525&bottomRightY=-30.127023880027313&bottomRightX=-51.34906801696775&currentZoom=1&maxZoom=6"
+pacc_jsonp = "https://dl.dropbox.com/u/877911/portoalegre.js"
+
+
+Icones = {}
+Icones["1"] = new L.icon({ iconUrl:"images/pin_1.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
+Icones["2"] = new L.icon({ iconUrl:"images/pin_2.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
+Icones["3"] = new L.icon({ iconUrl:"images/pin_3.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
+Icones["4"] = new L.icon({ iconUrl:"images/pin_4.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
+Icones["5"] = new L.icon({ iconUrl:"images/pin_5.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
+Icones["6"] = new L.icon({ iconUrl:"images/pin_6.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
+Icones["7"] = new L.icon({ iconUrl:"images/pin_7.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
+Icones["8"] = new L.icon({ iconUrl:"images/pin_8.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
+Icones["9"] = new L.icon({ iconUrl:"images/pin_9.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
+Icones["10"] = new L.icon({ iconUrl:"images/pin_10.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
+Icones["11"] = new L.icon({ iconUrl:"images/pin_11.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
+Icones["12"] = new L.icon({ iconUrl:"images/pin_12.png",iconSize:     [45, 58], iconAnchor:   [22, 58], popupAnchor: [-3, -76] })
+
+def portoalegre_cc():
+    add_item = def (item):
+        item_convertido = {}
+        item_convertido.longitude = ""+item.cause.longitude
+        item_convertido.latitude = "" +item.cause.latitude
+        item_convertido.textomarcador = item.cause.category_name
+        item_convertido.cat = item.cause.category_name
+        item_convertido.cat_id = item.cause.category_id
+        referencia_atual.add_item(referencia_atual, item_convertido)
+ 
+    mps = new Searchlight(pacc_jsonp,add_item,"map_gdoc",Icones)
