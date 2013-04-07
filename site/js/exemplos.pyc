@@ -40,5 +40,7 @@ def exemplos():
     exemplo_markercluster()
     exemplo_gdoc()
     exemplo_geocoding()
+    exemplo_baloes()
+
 
 

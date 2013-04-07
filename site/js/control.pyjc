@@ -1,0 +1,16 @@
+var MyControl = L.Control.extend({
+    options: {
+        position: 'bottomleft'
+    },
+
+    onAdd: function (map) {
+        // create the control container with a particular class name
+        var container = L.DomUtil.create('div', 'my-custom-control leaflet-control-layers');
+
+        container.innerHTML = "<p> TESTE </p>";
+        // ... initialize other DOM elements, add listeners, etc.
+
+        return container;
+    }
+});
+

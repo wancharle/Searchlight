@@ -1,0 +1,10 @@
+
+
+def exAddItems(data):
+   nonlocal mps
+   for d in data:
+        console.log(d.cause.category_name);        
+
+
+mps = Searchlight(pacc_jsonp,exAddItem)
+
