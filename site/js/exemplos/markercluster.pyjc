@@ -30,7 +30,7 @@ function getRandomLatLng(map) {
 var map2;
 function exemplo_markercluster(){
 		var Url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-			Attribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',		
+			Attribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery  <a href="http://cloudmade.com">CloudMade</a>',		
             cloudmade = new L.TileLayer(Url, {maxZoom: 18, attribution: Attribution}),
 			latlng = new L.LatLng(-20.277233,-40.303752 );
 

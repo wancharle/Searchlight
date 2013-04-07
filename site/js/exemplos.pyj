@@ -1,0 +1,44 @@
+
+import exemplos.markercluster
+import exemplos.gdoc
+import exemplos.geo
+import exemplos.exemplo2
+
+urlosm = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+attribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>';
+
+# marcadores
+UFES = [-20.277233,-40.303752 ]
+CT = [-20.273530, -40.305448]
+CEMUNI = [ -20.279483,-40.302690]
+BIBLIOTECA = [-20.276519, -40.304503]
+
+def exemplo1():
+    nonlocal UFES, CT, CEMUNI,BIBLIOTECA, urlosm,attribution
+    CamadaBasica = L.tileLayer(urlosm,  { attribution: attribution, maxZoom: 18 })
+   
+    markers = [L.marker(CT).bindPopup('CT.'),
+        L.marker(CEMUNI).bindPopup('CEMUNI'), 
+        L.marker(BIBLIOTECA).bindPopup('Biblioteca')];
+    centros = L.layerGroup(markers);     
+   
+    map = L.map('map',{layers:[CamadaBasica,centros],center: UFES,zoom: 15});
+
+    L.marker(UFES).addTo(map).bindPopup('UFES').openPopup();
+
+    baseMaps = {};
+    overlayMaps = {"Centros": centros};
+
+    L.control.layers(baseMaps, overlayMaps).addTo(map)
+
+
+
+
+def exemplos():
+    exemplo1()    
+    exemplo2()
+    exemplo_markercluster()
+    exemplo_gdoc()
+    exemplo_geocoding()
+
+
