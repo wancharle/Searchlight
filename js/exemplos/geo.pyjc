@@ -15,7 +15,7 @@ function exemplo_geocoding() {
 
     geoCode("street:Av. Fernando Ferrari;city:vitoria","vitoria",add_iti);
     geoCode("street:BR-101 NORTE;city:serra:",'',add_iti);
-    geoCode("street:RUA são domingos;city:serrA",'BR-101 NORTE',add_iti);
+    geoCode("street:RUA sao domingos;city:serrA",'BR-101 NORTE',add_iti);
 
    
 }

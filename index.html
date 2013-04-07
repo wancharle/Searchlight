@@ -5,30 +5,22 @@
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <meta name="description" content="Searchlight Facilitando a visualização de informações crowdsourcing em Mapas Web através de Zoom.." />
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script> 
     <link rel="stylesheet" type="text/css" media="screen" href="css/stylesheet.css">
     <link rel="stylesheet" type="text/css" media="screen" href="css/exemplos.css">
-  
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
     <!--[if lte IE 8]>
      <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
     <![endif]-->
-     <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 
     <!-- marker cluster -->
-	<link rel="stylesheet" href="libs/Leaflet.markercluster/MarkerCluster.css" />
-	<link rel="stylesheet" href="libs/Leaflet.markercluster/MarkerCluster.Default.css" />
-	<!--[if lte IE 8]><link rel="stylesheet" href="libs/Leaflet.markercluser/MarkerCluster.Default.ie.css" /><![endif]-->
-	<script src="libs/Leaflet.markercluster/leaflet.markercluster-src.js"></script>
-    <script src="js/exemplo-markercluster.js"></script>
+	<link rel="stylesheet" href="js/libs/leaflet/markercluster/MarkerCluster.css" />
+	<link rel="stylesheet" href="js/libs/leaflet/markercluster/MarkerCluster.Default.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="js/libs/leaflet.markercluser/MarkerCluster.Default.ie.css" /><![endif]-->
     
-    <!-- tabletop -->
-	<script src="libs/tabletop.js"></script>
-    <script src="js/exemplo_gdoc.js"></script>
-    <script src="js/exemplo_geo.js"></script>
-
-
+    
+    <script src="js/searchlight.js"></script>
     <script src="js/exemplos.js"></script>
+
     <title>Searchlight</title>
   </head>
 
@@ -103,7 +95,7 @@
 
 <p>Para criar e compartilhar seu próprio mapa, basta criar uma planilha publica no google docs contendo os dados geograficos que deseja compartilhar. Observe, é claro, a convenção de nomes para as colunas da planilha.</p>
 
-<p>Após criar a planilha, cole o link publico no campo abaixo e clique em compartilhar. <form action='view.html' method='GET'>Endereço da planilha:  <input style='width:600px' name='data' value='https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html' type='text' />
+<p>Após criar a planilha, cole o link publico no campo abaixo e clique em compartilhar. <form method='GET' action='view.html'>Endereço da planilha:  <input style='width:600px' value='https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html' type='text' name='data' />
   <input value='compartilhar' type='submit' />
 </form></p>
 
