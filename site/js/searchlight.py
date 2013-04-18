@@ -5,16 +5,16 @@ import stdlib
 import libs.leaflet05
 L.Icon.Default.imagePath = "images/leaflet"
 import libs.leaflet.markercluster.markercluster
-#import libs.spin
-#import libs.leaflet.spin
+import libs.spin
+import libs.leaflet.spin
 
 import libs.jquery191min
 import libs.jquery.getUrlParam
 import libs.tabletop
 import control
 import exemplos.portoalegre
+import utilidades
 
-# ---------- exemplo view -------------------------
 # marcadores
 UFES = [-20.277233,-40.303752 ]
 CT = [-20.273530, -40.305448]
@@ -22,6 +22,9 @@ CEMUNI = [ -20.279483,-40.302690]
 BIBLIOTECA = [-20.276519, -40.304503]
 
 public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html'
+urlosm = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+attribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+
 
 def main():
     mainf = getURLParameter("mainf") # define uma funcao de inicializacao
@@ -30,23 +33,15 @@ def main():
     else:
         mps = new Searchlight()
 
-def getURLParameter(name):
-    return $(document).getUrlParam(name)
-
 def searchlight_callback(data):
-    referencia_atual.add_itens(data)
-
-def getJSONP(url,func):
-    $.ajax({ 'url': url, 'success': func, 'type':"POST", 'dataType': 'jsonp'})
-#--------------------- fim -----------------------------
-urlosm = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
-attribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+    referencia_atual.carregaDados(data)
 
 # referencia para callback
 referencia_atual = None
 
+
 class Searchlight:
-    def __init__(self, url=None,add_func=None,map_id="map_gdoc",icones = None):
+    def __init__(self, url=None,func_convert=None,map_id="map_gdoc",icones = None):
         self.map_id= map_id
         self.Icones = icones
         # se nao for informada a fonte de dados procura no parametro data
@@ -56,10 +51,12 @@ class Searchlight:
             self.url = decodeURIComponent(getURLParameter("data"))
         
         # funcao de conversao para  geoJSON
-        if add_func:
-            self.add_func = add_func
+        if func_convert:
+            self.func_convert = func_convert
         else:
-            self.add_func = self.add_item
+            self.func_convert = def(item): return item
+
+        self.dados = new Dados()
         self.create()
 
 
@@ -71,15 +68,16 @@ class Searchlight:
 
     def get_data(self):
         nonlocal referencia_atual
+        referencia_atual = self
+        self.markers = new L.MarkerClusterGroup()
+        self.map.addLayer(self.markers)
+        self.markers.fire("data:loading")
+
         if self.url.indexOf("docs.google.com/spreadsheet") > -1 :
-            main = self
-            self.basel= new L.featureGroup()
-            add_itens = def (data):
-                main.add_itens_gdoc(data)
-            Tabletop.init( { 'key': self.url, 'callback': add_itens, 'simpleSheet': true } )
+            Tabletop.init( { 'key': self.url, 'callback': searchlight_callback, 'simpleSheet': true } )
         else:
-            referencia_atual = self
             getJSONP(self.url, searchlight_callback)
+    
     def add_itens_gdoc(self,data):
         for d in data:
             p =  [parseFloat(d.latitude.replace(',','.')), parseFloat(d.longitude.replace(',','.'))] 
@@ -87,34 +85,86 @@ class Searchlight:
         self.map.addLayer(self.basel);
         self.map.fitBounds(self.basel.getBounds())
 
-    def add_itens(self, data):
-        self.markers = {}
+    def carregaDados(self, data):
+        
         for d in data:
-            self.add_func(d)
-        for l in self.markers:
-            if l.indexOf("gura") >-1 :#or l.indexOf("ecno") > -1 or l.indexOf("Bem")>-1:
-                self.map.addLayer(self.markers[l])
-                self.map.fitBounds(self.markers[l].getBounds())
-        baseMaps = {};
-        overlayMaps = {"markers": self.markers};
-        L.control.layers(baseMaps,self.markers).addTo(self.map)
+            self.addItem(d) 
+
+
+        self.dados.addMarkersTo(self.markers)
+        self.markers.fire("data:loaded") 
+        self.map.fitBounds(self.markers.getBounds())
+
+
+    def addItem(self,item):
+        self.dados.addItem(item,self.func_convert)
+        
 
 
 
-    def add_item(self,obj,item):
+class Marcador:
+    def __init__(self,geoItem,icon=None):
+        self.m = None
+        self.latitude = parseFloat(geoItem.latitude.replace(',','.'))
+        self.longitude = parseFloat(geoItem.longitude.replace(',','.'))
+        self.texto = geoItem.texto
+        self.icon = icon
+    def getMark(self):
+        if self.m == None:
+            p =  [self.latitude,self.longitude ] 
+            if self.icon:
+                m = new L.Marker(p,{icon:self.icon})
+            else:
+                m = new L.Marker(p)
+            m.bindPopup(self.texto)
+            self.m = m
+        return self.m
+
+class Dados:
+    def __init__(self):
+        self.marcadores = []
+
+    def addItem(self,i,func_convert):
+        geoItem = func_convert(i)
+        m =  Marcador(geoItem)
+        self.marcadores.append(m)
+
+    def addMarkersTo(self, cluster):
+        for m in self.marcadores:
+            cluster.addLayer(m.getMark())
+
+class Categorias:
+    def __init__(self, name, icone):
+        self.itens = []
+        self.name = name
+        self.icone = icone
+        self.markers = []
+    def addItem(self, item):
+        self.itens.append(item)
+    def getarray(self):
+        if len(self.markers)==0:
+            for i in self.items:
+                self.add_item_mapa(i)
+        return self.markers
+    def add_item_mapa(self,item):
         p =  [parseFloat(item.latitude.replace(',','.')), parseFloat(item.longitude.replace(',','.'))] 
         if not self.center :
             self.map.panTo(p)
             self.center = True
         if self.Icones:
-            m = new L.Marker(p,{icon:self.Icones[item.cat_id]})
+            m = new L.Marker(p,{icon:self.icone})
         else:
             m = new L.Marker(p)
         m.bindPopup(item.textomarcador)
-        if not self.markers[item.cat]:
-            self.markers[item.cat] = new L.MarkerClusterGroup();
-        self.markers[item.cat].addLayer(m)
+        self.markers.append(m)
+
+
+
+
+
+
+
+
+
+
         
-
-
-
