@@ -5,9 +5,9 @@ var MyControl = L.Control.extend({
 
     onAdd: function (map) {
         // create the control container with a particular class name
-        var container = L.DomUtil.create('div', 'my-custom-control leaflet-control-layers');
-
-        container.innerHTML = "<p> TESTE </p>";
+        var container = L.DomUtil.create('div', 'searchlight-control leaflet-control-layers');
+        container.innerHTML = "<p class='controle' > TESTE </p>";
+        container.innerHTML += "<div class='opcoes' style='height:200px;width:200px;display:none'> opcoes </div>";
         // ... initialize other DOM elements, add listeners, etc.
 
         return container;

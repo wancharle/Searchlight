@@ -32,7 +32,7 @@ def main():
        eval(mainf+"()")
     else:
         mps = new Searchlight()
-
+    
 def searchlight_callback(data):
     referencia_atual.carregaDados(data)
 
@@ -59,13 +59,25 @@ class Searchlight:
         self.dados = new Dados()
         self.create()
 
+    def initControl(self):
+        
+        c="#"+self.map_id+" p.controle"
+        op ="#"+self.map_id+ " div.opcoes" 
+        $(c).mouseover(def(event):
+            $(op).show()
+        )
+        
+        $(op).mouseleave(def(event):
+            $(op).hide(); 
+        )
 
     def create(self):
         self.CamadaBasica = L.tileLayer(urlosm,  { 'attribution': attribution, 'maxZoom': 18 })
         self.map = L.map(self.map_id, {layers:[self.CamadaBasica],'center': UFES,'zoom': 12}) #TODO: mudar centro e zoom 
         self.get_data()
         self.map.addControl(new MyControl())
-
+        self.initControl()
+    
     def get_data(self):
         nonlocal referencia_atual
         referencia_atual = self
@@ -92,9 +104,9 @@ class Searchlight:
 
 
         self.dados.addMarkersTo(self.markers)
-        self.markers.fire("data:loaded") 
         self.map.fitBounds(self.markers.getBounds())
-
+        self.markers.fire("data:loaded") 
+        self.dados.addCatsToControl(self.map_id)
 
     def addItem(self,item):
         self.dados.addItem(item,self.func_convert)
@@ -123,15 +135,39 @@ class Marcador:
 class Dados:
     def __init__(self):
         self.marcadores = []
+        self.categorias = {}
 
-    def addItem(self,i,func_convert):
+    def getCat(self, name):
+        if not name:
+            name = "semcategoria"
+        cat=self.categorias[name]
+        if cat:
+            return cat
+        else:
+            self.categorias[name] = []
+            return self.categorias[name]
+
+    def addItem(self,i,func_convert): 
         geoItem = func_convert(i)
+        cat = self.getCat(geoItem.cat)
         m =  Marcador(geoItem)
-        self.marcadores.append(m)
+        cat.append(m)
+
+    def catAddMarkers(self,name,cluster):
+       for m in self.categorias[name]:
+            cluster.addLayer(m.getMark())
 
     def addMarkersTo(self, cluster):
-        for m in self.marcadores:
-            cluster.addLayer(m.getMark())
+        for k in dict.keys(self.categorias):
+            self.catAddMarkers(k,cluster)
+
+    def addCatsToControl(self,map_id):
+        op ="#"+map_id+ " div.opcoes" 
+        for k in dict.keys(self.categorias):
+            console.info(k)
+            $(op).append("<p>"+k+"</p>")
+        $(op).show()
+
 
 class Categorias:
     def __init__(self, name, icone):
@@ -167,4 +203,4 @@ class Categorias:
 
 
 
-        
+

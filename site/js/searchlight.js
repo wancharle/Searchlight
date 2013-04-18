@@ -799,9 +799,9 @@ var MyControl = L.Control.extend({
 
     onAdd: function (map) {
         // create the control container with a particular class name
-        var container = L.DomUtil.create('div', 'my-custom-control leaflet-control-layers');
-
-        container.innerHTML = "<p> TESTE </p>";
+        var container = L.DomUtil.create('div', 'searchlight-control leaflet-control-layers');
+        container.innerHTML = "<p class='controle' > TESTE </p>";
+        container.innerHTML += "<div class='opcoes' style='height:200px;width:200px;display:none'> opcoes </div>";
         // ... initialize other DOM elements, add listeners, etc.
 
         return container;
@@ -964,6 +964,17 @@ Searchlight = function(url, func_convert, map_id, icones) {
   this.create();
 };
 
+Searchlight.prototype.initControl = (function() {
+  var c, op;
+  c = (("#" + this.map_id) + " p.controle");
+  op = (("#" + this.map_id) + " div.opcoes");
+  $(c).mouseover((function(event) {
+    $(op).show();
+  }));
+  $(op).mouseleave((function(event) {
+    $(op).hide();
+  }));
+});
 Searchlight.prototype.create = (function() {
   this.CamadaBasica = L.tileLayer(urlosm, {
     "attribution": attribution,
@@ -976,6 +987,7 @@ Searchlight.prototype.create = (function() {
   });
   this.get_data();
   this.map.addControl(new MyControl());
+  this.initControl();
 });
 Searchlight.prototype.get_data = (function() {
   
@@ -1019,8 +1031,9 @@ Searchlight.prototype.carregaDados = (function(data) {
   }
 
   this.dados.addMarkersTo(this.markers);
-  this.markers.fire("data:loaded");
   this.map.fitBounds(this.markers.getBounds());
+  this.markers.fire("data:loaded");
+  this.dados.addCatsToControl(this.map_id);
 });
 Searchlight.prototype.addItem = (function(item) {
   this.dados.addItem(item, this.func_convert);
@@ -1054,17 +1067,36 @@ Marcador.prototype.getMark = (function() {
 });
 Dados = function() {
   this.marcadores = [];
+  this.categorias = {
+    
+  };
 };
 
-Dados.prototype.addItem = (function(i, func_convert) {
-  var geoItem, m;
-  geoItem = func_convert(i);
-  m = new Marcador(geoItem);
-  this.marcadores.append(m);
+Dados.prototype.getCat = (function(name) {
+  var cat;
+  if ((!name)) {
+    name = "semcategoria";
+  }
+
+  cat = this.categorias[name];
+  if (cat) {
+    return cat;
+  } else {
+    this.categorias[name] = [];
+    return this.categorias[name];
+  }
+
 });
-Dados.prototype.addMarkersTo = (function(cluster) {
+Dados.prototype.addItem = (function(i, func_convert) {
+  var cat, geoItem, m;
+  geoItem = func_convert(i);
+  cat = this.getCat(geoItem.cat);
+  m = new Marcador(geoItem);
+  cat.append(m);
+});
+Dados.prototype.catAddMarkers = (function(name, cluster) {
   var m;
-  var _$tmp7_data = _$rapyd$_iter(this.marcadores);
+  var _$tmp7_data = _$rapyd$_iter(this.categorias[name]);
   var _$tmp8_len = _$tmp7_data.length;
   for (var _$tmp9_index = 0; _$tmp9_index < _$tmp8_len; _$tmp9_index++) {
     m = _$tmp7_data[_$tmp9_index];
@@ -1072,6 +1104,31 @@ Dados.prototype.addMarkersTo = (function(cluster) {
     cluster.addLayer(m.getMark());
   }
 
+});
+Dados.prototype.addMarkersTo = (function(cluster) {
+  var k;
+  var _$tmp10_data = _$rapyd$_iter(dict.keys(this.categorias));
+  var _$tmp11_len = _$tmp10_data.length;
+  for (var _$tmp12_index = 0; _$tmp12_index < _$tmp11_len; _$tmp12_index++) {
+    k = _$tmp10_data[_$tmp12_index];
+
+    this.catAddMarkers(k, cluster);
+  }
+
+});
+Dados.prototype.addCatsToControl = (function(map_id) {
+  var k, op;
+  op = (("#" + map_id) + " div.opcoes");
+  var _$tmp13_data = _$rapyd$_iter(dict.keys(this.categorias));
+  var _$tmp14_len = _$tmp13_data.length;
+  for (var _$tmp15_index = 0; _$tmp15_index < _$tmp14_len; _$tmp15_index++) {
+    k = _$tmp13_data[_$tmp15_index];
+
+    console.info(k);
+    $(op).append((("<p>" + k) + "</p>"));
+  }
+
+  $(op).show();
 });
 Categorias = function(name, icone) {
   this.itens = [];
@@ -1086,10 +1143,10 @@ Categorias.prototype.addItem = (function(item) {
 Categorias.prototype.getarray = (function() {
   var i;
   if ((this.markers.length == 0)) {
-    var _$tmp10_data = _$rapyd$_iter(this.items);
-    var _$tmp11_len = _$tmp10_data.length;
-    for (var _$tmp12_index = 0; _$tmp12_index < _$tmp11_len; _$tmp12_index++) {
-      i = _$tmp10_data[_$tmp12_index];
+    var _$tmp16_data = _$rapyd$_iter(this.items);
+    var _$tmp17_len = _$tmp16_data.length;
+    for (var _$tmp18_index = 0; _$tmp18_index < _$tmp17_len; _$tmp18_index++) {
+      i = _$tmp16_data[_$tmp18_index];
 
       this.add_item_mapa(i);
     }
