@@ -3,11 +3,11 @@ import stdlib
 
 #imports de arquivos javascripts crus
 import libs.leaflet05
-L.Icon.Default.imagePath = "images/leaflet"
-import libs.leaflet.markercluster.markercluster
 import libs.spin
 import libs.leaflet.spin
 
+L.Icon.Default.imagePath = "images/leaflet"
+import libs.leaflet.markercluster.markercluster
 import libs.jquery191min
 import libs.jquery.getUrlParam
 import libs.tabletop
@@ -38,11 +38,14 @@ def searchlight_callback(data):
 
 # referencia para callback
 referencia_atual = None
-
+referencias = {}
 
 class Searchlight:
     def __init__(self, url=None,func_convert=None,map_id="map_gdoc",icones = None):
+        nonlocal referencias
+        referencias[map_id] = self 
         self.map_id= map_id
+        
         self.Icones = icones
         # se nao for informada a fonte de dados procura no parametro data
         if url:
@@ -121,6 +124,7 @@ class Marcador:
         self.longitude = parseFloat(geoItem.longitude.replace(',','.'))
         self.texto = geoItem.texto
         self.icon = icon
+        self.cat_id = geoItem.cat_id
     def getMark(self):
         if self.m == None:
             p =  [self.latitude,self.longitude ] 
@@ -130,6 +134,7 @@ class Marcador:
                 m = new L.Marker(p)
             m.bindPopup(self.texto)
             self.m = m
+            self.m.cat_id=self.cat_id
         return self.m
 
 class Dados:
@@ -165,8 +170,8 @@ class Dados:
         op ="#"+map_id+ " div.opcoes" 
         for k in dict.keys(self.categorias):
             console.info(k)
-            $(op).append("<p>"+k+"</p>")
-        $(op).show()
+            $(op).append("<p><input type='checkbox' name='"+k+"' class='categoria'/>"+k+"</p>")
+        #$(op).show()
 
 
 class Categorias:

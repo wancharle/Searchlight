@@ -6,10 +6,10 @@ function exemplo2() {
    var  markers = [L.marker(CT).bindPopup('CT.'),
         L.marker(CEMUNI).bindPopup('CEMUNI'), 
         L.marker(BIBLIOTECA).bindPopup('Biblioteca')];
-   var centros = L.layerGroup(markers);     
+   var centros = new L.FeatureGroup(markers);     
  
    var map = L.map('map2',{layers:[CamadaBasica,centros],center:  UFES,zoom: 5});
-
+    ///centros.addTo(map)
 
     map.on('zoomend', onZoomend);
     function onZoomend(){
@@ -22,7 +22,7 @@ function exemplo2() {
         };
         ultimo_zoom = map.getZoom();
      };
-
+ 
  }
 
 
