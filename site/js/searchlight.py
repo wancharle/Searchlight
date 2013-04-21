@@ -64,15 +64,19 @@ class Searchlight:
 
     def initControl(self):
         
-        c="#"+self.map_id+" p.controle"
-        op ="#"+self.map_id+ " div.opcoes" 
-        $(c).mouseover(def(event):
+        c="#"+self.map_id+" div.searchlight-control"
+        op ="#"+self.map_id+ " div.searchlight-opcoes" 
+        show = def(event):
             $(op).show()
-        )
+        $(c).mouseenter(show )
+        $(c).bind('touchstart',show);
+        hide = def(event):
+                $(op).hide()
+ 
+        $("#"+self.map_id).mouseover(hide)
+        $("#"+self.map_id).bind('touchstart',hide)
+
         
-        $(op).mouseleave(def(event):
-            $(op).hide(); 
-        )
 
     def create(self):
         self.CamadaBasica = L.tileLayer(urlosm,  { 'attribution': attribution, 'maxZoom': 18 })
@@ -167,10 +171,9 @@ class Dados:
             self.catAddMarkers(k,cluster)
 
     def addCatsToControl(self,map_id):
-        op ="#"+map_id+ " div.opcoes" 
+        op ="#"+map_id+ " div.searchlight-opcoes ul" 
         for k in dict.keys(self.categorias):
-            console.info(k)
-            $(op).append("<p><input type='checkbox' name='"+k+"' class='categoria'/>"+k+"</p>")
+            $(op).append("<li><input type='checkbox' checked name='"+k+"' class='categoria'/>"+k+"</li>")
         #$(op).show()
 
 

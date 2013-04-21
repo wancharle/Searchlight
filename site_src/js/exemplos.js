@@ -166,9 +166,7 @@ exemplo1 = function() {
 exemplos = function() {
   
   exemplo1();
-  console.info("ex1");
   exemplo2();
-  console.info("ex2");
   exemplo_markercluster();
   exemplo_gdoc();
   exemplo_geocoding();

@@ -33,8 +33,8 @@ def exemplo1():
 
 def exemplos():
     pass
-    exemplo1() ;console.info("ex1");
-    exemplo2() ;console.info("ex2");
+    exemplo1() 
+    exemplo2()
     exemplo_markercluster()
     exemplo_gdoc()
     exemplo_geocoding()

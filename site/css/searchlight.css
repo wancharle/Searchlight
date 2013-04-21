@@ -1,0 +1,34 @@
+
+.searchlight-control{
+    background-image: url('../images/logo_fim.png');
+    background-repeat:no-repeat;
+    background-color:rgb(252,252,252);
+    background-position:right top;
+    min-width:55px;
+    min-height:50px;
+    overflow:auto;
+    }
+.searchlight-opcoes{
+    background:rgb(239,239,239);
+    margin:10px;display:none;
+    margin-top:55px;
+    min-width:190px;
+    padding:0px;
+
+}
+.searchlight-opcoes ul {
+    max-height: 200px; 
+    overflow-y:scroll !important;
+    padding:5px;
+    }
+.searchlight-opcoes ul li {
+    list-style:none;padding:0px;
+    
+    }
+
+.searchlight-control p.center{
+ margin:0px;padding:0px;
+ background-color:rgb(252,252,252);
+ padding-top:10px;
+ text-align:center;padding-bottom:5px; margin-bottom:0px;
+    }

@@ -792,17 +792,38 @@ jQuery.fn.extend({
   };
 
 })(this);
+var scriptEls = document.getElementsByTagName( 'script' );
+var thisScriptEl = scriptEls[scriptEls.length - 1];
+var scriptPath = thisScriptEl.src;
+var scriptFolder = scriptPath.substr(0, scriptPath.lastIndexOf( '/' )+1 );
+
+
+$("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
+   href: scriptFolder+"../css/searchlight.css"
+}).appendTo("head");
+
 var MyControl = L.Control.extend({
     options: {
-        position: 'bottomleft'
+        position: 'topright'
     },
 
     onAdd: function (map) {
         // create the control container with a particular class name
         var container = L.DomUtil.create('div', 'searchlight-control leaflet-control-layers');
-        container.innerHTML = "<p class='controle' > TESTE </p>";
-        container.innerHTML += "<div class='opcoes' style='overflow:scroll!important;border:1px solid red;height:200px;width:200px;margin:10px;display:none'> opcoes </div>";
+        container.innerHTML = "<div class='searchlight-opcoes'><ul> </ul> <p class='center'><input type='button' value='Atualizar Mapa' /></p></div>";
+       var stop = L.DomEvent.stopPropagation; 
         // ... initialize other DOM elements, add listeners, etc.
+        L.DomEvent
+		    .on(container, 'click', stop)
+		    .on(container, 'mousedown', stop)
+		    .on(container, 'mouseover', stop)
+		    .on(container, 'touchstart', stop)
+		    .on(container, 'touchend', stop)
+		    .on(container, 'dblclick', stop)
+		    .on(container, 'scroll', stop)
+		    .on(container, 'mousewheel', stop)
 
         return container;
     }
@@ -970,15 +991,19 @@ Searchlight = function(url, func_convert, map_id, icones) {
 };
 
 Searchlight.prototype.initControl = (function() {
-  var c, op;
-  c = (("#" + this.map_id) + " p.controle");
-  op = (("#" + this.map_id) + " div.opcoes");
-  $(c).mouseover((function(event) {
+  var c, hide, op, show;
+  c = (("#" + this.map_id) + " div.searchlight-control");
+  op = (("#" + this.map_id) + " div.searchlight-opcoes");
+  show = (function(event) {
     $(op).show();
-  }));
-  $(op).mouseleave((function(event) {
+  });
+  $(c).mouseenter(show);
+  $(c).bind("touchstart", show);
+  hide = (function(event) {
     $(op).hide();
-  }));
+  });
+  $(("#" + this.map_id)).mouseover(hide);
+  $(("#" + this.map_id)).bind("touchstart", hide);
 });
 Searchlight.prototype.create = (function() {
   this.CamadaBasica = L.tileLayer(urlosm, {
@@ -1125,14 +1150,13 @@ Dados.prototype.addMarkersTo = (function(cluster) {
 });
 Dados.prototype.addCatsToControl = (function(map_id) {
   var k, op;
-  op = (("#" + map_id) + " div.opcoes");
+  op = (("#" + map_id) + " div.searchlight-opcoes ul");
   var _$tmp13_data = _$rapyd$_iter(dict.keys(this.categorias));
   var _$tmp14_len = _$tmp13_data.length;
   for (var _$tmp15_index = 0; _$tmp15_index < _$tmp14_len; _$tmp15_index++) {
     k = _$tmp13_data[_$tmp15_index];
 
-    console.info(k);
-    $(op).append((((("<p><input type='checkbox' name='" + k) + "' class='categoria'/>") + k) + "</p>"));
+    $(op).append((((("<li><input type='checkbox' checked name='" + k) + "' class='categoria'/>") + k) + "</li>"));
   }
 
 });
