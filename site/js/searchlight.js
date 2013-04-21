@@ -812,7 +812,7 @@ var MyControl = L.Control.extend({
     onAdd: function (map) {
         // create the control container with a particular class name
         var container = L.DomUtil.create('div', 'searchlight-control leaflet-control-layers');
-        container.innerHTML = "<div class='searchlight-opcoes'><ul> </ul> <p class='center'><input type='button' value='Atualizar Mapa' /></p></div>";
+        container.innerHTML = "<div class='searchlight-opcoes'><ul> </ul></div>";
        var stop = L.DomEvent.stopPropagation; 
         // ... initialize other DOM elements, add listeners, etc.
         L.DomEvent
@@ -960,7 +960,7 @@ searchlight_callback = function(data) {
 };
 
 referencia_atual = null;
-referencias = {
+sl_referencias = {
   
 };
 Searchlight = function(url, func_convert, map_id, icones) {
@@ -969,7 +969,7 @@ Searchlight = function(url, func_convert, map_id, icones) {
   if (typeof map_id === "undefined") {map_id = "map_gdoc"};
   if (typeof icones === "undefined") {icones = null};
   
-  referencias[map_id] = this;
+  sl_referencias[map_id] = this;
   this.map_id = map_id;
   this.Icones = icones;
   if (url) {
@@ -990,21 +990,6 @@ Searchlight = function(url, func_convert, map_id, icones) {
   this.create();
 };
 
-Searchlight.prototype.initControl = (function() {
-  var c, hide, op, show;
-  c = (("#" + this.map_id) + " div.searchlight-control");
-  op = (("#" + this.map_id) + " div.searchlight-opcoes");
-  show = (function(event) {
-    $(op).show();
-  });
-  $(c).mouseenter(show);
-  $(c).bind("touchstart", show);
-  hide = (function(event) {
-    $(op).hide();
-  });
-  $(("#" + this.map_id)).mouseover(hide);
-  $(("#" + this.map_id)).bind("touchstart", hide);
-});
 Searchlight.prototype.create = (function() {
   this.CamadaBasica = L.tileLayer(urlosm, {
     "attribution": attribution,
@@ -1017,7 +1002,7 @@ Searchlight.prototype.create = (function() {
   });
   this.get_data();
   this.map.addControl(new MyControl());
-  this.initControl();
+  this.control = new Controle(this);
 });
 Searchlight.prototype.get_data = (function() {
   
@@ -1063,10 +1048,50 @@ Searchlight.prototype.carregaDados = (function(data) {
   this.dados.addMarkersTo(this.markers);
   this.map.fitBounds(this.markers.getBounds());
   this.markers.fire("data:loaded");
-  this.dados.addCatsToControl(this.map_id);
+  this.control.addCatsToControl(this.map_id);
 });
 Searchlight.prototype.addItem = (function(item) {
   this.dados.addItem(item, this.func_convert);
+});
+Controle = function(sl) {
+  var obj;
+  obj = this;
+  this.sl = sl;
+  this.id_control = (("#" + this.sl.map_id) + " div.searchlight-control");
+  this.id_opcoes = (("#" + this.sl.map_id) + " div.searchlight-opcoes");
+  this.id_camadas = (this.opcoes + "ul");
+  this.show = (function(event) {
+    $(obj.id_opcoes).show();
+  });
+  $(this.id_control).mouseenter(this.show);
+  $(this.id_control).bind("touchstart", this.show);
+  this.hide = (function(event) {
+    $(obj.id_opcoes).hide();
+  });
+  $(("#" + this.sl.map_id)).mouseover(this.hide);
+  $(("#" + this.sl.map_id)).bind("touchstart", this.hide);
+};
+
+Controle.prototype.addCatsToControl = (function(map_id) {
+  var k, op, ul;
+  op = (("#" + map_id) + " div.searchlight-opcoes");
+  ul = (op + " ul");
+  var _$tmp7_data = _$rapyd$_iter(dict.keys(this.sl.dados.categorias));
+  var _$tmp8_len = _$tmp7_data.length;
+  for (var _$tmp9_index = 0; _$tmp9_index < _$tmp8_len; _$tmp9_index++) {
+    k = _$tmp7_data[_$tmp9_index];
+
+    $(ul).append((((("<li><input type='checkbox' checked name='" + k) + "' class='categoria'/>") + k) + "</li>"));
+  }
+
+  $(op).append((("<p class='center'><input type='button' onclick='Controle.update(\"#" + map_id) + "\");' value='Atualizar Mapa' /></p>"));
+});
+Controle.update = (function(map_id) {
+  var referencias, sl;
+  referencias = sl_referencias;
+  sl = referencias[map_id];
+  alert("ok");
+  alert(referencias);
 });
 Marcador = function(geoItem, icon) {
   if (typeof icon === "undefined") {icon = null};
@@ -1128,10 +1153,10 @@ Dados.prototype.addItem = (function(i, func_convert) {
 });
 Dados.prototype.catAddMarkers = (function(name, cluster) {
   var m;
-  var _$tmp7_data = _$rapyd$_iter(this.categorias[name]);
-  var _$tmp8_len = _$tmp7_data.length;
-  for (var _$tmp9_index = 0; _$tmp9_index < _$tmp8_len; _$tmp9_index++) {
-    m = _$tmp7_data[_$tmp9_index];
+  var _$tmp10_data = _$rapyd$_iter(this.categorias[name]);
+  var _$tmp11_len = _$tmp10_data.length;
+  for (var _$tmp12_index = 0; _$tmp12_index < _$tmp11_len; _$tmp12_index++) {
+    m = _$tmp10_data[_$tmp12_index];
 
     cluster.addLayer(m.getMark());
   }
@@ -1139,24 +1164,12 @@ Dados.prototype.catAddMarkers = (function(name, cluster) {
 });
 Dados.prototype.addMarkersTo = (function(cluster) {
   var k;
-  var _$tmp10_data = _$rapyd$_iter(dict.keys(this.categorias));
-  var _$tmp11_len = _$tmp10_data.length;
-  for (var _$tmp12_index = 0; _$tmp12_index < _$tmp11_len; _$tmp12_index++) {
-    k = _$tmp10_data[_$tmp12_index];
-
-    this.catAddMarkers(k, cluster);
-  }
-
-});
-Dados.prototype.addCatsToControl = (function(map_id) {
-  var k, op;
-  op = (("#" + map_id) + " div.searchlight-opcoes ul");
   var _$tmp13_data = _$rapyd$_iter(dict.keys(this.categorias));
   var _$tmp14_len = _$tmp13_data.length;
   for (var _$tmp15_index = 0; _$tmp15_index < _$tmp14_len; _$tmp15_index++) {
     k = _$tmp13_data[_$tmp15_index];
 
-    $(op).append((((("<li><input type='checkbox' checked name='" + k) + "' class='categoria'/>") + k) + "</li>"));
+    this.catAddMarkers(k, cluster);
   }
 
 });

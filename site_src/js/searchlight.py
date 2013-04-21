@@ -38,12 +38,12 @@ def searchlight_callback(data):
 
 # referencia para callback
 referencia_atual = None
-referencias = {}
-
+sl_referencias = {}
 class Searchlight:
+
     def __init__(self, url=None,func_convert=None,map_id="map_gdoc",icones = None):
         nonlocal referencias
-        referencias[map_id] = self 
+        sl_referencias[map_id]  = self 
         self.map_id= map_id
         
         self.Icones = icones
@@ -62,28 +62,14 @@ class Searchlight:
         self.dados = new Dados()
         self.create()
 
-    def initControl(self):
-        
-        c="#"+self.map_id+" div.searchlight-control"
-        op ="#"+self.map_id+ " div.searchlight-opcoes" 
-        show = def(event):
-            $(op).show()
-        $(c).mouseenter(show )
-        $(c).bind('touchstart',show);
-        hide = def(event):
-                $(op).hide()
- 
-        $("#"+self.map_id).mouseover(hide)
-        $("#"+self.map_id).bind('touchstart',hide)
-
-        
+          
 
     def create(self):
         self.CamadaBasica = L.tileLayer(urlosm,  { 'attribution': attribution, 'maxZoom': 18 })
         self.map = L.map(self.map_id, {layers:[self.CamadaBasica],'center': UFES,'zoom': 12}) #TODO: mudar centro e zoom 
         self.get_data()
         self.map.addControl(new MyControl())
-        self.initControl()
+        self.control = new Controle(self)
     
     def get_data(self):
         nonlocal referencia_atual
@@ -113,11 +99,44 @@ class Searchlight:
         self.dados.addMarkersTo(self.markers)
         self.map.fitBounds(self.markers.getBounds())
         self.markers.fire("data:loaded") 
-        self.dados.addCatsToControl(self.map_id)
+        self.control.addCatsToControl(self.map_id)
 
     def addItem(self,item):
         self.dados.addItem(item,self.func_convert)
+
         
+class Controle:
+    def __init__(self,sl):
+        obj = self
+        self.sl = sl
+        self.id_control = "#"+self.sl.map_id+" div.searchlight-control"
+        self.id_opcoes = "#"+self.sl.map_id+ " div.searchlight-opcoes" 
+        self.id_camadas = self.opcoes + "ul"
+        self.show = def(event):
+            $(obj.id_opcoes).show()
+        $(self.id_control).mouseenter(self.show )
+        $(self.id_control).bind('touchstart',self.show);
+        self.hide = def(event):
+            $(obj.id_opcoes).hide()
+ 
+        $("#"+self.sl.map_id).mouseover(self.hide)
+        $("#"+self.sl.map_id).bind('touchstart',self.hide)
+
+
+    def addCatsToControl(self,map_id):
+        op ="#"+map_id+ " div.searchlight-opcoes" 
+        ul =op + " ul" 
+        for k in dict.keys(self.sl.dados.categorias):
+            $(ul).append("<li><input type='checkbox' checked name='"+k+"' class='categoria'/>"+k+"</li>")
+        
+        $(op).append("<p class='center'><input type='button' onclick='Controle.update(\"#"+map_id+"\");' value='Atualizar Mapa' /></p>")
+
+Controle.update = def (self,map_id):
+        referencias=sl_referencias 
+        sl = referencias[map_id]
+        alert("ok");
+        alert(referencias)
+
 
 
 
@@ -169,12 +188,6 @@ class Dados:
     def addMarkersTo(self, cluster):
         for k in dict.keys(self.categorias):
             self.catAddMarkers(k,cluster)
-
-    def addCatsToControl(self,map_id):
-        op ="#"+map_id+ " div.searchlight-opcoes ul" 
-        for k in dict.keys(self.categorias):
-            $(op).append("<li><input type='checkbox' checked name='"+k+"' class='categoria'/>"+k+"</li>")
-        #$(op).show()
 
 
 class Categorias:

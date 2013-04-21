@@ -18,7 +18,7 @@ var MyControl = L.Control.extend({
     onAdd: function (map) {
         // create the control container with a particular class name
         var container = L.DomUtil.create('div', 'searchlight-control leaflet-control-layers');
-        container.innerHTML = "<div class='searchlight-opcoes'><ul> </ul> <p class='center'><input type='button' value='Atualizar Mapa' /></p></div>";
+        container.innerHTML = "<div class='searchlight-opcoes'><ul> </ul></div>";
        var stop = L.DomEvent.stopPropagation; 
         // ... initialize other DOM elements, add listeners, etc.
         L.DomEvent
