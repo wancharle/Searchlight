@@ -91,10 +91,8 @@ class Searchlight:
         self.map.fitBounds(self.basel.getBounds())
 
     def carregaDados(self, data):
-        
         for d in data:
             self.addItem(d) 
-
 
         self.dados.addMarkersTo(self.markers)
         self.map.fitBounds(self.markers.getBounds())
@@ -126,17 +124,27 @@ class Controle:
     def addCatsToControl(self,map_id):
         op ="#"+map_id+ " div.searchlight-opcoes" 
         ul =op + " ul" 
-        for k in dict.keys(self.sl.dados.categorias):
-            $(ul).append("<li><input type='checkbox' checked name='"+k+"' class='categoria'/>"+k+"</li>")
+        for k in dict.keys(self.sl.dados.categorias).sort():
+            $(ul).append("<li><input type='checkbox' checked name='"+map_id+"-cat' value='"+k+"' class='categoria'/>"+k+" ("+self.sl.dados.categorias[k].length+")</li>")
         
-        $(op).append("<p class='center'><input type='button' onclick='Controle.update(\"#"+map_id+"\");' value='Atualizar Mapa' /></p>")
+        $(op).append("<p class='center'><input type='button' onclick='Controle.update(\""+map_id+"\");' value='Atualizar Mapa' /></p>")
 
 Controle.update = def (self,map_id):
-        referencias=sl_referencias 
-        sl = referencias[map_id]
-        alert("ok");
-        alert(referencias)
+        sl = sl_referencias[map_id]
+        $(sl.control.id_opcoes).hide()
+        sl.markers.clearLayers();
+        sl.markers.fire("data:loading")
+        setTimeout("Controle.carregaDados('"+map_id+"')",50);
 
+Controle.carregaDados = def (self, map_id)
+        sl = sl_referencias[map_id]
+        $("input:checkbox[name="+map_id.replace("#","")+"-cat]:checked").each(def ():
+            cat=$(self).val();
+            console.info(cat);
+            sl.dados.catAddMarkers(cat,sl.markers);
+        );
+        sl.map.fitBounds(sl.markers.getBounds())
+        sl.markers.fire("data:loaded") 
 
 
 
@@ -168,6 +176,7 @@ class Dados:
     def getCat(self, name):
         if not name:
             name = "semcategoria"
+        name = name.replace(",","").replace('"','')
         cat=self.categorias[name]
         if cat:
             return cat

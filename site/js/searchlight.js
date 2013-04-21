@@ -1076,22 +1076,35 @@ Controle.prototype.addCatsToControl = (function(map_id) {
   var k, op, ul;
   op = (("#" + map_id) + " div.searchlight-opcoes");
   ul = (op + " ul");
-  var _$tmp7_data = _$rapyd$_iter(dict.keys(this.sl.dados.categorias));
+  var _$tmp7_data = _$rapyd$_iter(dict.keys(this.sl.dados.categorias).sort());
   var _$tmp8_len = _$tmp7_data.length;
   for (var _$tmp9_index = 0; _$tmp9_index < _$tmp8_len; _$tmp9_index++) {
     k = _$tmp7_data[_$tmp9_index];
 
-    $(ul).append((((("<li><input type='checkbox' checked name='" + k) + "' class='categoria'/>") + k) + "</li>"));
+    $(ul).append((((((((("<li><input type='checkbox' checked name='" + map_id) + "-cat' value='") + k) + "' class='categoria'/>") + k) + " (") + this.sl.dados.categorias[k].length) + ")</li>"));
   }
 
-  $(op).append((("<p class='center'><input type='button' onclick='Controle.update(\"#" + map_id) + "\");' value='Atualizar Mapa' /></p>"));
+  $(op).append((("<p class='center'><input type='button' onclick='Controle.update(\"" + map_id) + "\");' value='Atualizar Mapa' /></p>"));
 });
 Controle.update = (function(map_id) {
-  var referencias, sl;
-  referencias = sl_referencias;
-  sl = referencias[map_id];
-  alert("ok");
-  alert(referencias);
+  var sl;
+  sl = sl_referencias[map_id];
+  $(sl.control.id_opcoes).hide();
+  sl.markers.clearLayers();
+  sl.markers.fire("data:loading");
+  setTimeout((("Controle.carregaDados('" + map_id) + "')"), 50);
+});
+Controle.carregaDados = (function(map_id) {
+  var sl;
+  sl = sl_referencias[map_id];
+  $((("input:checkbox[name=" + map_id.replace("#", "")) + "-cat]:checked")).each((function() {
+    var cat;
+    cat = $(this).val();
+    console.info(cat);
+    sl.dados.catAddMarkers(cat, sl.markers);
+  }));
+  sl.map.fitBounds(sl.markers.getBounds());
+  sl.markers.fire("data:loaded");
 });
 Marcador = function(geoItem, icon) {
   if (typeof icon === "undefined") {icon = null};
@@ -1135,6 +1148,7 @@ Dados.prototype.getCat = (function(name) {
     name = "semcategoria";
   }
 
+  name = name.replace(",", "").replace("\"", "");
   cat = this.categorias[name];
   if (cat) {
     return cat;
