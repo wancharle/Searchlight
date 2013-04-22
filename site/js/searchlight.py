@@ -36,6 +36,10 @@ def main():
 def searchlight_callback(data):
     referencia_atual.carregaDados(data)
 
+
+
+sl_IconCluster = new L.DivIcon({ html: '<div><span>1</span></div>', className: 'marker-cluster marker-cluster-small', iconSize: new L.Point(40, 40) });
+
 # referencia para callback
 referencia_atual = None
 sl_referencias = {}
@@ -74,10 +78,24 @@ class Searchlight:
     def get_data(self):
         nonlocal referencia_atual
         referencia_atual = self
-        self.markers = new L.MarkerClusterGroup()
+
+        obj = self
+        # criando camada com clusters
+
+        self.markers = new L.MarkerClusterGroup({ zoomToBoundsOnClick: false})
+        self.map.on('dblclick', def(a):
+            obj.control.cancelZoom();
+        )
+        self.markers.on('clusterdblclick', def (a) :
+            obj.control.cancelZoom();
+       );
+        self.markers.on('clusterclick', def (a): 
+            obj.control.popupOrZoom(a)
+        )
         self.map.addLayer(self.markers)
         self.markers.fire("data:loading")
-
+       
+        # obtendo dados
         if self.url.indexOf("docs.google.com/spreadsheet") > -1 :
             Tabletop.init( { 'key': self.url, 'callback': searchlight_callback, 'simpleSheet': true } )
         else:
@@ -119,8 +137,40 @@ class Controle:
  
         $("#"+self.sl.map_id).mouseover(self.hide)
         $("#"+self.sl.map_id).bind('touchstart',self.hide)
+        self.criaPopup()
 
+    def criaPopup(self):
+       popup = L.popup()
+       self.tout= 0
+       self.popup = popup
+       popup.setContent('<p>Hello world!<br />This is a nice popup.</p>')
 
+    def cancelZoom(self):
+        self.cancelou_zoom = True
+        self.sl.map.closePopup()
+        self.cluster_clicado.layer.zoomToBounds()
+        self.cluster_clicado = None
+        
+    def zoom(self, map_id):
+        sl = sl_referencias[map_id]
+        obj=sl.control;
+        
+        if obj.cancelou_zoom:
+            obj.cancelou_zoom = False
+        else:
+            obj.popup.openOn(self.sl.map)
+        #limpa o zoom clicado
+        obj.cluster_clicado= None
+    def popupOrZoom(self,cluster):
+        self.sl.map.closePopup() 
+        self.popup.setLatLng(cluster.layer.getLatLng())
+        obj = self
+        if self.cluster_clicado == None:
+            self.cluster_clicado = cluster
+            setTimeout(def (): 
+                obj.zoom(obj.sl.map_id);
+            , 600)
+   
     def addCatsToControl(self,map_id):
         op ="#"+map_id+ " div.searchlight-opcoes" 
         ul =op + " ul" 
@@ -154,8 +204,9 @@ class Marcador:
         self.latitude = parseFloat(geoItem.latitude.replace(',','.'))
         self.longitude = parseFloat(geoItem.longitude.replace(',','.'))
         self.texto = geoItem.texto
-        self.icon = icon
+        self.icon = sl_IconCluster
         self.cat_id = geoItem.cat_id
+
     def getMark(self):
         if self.m == None:
             p =  [self.latitude,self.longitude ] 
@@ -197,40 +248,3 @@ class Dados:
     def addMarkersTo(self, cluster):
         for k in dict.keys(self.categorias):
             self.catAddMarkers(k,cluster)
-
-
-class Categorias:
-    def __init__(self, name, icone):
-        self.itens = []
-        self.name = name
-        self.icone = icone
-        self.markers = []
-    def addItem(self, item):
-        self.itens.append(item)
-    def getarray(self):
-        if len(self.markers)==0:
-            for i in self.items:
-                self.add_item_mapa(i)
-        return self.markers
-    def add_item_mapa(self,item):
-        p =  [parseFloat(item.latitude.replace(',','.')), parseFloat(item.longitude.replace(',','.'))] 
-        if not self.center :
-            self.map.panTo(p)
-            self.center = True
-        if self.Icones:
-            m = new L.Marker(p,{icon:self.icone})
-        else:
-            m = new L.Marker(p)
-        m.bindPopup(item.textomarcador)
-        self.markers.append(m)
-
-
-
-
-
-
-
-
-
-
-

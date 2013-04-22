@@ -959,6 +959,11 @@ searchlight_callback = function(data) {
   referencia_atual.carregaDados(data);
 };
 
+sl_IconCluster = new L.DivIcon({
+  html: "<div><span>1</span></div>",
+  className: "marker-cluster marker-cluster-small",
+  iconSize: new L.Point(40, 40)
+});
 referencia_atual = null;
 sl_referencias = {
   
@@ -1005,9 +1010,22 @@ Searchlight.prototype.create = (function() {
   this.control = new Controle(this);
 });
 Searchlight.prototype.get_data = (function() {
+  var obj;
   
   referencia_atual = this;
-  this.markers = new L.MarkerClusterGroup();
+  obj = this;
+  this.markers = new L.MarkerClusterGroup({
+    zoomToBoundsOnClick: false
+  });
+  this.map.on("dblclick", (function(a) {
+    obj.control.cancelZoom();
+  }));
+  this.markers.on("clusterdblclick", (function(a) {
+    obj.control.cancelZoom();
+  }));
+  this.markers.on("clusterclick", (function(a) {
+    obj.control.popupOrZoom(a);
+  }));
   this.map.addLayer(this.markers);
   this.markers.fire("data:loading");
   if ((this.url.indexOf("docs.google.com/spreadsheet") > (-1))) {
@@ -1070,8 +1088,47 @@ Controle = function(sl) {
   });
   $(("#" + this.sl.map_id)).mouseover(this.hide);
   $(("#" + this.sl.map_id)).bind("touchstart", this.hide);
+  this.criaPopup();
 };
 
+Controle.prototype.criaPopup = (function() {
+  var popup;
+  popup = L.popup();
+  this.tout = 0;
+  this.popup = popup;
+  popup.setContent("<p>Hello world!<br />This is a nice popup.</p>");
+});
+Controle.prototype.cancelZoom = (function() {
+  this.cancelou_zoom = true;
+  this.sl.map.closePopup();
+  this.cluster_clicado.layer.zoomToBounds();
+  this.cluster_clicado = null;
+});
+Controle.prototype.zoom = (function(map_id) {
+  var obj, sl;
+  sl = sl_referencias[map_id];
+  obj = sl.control;
+  if (obj.cancelou_zoom) {
+    obj.cancelou_zoom = false;
+  } else {
+    obj.popup.openOn(this.sl.map);
+  }
+
+  obj.cluster_clicado = null;
+});
+Controle.prototype.popupOrZoom = (function(cluster) {
+  var obj;
+  this.sl.map.closePopup();
+  this.popup.setLatLng(cluster.layer.getLatLng());
+  obj = this;
+  if ((this.cluster_clicado == null)) {
+    this.cluster_clicado = cluster;
+    setTimeout((function() {
+      obj.zoom(obj.sl.map_id);
+    }), 600);
+  }
+
+});
 Controle.prototype.addCatsToControl = (function(map_id) {
   var k, op, ul;
   op = (("#" + map_id) + " div.searchlight-opcoes");
@@ -1112,7 +1169,7 @@ Marcador = function(geoItem, icon) {
   this.latitude = parseFloat(geoItem.latitude.replace(",", "."));
   this.longitude = parseFloat(geoItem.longitude.replace(",", "."));
   this.texto = geoItem.texto;
-  this.icon = icon;
+  this.icon = sl_IconCluster;
   this.cat_id = geoItem.cat_id;
 };
 
@@ -1186,50 +1243,6 @@ Dados.prototype.addMarkersTo = (function(cluster) {
     this.catAddMarkers(k, cluster);
   }
 
-});
-Categorias = function(name, icone) {
-  this.itens = [];
-  this.name = name;
-  this.icone = icone;
-  this.markers = [];
-};
-
-Categorias.prototype.addItem = (function(item) {
-  this.itens.append(item);
-});
-Categorias.prototype.getarray = (function() {
-  var i;
-  if ((this.markers.length == 0)) {
-    var _$tmp16_data = _$rapyd$_iter(this.items);
-    var _$tmp17_len = _$tmp16_data.length;
-    for (var _$tmp18_index = 0; _$tmp18_index < _$tmp17_len; _$tmp18_index++) {
-      i = _$tmp16_data[_$tmp18_index];
-
-      this.add_item_mapa(i);
-    }
-
-  }
-
-  return this.markers;
-});
-Categorias.prototype.add_item_mapa = (function(item) {
-  var m, p;
-  p = [parseFloat(item.latitude.replace(",", ".")), parseFloat(item.longitude.replace(",", "."))];
-  if ((!this.center)) {
-    this.map.panTo(p);
-    this.center = true;
-  }
-
-  if (this.Icones) {
-    m = new L.Marker(p, {
-      icon: this.icone
-    });
-  } else {
-    m = new L.Marker(p);
-  }
-
-  m.bindPopup(item.textomarcador);
-  this.markers.append(m);
 });
 
 }());
