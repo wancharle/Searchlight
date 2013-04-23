@@ -39,7 +39,7 @@ def searchlight_callback(data):
 
 
 sl_IconCluster = new L.DivIcon({ html: '<div><span>1</span></div>', className: 'marker-cluster marker-cluster-small', iconSize: new L.Point(40, 40) });
-
+sl_IconePadrao = new L.Icon.Default()
 # referencia para callback
 referencia_atual = None
 sl_referencias = {}
@@ -63,16 +63,21 @@ class Searchlight:
         else:
             self.func_convert = def(item): return item
 
-        self.dados = new Dados()
         self.create()
-
+        
+        self.dados = new Dados()
+        self.get_data()
           
 
     def create(self):
         self.CamadaBasica = L.tileLayer(urlosm,  { 'attribution': attribution, 'maxZoom': 18 })
         self.map = L.map(self.map_id, {layers:[self.CamadaBasica],'center': UFES,'zoom': 12}) #TODO: mudar centro e zoom 
-        self.get_data()
-        self.map.addControl(new MyControl())
+        
+        # criando camada com clusters
+        self.markers = new L.MarkerClusterGroup({ zoomToBoundsOnClick: false})
+        self.map.addLayer(self.markers)
+       
+        # criando classe para controlar o mapa
         self.control = new Controle(self)
     
     def get_data(self):
@@ -80,19 +85,6 @@ class Searchlight:
         referencia_atual = self
 
         obj = self
-        # criando camada com clusters
-
-        self.markers = new L.MarkerClusterGroup({ zoomToBoundsOnClick: false})
-        self.map.on('dblclick', def(a):
-            obj.control.clusterDuploClick()      
-        )
-        self.markers.on('clusterdblclick', def (a) :
-            obj.control.clusterDuploClick(a)
-        );
-        self.markers.on('clusterclick', def (a): 
-            obj.control.clusterClick(a)
-        )
-        self.map.addLayer(self.markers)
         self.markers.fire("data:loading")
        
         # obtendo dados
@@ -125,6 +117,7 @@ class Controle:
     def __init__(self,sl):
         obj = self
         self.sl = sl
+        self.sl.map.addControl(new MyControl())
         self.id_control = "#"+self.sl.map_id+" div.searchlight-control"
         self.id_opcoes = "#"+self.sl.map_id+ " div.searchlight-opcoes" 
         self.id_camadas = self.opcoes + "ul"
@@ -138,6 +131,59 @@ class Controle:
         $("#"+self.sl.map_id).mouseover(self.hide)
         $("#"+self.sl.map_id).bind('touchstart',self.hide)
         self.criaPopup()
+    
+        #registrando eventos popup e markers
+
+       
+        self.sl.map.on('dblclick', def(a):
+            obj.clusterDuploClick()      
+        )
+        self.sl.map.on('zoomend', def():
+            obj.atualizarIconesMarcVisiveis()
+        )
+        self.sl.markers.on('click',def(ev):
+            obj.markerClick(ev)
+        )
+        self.sl.markers.on('clusterdblclick', def (a) :
+            obj.clusterDuploClick(a)
+        );
+        self.sl.markers.on('clusterclick', def (a): 
+            obj.clusterClick(a)
+        )
+    def atualizarIconesMarcVisiveis(self):
+        if self.sl.map.getZoom() >= 16:
+            self.mostrarIconesMarcVisiveis()
+        else:
+            self.esconderIconesMarcVisiveis()
+    
+    def mostrarIconesMarcVisiveis(self):
+        for m in self.getMarcadoresVisiveis():
+            m.setIcon(m.slinfo.icon)
+
+    def esconderIconesMarcVisiveis(self):
+        for m in self.getMarcadoresVisiveis():
+            m.setIcon(sl_IconCluster)
+
+    def getMarcadoresVisiveis(self):
+        marcadores = self.sl.markers._layers
+        marcadores_visiveis = []
+        for m in dict.keys(marcadores):
+            mark = marcadores[m]
+            if mark.hasOwnProperty("slinfo")  :
+                marcadores_visiveis.append(mark)
+        return marcadores_visiveis
+    
+    def markerClick(self,ev):
+        m = ev.layer
+        if m.slinfo.ultimo_zoom:
+            self.sl.map.setView(m.slinfo.ultimo_center,m.slinfo.ultimo_zoom)
+            m.slinfo.ultimo_zoom = None 
+            m.slinfo.ultimo_center = None
+        else:
+            m.slinfo.ultimo_zoom =  self.sl.map.getZoom()
+            m.slinfo.ultimo_center = self.sl.map.getCenter()
+            center = new L.LatLng(m.slinfo.latitude,m.slinfo.longitude)
+            self.sl.map.setView(center, 18)
 
     def criaPopup(self):
        popup = L.popup()
@@ -208,23 +254,23 @@ Controle.carregaDados = def (self, map_id)
 
 
 class Marcador:
-    def __init__(self,geoItem,icon=None):
+    def __init__(self,geoItem):
         self.m = None
         self.latitude = parseFloat(geoItem.latitude.replace(',','.'))
         self.longitude = parseFloat(geoItem.longitude.replace(',','.'))
         self.texto = geoItem.texto
-        self.icon = sl_IconCluster
+        if geoItem.icon:
+            self.icon = geoItem.icon
+        else:
+            self.icon = sl_IconePadrao
         self.cat_id = geoItem.cat_id
 
     def getMark(self):
         if self.m == None:
             p =  [self.latitude,self.longitude ] 
-            if self.icon:
-                m = new L.Marker(p,{icon:self.icon})
-            else:
-                m = new L.Marker(p)
-            m.bindPopup(self.texto)
+            m = new L.Marker(p)
             self.m = m
+            self.m.slinfo = self
             self.m.cat_id=self.cat_id
         return self.m
 

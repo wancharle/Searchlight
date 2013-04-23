@@ -964,6 +964,7 @@ sl_IconCluster = new L.DivIcon({
   className: "marker-cluster marker-cluster-small",
   iconSize: new L.Point(40, 40)
 });
+sl_IconePadrao = new L.Icon.Default();
 referencia_atual = null;
 sl_referencias = {
   
@@ -991,8 +992,9 @@ Searchlight = function(url, func_convert, map_id, icones) {
     });
   }
 
-  this.dados = new Dados();
   this.create();
+  this.dados = new Dados();
+  this.get_data();
 };
 
 Searchlight.prototype.create = (function() {
@@ -1005,8 +1007,10 @@ Searchlight.prototype.create = (function() {
     "center": UFES,
     "zoom": 12
   });
-  this.get_data();
-  this.map.addControl(new MyControl());
+  this.markers = new L.MarkerClusterGroup({
+    zoomToBoundsOnClick: false
+  });
+  this.map.addLayer(this.markers);
   this.control = new Controle(this);
 });
 Searchlight.prototype.get_data = (function() {
@@ -1014,19 +1018,6 @@ Searchlight.prototype.get_data = (function() {
   
   referencia_atual = this;
   obj = this;
-  this.markers = new L.MarkerClusterGroup({
-    zoomToBoundsOnClick: false
-  });
-  this.map.on("dblclick", (function(a) {
-    obj.control.clusterDuploClick();
-  }));
-  this.markers.on("clusterdblclick", (function(a) {
-    obj.control.clusterDuploClick(a);
-  }));
-  this.markers.on("clusterclick", (function(a) {
-    obj.control.clusterClick(a);
-  }));
-  this.map.addLayer(this.markers);
   this.markers.fire("data:loading");
   if ((this.url.indexOf("docs.google.com/spreadsheet") > (-1))) {
     Tabletop.init({
@@ -1075,6 +1066,7 @@ Controle = function(sl) {
   var obj;
   obj = this;
   this.sl = sl;
+  this.sl.map.addControl(new MyControl());
   this.id_control = (("#" + this.sl.map_id) + " div.searchlight-control");
   this.id_opcoes = (("#" + this.sl.map_id) + " div.searchlight-opcoes");
   this.id_camadas = (this.opcoes + "ul");
@@ -1089,8 +1081,86 @@ Controle = function(sl) {
   $(("#" + this.sl.map_id)).mouseover(this.hide);
   $(("#" + this.sl.map_id)).bind("touchstart", this.hide);
   this.criaPopup();
+  this.sl.map.on("dblclick", (function(a) {
+    obj.clusterDuploClick();
+  }));
+  this.sl.map.on("zoomend", (function() {
+    obj.atualizarIconesMarcVisiveis();
+  }));
+  this.sl.markers.on("click", (function(ev) {
+    obj.markerClick(ev);
+  }));
+  this.sl.markers.on("clusterdblclick", (function(a) {
+    obj.clusterDuploClick(a);
+  }));
+  this.sl.markers.on("clusterclick", (function(a) {
+    obj.clusterClick(a);
+  }));
 };
 
+Controle.prototype.atualizarIconesMarcVisiveis = (function() {
+  if ((this.sl.map.getZoom() >= 16)) {
+    this.mostrarIconesMarcVisiveis();
+  } else {
+    this.esconderIconesMarcVisiveis();
+  }
+
+});
+Controle.prototype.mostrarIconesMarcVisiveis = (function() {
+  var m;
+  var _$tmp7_data = _$rapyd$_iter(this.getMarcadoresVisiveis());
+  var _$tmp8_len = _$tmp7_data.length;
+  for (var _$tmp9_index = 0; _$tmp9_index < _$tmp8_len; _$tmp9_index++) {
+    m = _$tmp7_data[_$tmp9_index];
+
+    m.setIcon(m.slinfo.icon);
+  }
+
+});
+Controle.prototype.esconderIconesMarcVisiveis = (function() {
+  var m;
+  var _$tmp10_data = _$rapyd$_iter(this.getMarcadoresVisiveis());
+  var _$tmp11_len = _$tmp10_data.length;
+  for (var _$tmp12_index = 0; _$tmp12_index < _$tmp11_len; _$tmp12_index++) {
+    m = _$tmp10_data[_$tmp12_index];
+
+    m.setIcon(sl_IconCluster);
+  }
+
+});
+Controle.prototype.getMarcadoresVisiveis = (function() {
+  var m, marcadores, marcadores_visiveis, mark;
+  marcadores = this.sl.markers._layers;
+  marcadores_visiveis = [];
+  var _$tmp13_data = _$rapyd$_iter(dict.keys(marcadores));
+  var _$tmp14_len = _$tmp13_data.length;
+  for (var _$tmp15_index = 0; _$tmp15_index < _$tmp14_len; _$tmp15_index++) {
+    m = _$tmp13_data[_$tmp15_index];
+
+    mark = marcadores[m];
+    if (mark.hasOwnProperty("slinfo")) {
+      marcadores_visiveis.append(mark);
+    }
+
+  }
+
+  return marcadores_visiveis;
+});
+Controle.prototype.markerClick = (function(ev) {
+  var center, m;
+  m = ev.layer;
+  if (m.slinfo.ultimo_zoom) {
+    this.sl.map.setView(m.slinfo.ultimo_center, m.slinfo.ultimo_zoom);
+    m.slinfo.ultimo_zoom = null;
+    m.slinfo.ultimo_center = null;
+  } else {
+    m.slinfo.ultimo_zoom = this.sl.map.getZoom();
+    m.slinfo.ultimo_center = this.sl.map.getCenter();
+    center = new L.LatLng(m.slinfo.latitude, m.slinfo.longitude);
+    this.sl.map.setView(center, 18);
+  }
+
+});
 Controle.prototype.criaPopup = (function() {
   var popup;
   popup = L.popup();
@@ -1146,10 +1216,10 @@ Controle.prototype.addCatsToControl = (function(map_id) {
   var k, op, ul;
   op = (("#" + map_id) + " div.searchlight-opcoes");
   ul = (op + " ul");
-  var _$tmp7_data = _$rapyd$_iter(dict.keys(this.sl.dados.categorias).sort());
-  var _$tmp8_len = _$tmp7_data.length;
-  for (var _$tmp9_index = 0; _$tmp9_index < _$tmp8_len; _$tmp9_index++) {
-    k = _$tmp7_data[_$tmp9_index];
+  var _$tmp16_data = _$rapyd$_iter(dict.keys(this.sl.dados.categorias).sort());
+  var _$tmp17_len = _$tmp16_data.length;
+  for (var _$tmp18_index = 0; _$tmp18_index < _$tmp17_len; _$tmp18_index++) {
+    k = _$tmp16_data[_$tmp18_index];
 
     $(ul).append((((((((("<li><input type='checkbox' checked name='" + map_id) + "-cat' value='") + k) + "' class='categoria'/>") + k) + " (") + this.sl.dados.categorias[k].length) + ")</li>"));
   }
@@ -1176,13 +1246,17 @@ Controle.carregaDados = (function(map_id) {
   sl.map.fitBounds(sl.markers.getBounds());
   sl.markers.fire("data:loaded");
 });
-Marcador = function(geoItem, icon) {
-  if (typeof icon === "undefined") {icon = null};
+Marcador = function(geoItem) {
   this.m = null;
   this.latitude = parseFloat(geoItem.latitude.replace(",", "."));
   this.longitude = parseFloat(geoItem.longitude.replace(",", "."));
   this.texto = geoItem.texto;
-  this.icon = sl_IconCluster;
+  if (geoItem.icon) {
+    this.icon = geoItem.icon;
+  } else {
+    this.icon = sl_IconePadrao;
+  }
+
   this.cat_id = geoItem.cat_id;
 };
 
@@ -1190,16 +1264,9 @@ Marcador.prototype.getMark = (function() {
   var m, p;
   if ((this.m == null)) {
     p = [this.latitude, this.longitude];
-    if (this.icon) {
-      m = new L.Marker(p, {
-        icon: this.icon
-      });
-    } else {
-      m = new L.Marker(p);
-    }
-
-    m.bindPopup(this.texto);
+    m = new L.Marker(p);
     this.m = m;
+    this.m.slinfo = this;
     this.m.cat_id = this.cat_id;
   }
 
@@ -1237,10 +1304,10 @@ Dados.prototype.addItem = (function(i, func_convert) {
 });
 Dados.prototype.catAddMarkers = (function(name, cluster) {
   var m;
-  var _$tmp10_data = _$rapyd$_iter(this.categorias[name]);
-  var _$tmp11_len = _$tmp10_data.length;
-  for (var _$tmp12_index = 0; _$tmp12_index < _$tmp11_len; _$tmp12_index++) {
-    m = _$tmp10_data[_$tmp12_index];
+  var _$tmp19_data = _$rapyd$_iter(this.categorias[name]);
+  var _$tmp20_len = _$tmp19_data.length;
+  for (var _$tmp21_index = 0; _$tmp21_index < _$tmp20_len; _$tmp21_index++) {
+    m = _$tmp19_data[_$tmp21_index];
 
     cluster.addLayer(m.getMark());
   }
@@ -1248,10 +1315,10 @@ Dados.prototype.catAddMarkers = (function(name, cluster) {
 });
 Dados.prototype.addMarkersTo = (function(cluster) {
   var k;
-  var _$tmp13_data = _$rapyd$_iter(dict.keys(this.categorias));
-  var _$tmp14_len = _$tmp13_data.length;
-  for (var _$tmp15_index = 0; _$tmp15_index < _$tmp14_len; _$tmp15_index++) {
-    k = _$tmp13_data[_$tmp15_index];
+  var _$tmp22_data = _$rapyd$_iter(dict.keys(this.categorias));
+  var _$tmp23_len = _$tmp22_data.length;
+  for (var _$tmp24_index = 0; _$tmp24_index < _$tmp23_len; _$tmp24_index++) {
+    k = _$tmp22_data[_$tmp24_index];
 
     this.catAddMarkers(k, cluster);
   }
