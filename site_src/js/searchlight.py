@@ -84,13 +84,13 @@ class Searchlight:
 
         self.markers = new L.MarkerClusterGroup({ zoomToBoundsOnClick: false})
         self.map.on('dblclick', def(a):
-            obj.control.cancelZoom();
+            obj.control.clusterDuploClick()      
         )
         self.markers.on('clusterdblclick', def (a) :
-            obj.control.cancelZoom();
-       );
+            obj.control.clusterDuploClick(a)
+        );
         self.markers.on('clusterclick', def (a): 
-            obj.control.popupOrZoom(a)
+            obj.control.clusterClick(a)
         )
         self.map.addLayer(self.markers)
         self.markers.fire("data:loading")
@@ -144,31 +144,40 @@ class Controle:
        self.tout= 0
        self.popup = popup
        popup.setContent('<p>Hello world!<br />This is a nice popup.</p>')
+       self.timeUltimoClick = Date().getTime()
 
-    def cancelZoom(self):
-        self.cancelou_zoom = True
+    def clusterClick(self,a=None):
+        d = Date()
+        if (d.getTime() - self.timeUltimoClick)>1500: # 2s
+            self.clickOrdem = 1
+            self.popupOrZoom(a)
+        self.timeUltimoClick = d.getTime()
+             
+    def clusterDuploClick(self, a =None):
+        self.cancelPopup()
+
+    def cancelPopup(self):
+        self.clickOrdem = 2
         self.sl.map.closePopup()
         self.cluster_clicado.layer.zoomToBounds()
-        self.cluster_clicado = None
         
-    def zoom(self, map_id):
+    def showPopup(self, map_id):
         sl = sl_referencias[map_id]
         obj=sl.control;
         
-        if obj.cancelou_zoom:
-            obj.cancelou_zoom = False
-        else:
+        if obj.clickOrdem == 1:
             obj.popup.openOn(self.sl.map)
-        #limpa o zoom clicado
-        obj.cluster_clicado= None
+
+        obj.clickOrdem = 0
+
     def popupOrZoom(self,cluster):
         self.sl.map.closePopup() 
         self.popup.setLatLng(cluster.layer.getLatLng())
         obj = self
-        if self.cluster_clicado == None:
+        if self.clickOrdem == 1:
             self.cluster_clicado = cluster
             setTimeout(def (): 
-                obj.zoom(obj.sl.map_id);
+                obj.showPopup(obj.sl.map_id);
             , 600)
    
     def addCatsToControl(self,map_id):

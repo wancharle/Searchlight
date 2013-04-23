@@ -1018,13 +1018,13 @@ Searchlight.prototype.get_data = (function() {
     zoomToBoundsOnClick: false
   });
   this.map.on("dblclick", (function(a) {
-    obj.control.cancelZoom();
+    obj.control.clusterDuploClick();
   }));
   this.markers.on("clusterdblclick", (function(a) {
-    obj.control.cancelZoom();
+    obj.control.clusterDuploClick(a);
   }));
   this.markers.on("clusterclick", (function(a) {
-    obj.control.popupOrZoom(a);
+    obj.control.clusterClick(a);
   }));
   this.map.addLayer(this.markers);
   this.markers.fire("data:loading");
@@ -1097,34 +1097,47 @@ Controle.prototype.criaPopup = (function() {
   this.tout = 0;
   this.popup = popup;
   popup.setContent("<p>Hello world!<br />This is a nice popup.</p>");
+  this.timeUltimoClick = new Date().getTime();
 });
-Controle.prototype.cancelZoom = (function() {
-  this.cancelou_zoom = true;
+Controle.prototype.clusterClick = (function(a) {
+  var d;
+  if (typeof a === "undefined") {a = null};
+  d = new Date();
+  if (((d.getTime() - this.timeUltimoClick) > 1500)) {
+    this.clickOrdem = 1;
+    this.popupOrZoom(a);
+  }
+
+  this.timeUltimoClick = d.getTime();
+});
+Controle.prototype.clusterDuploClick = (function(a) {
+  if (typeof a === "undefined") {a = null};
+  this.cancelPopup();
+});
+Controle.prototype.cancelPopup = (function() {
+  this.clickOrdem = 2;
   this.sl.map.closePopup();
   this.cluster_clicado.layer.zoomToBounds();
-  this.cluster_clicado = null;
 });
-Controle.prototype.zoom = (function(map_id) {
+Controle.prototype.showPopup = (function(map_id) {
   var obj, sl;
   sl = sl_referencias[map_id];
   obj = sl.control;
-  if (obj.cancelou_zoom) {
-    obj.cancelou_zoom = false;
-  } else {
+  if ((obj.clickOrdem == 1)) {
     obj.popup.openOn(this.sl.map);
   }
 
-  obj.cluster_clicado = null;
+  obj.clickOrdem = 0;
 });
 Controle.prototype.popupOrZoom = (function(cluster) {
   var obj;
   this.sl.map.closePopup();
   this.popup.setLatLng(cluster.layer.getLatLng());
   obj = this;
-  if ((this.cluster_clicado == null)) {
+  if ((this.clickOrdem == 1)) {
     this.cluster_clicado = cluster;
     setTimeout((function() {
-      obj.zoom(obj.sl.map_id);
+      obj.showPopup(obj.sl.map_id);
     }), 600);
   }
 
