@@ -106,6 +106,7 @@ class Searchlight:
 
         self.dados.addMarkersTo(self.markers)
         self.map.fitBounds(self.markers.getBounds())
+        self.control.atualizarIconesMarcVisiveis()
         self.markers.fire("data:loaded") 
         self.control.addCatsToControl(self.map_id)
 
@@ -139,6 +140,9 @@ class Controle:
             obj.clusterDuploClick()      
         )
         self.sl.map.on('zoomend', def():
+            obj.atualizarIconesMarcVisiveis()
+        )
+        self.sl.map.on('moveend', def():
             obj.atualizarIconesMarcVisiveis()
         )
         self.sl.markers.on('click',def(ev):
@@ -179,11 +183,13 @@ class Controle:
             self.sl.map.setView(m.slinfo.ultimo_center,m.slinfo.ultimo_zoom)
             m.slinfo.ultimo_zoom = None 
             m.slinfo.ultimo_center = None
+            self.sl.map.closePopup()
         else:
             m.slinfo.ultimo_zoom =  self.sl.map.getZoom()
             m.slinfo.ultimo_center = self.sl.map.getCenter()
             center = new L.LatLng(m.slinfo.latitude,m.slinfo.longitude)
             self.sl.map.setView(center, 18)
+            #self.showMarcPopup(m)
 
     def criaPopup(self):
        popup = L.popup()
@@ -269,8 +275,10 @@ class Marcador:
         if self.m == None:
             p =  [self.latitude,self.longitude ] 
             m = new L.Marker(p)
+            m.setIcon(self.icon)
             self.m = m
             self.m.slinfo = self
+            self.m.bindPopup(m.slinfo.texto)
             self.m.cat_id=self.cat_id
         return self.m
 

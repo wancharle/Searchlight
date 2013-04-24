@@ -837,74 +837,74 @@ Icones = {
 Icones["1"] = new L.icon({
   iconUrl: "images/pin_1.png",
   iconSize: [45, 58],
-  iconAnchor: [22, 58],
-  popupAnchor: [(-3), (-76)]
+  iconAnchor: [23, 58],
+  popupAnchor: [0, (-50)]
 });
 Icones["2"] = new L.icon({
   iconUrl: "images/pin_2.png",
   iconSize: [45, 58],
-  iconAnchor: [22, 58],
-  popupAnchor: [(-3), (-76)]
+  iconAnchor: [23, 58],
+  popupAnchor: [0, (-50)]
 });
 Icones["3"] = new L.icon({
   iconUrl: "images/pin_3.png",
   iconSize: [45, 58],
-  iconAnchor: [22, 58],
-  popupAnchor: [(-3), (-76)]
+  iconAnchor: [23, 58],
+  popupAnchor: [0, (-50)]
 });
 Icones["4"] = new L.icon({
   iconUrl: "images/pin_4.png",
   iconSize: [45, 58],
-  iconAnchor: [22, 58],
-  popupAnchor: [(-3), (-76)]
+  iconAnchor: [23, 58],
+  popupAnchor: [0, (-50)]
 });
 Icones["5"] = new L.icon({
   iconUrl: "images/pin_5.png",
   iconSize: [45, 58],
-  iconAnchor: [22, 58],
-  popupAnchor: [(-3), (-76)]
+  iconAnchor: [23, 58],
+  popupAnchor: [0, (-50)]
 });
 Icones["6"] = new L.icon({
   iconUrl: "images/pin_6.png",
   iconSize: [45, 58],
-  iconAnchor: [22, 58],
-  popupAnchor: [(-3), (-76)]
+  iconAnchor: [23, 58],
+  popupAnchor: [0, (-50)]
 });
 Icones["7"] = new L.icon({
   iconUrl: "images/pin_7.png",
   iconSize: [45, 58],
-  iconAnchor: [22, 58],
-  popupAnchor: [(-3), (-76)]
+  iconAnchor: [23, 58],
+  popupAnchor: [0, (-50)]
 });
 Icones["8"] = new L.icon({
   iconUrl: "images/pin_8.png",
   iconSize: [45, 58],
-  iconAnchor: [22, 58],
-  popupAnchor: [(-3), (-76)]
+  iconAnchor: [23, 58],
+  popupAnchor: [0, (-50)]
 });
 Icones["9"] = new L.icon({
   iconUrl: "images/pin_9.png",
   iconSize: [45, 58],
-  iconAnchor: [22, 58],
-  popupAnchor: [(-3), (-76)]
+  iconAnchor: [23, 58],
+  popupAnchor: [0, (-50)]
 });
 Icones["10"] = new L.icon({
   iconUrl: "images/pin_10.png",
   iconSize: [45, 58],
-  iconAnchor: [22, 58],
-  popupAnchor: [(-3), (-76)]
+  iconAnchor: [23, 58],
+  popupAnchor: [0, (-50)]
 });
 Icones["11"] = new L.icon({
   iconUrl: "images/pin_11.png",
   iconSize: [45, 58],
-  iconAnchor: [22, 58],
-  popupAnchor: [(-3), (-76)]
+  iconAnchor: [23, 58],
+  popupAnchor: [0, (-50)]
 });
 Icones["12"] = new L.icon({
   iconUrl: "images/pin_12.png",
   iconSize: [45, 58],
-  iconAnchor: [22, 58],
-  popupAnchor: [(-3), (-76)]
+  iconAnchor: [23, 58],
+  popupAnchor: [0, (-50)]
 });
 portoalegre_cc = function() {
   var convert_item, mps;
@@ -918,6 +918,7 @@ portoalegre_cc = function() {
     item_convertido.texto = item.cause.category_name;
     item_convertido.cat = item.cause.category_name;
     item_convertido.cat_id = item.cause.category_id;
+    item_convertido.icon = Icones[item_convertido.cat_id];
     return item_convertido;
   });
   mps = new Searchlight(pacc_jsonp, convert_item, "map_gdoc", Icones);
@@ -1056,6 +1057,7 @@ Searchlight.prototype.carregaDados = (function(data) {
 
   this.dados.addMarkersTo(this.markers);
   this.map.fitBounds(this.markers.getBounds());
+  this.control.atualizarIconesMarcVisiveis();
   this.markers.fire("data:loaded");
   this.control.addCatsToControl(this.map_id);
 });
@@ -1085,6 +1087,9 @@ Controle = function(sl) {
     obj.clusterDuploClick();
   }));
   this.sl.map.on("zoomend", (function() {
+    obj.atualizarIconesMarcVisiveis();
+  }));
+  this.sl.map.on("moveend", (function() {
     obj.atualizarIconesMarcVisiveis();
   }));
   this.sl.markers.on("click", (function(ev) {
@@ -1153,6 +1158,7 @@ Controle.prototype.markerClick = (function(ev) {
     this.sl.map.setView(m.slinfo.ultimo_center, m.slinfo.ultimo_zoom);
     m.slinfo.ultimo_zoom = null;
     m.slinfo.ultimo_center = null;
+    this.sl.map.closePopup();
   } else {
     m.slinfo.ultimo_zoom = this.sl.map.getZoom();
     m.slinfo.ultimo_center = this.sl.map.getCenter();
@@ -1265,8 +1271,10 @@ Marcador.prototype.getMark = (function() {
   if ((this.m == null)) {
     p = [this.latitude, this.longitude];
     m = new L.Marker(p);
+    m.setIcon(this.icon);
     this.m = m;
     this.m.slinfo = this;
+    this.m.bindPopup(m.slinfo.texto);
     this.m.cat_id = this.cat_id;
   }
 
