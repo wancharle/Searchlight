@@ -37,10 +37,6 @@ function exemplo_markercluster(){
 			latlng = new L.LatLng(-20.277233,-40.303752 );
 
 		 map2 = new L.Map('map_cluster', {center: latlng, zoom: 15, layers: [cloudmade]});
-
-	
-
-
 		populate();
 		map2.addLayer(markers);
         
@@ -117,10 +113,10 @@ function exemplo2() {
    var  markers = [L.marker(CT).bindPopup('CT.'),
         L.marker(CEMUNI).bindPopup('CEMUNI'), 
         L.marker(BIBLIOTECA).bindPopup('Biblioteca')];
-   var centros = L.layerGroup(markers);     
+   var centros = new L.FeatureGroup(markers);     
  
    var map = L.map('map2',{layers:[CamadaBasica,centros],center:  UFES,zoom: 5});
-
+    ///centros.addTo(map)
 
     map.on('zoomend', onZoomend);
     function onZoomend(){
@@ -133,7 +129,7 @@ function exemplo2() {
         };
         ultimo_zoom = map.getZoom();
      };
-
+ 
  }
 
 
@@ -151,7 +147,7 @@ exemplo1 = function() {
     maxZoom: 18
   });
   markers = [L.marker(CT).bindPopup("CT."), L.marker(CEMUNI).bindPopup("CEMUNI"), L.marker(BIBLIOTECA).bindPopup("Biblioteca")];
-  centros = L.layerGroup(markers);
+  centros = new L.FeatureGroup(markers);
   map = L.map("map", {
     layers: [CamadaBasica, centros],
     center: UFES,
@@ -168,6 +164,7 @@ exemplo1 = function() {
 };
 
 exemplos = function() {
+  
   exemplo1();
   exemplo2();
   exemplo_markercluster();

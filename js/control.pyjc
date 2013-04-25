@@ -1,14 +1,36 @@
+var scriptEls = document.getElementsByTagName( 'script' );
+var thisScriptEl = scriptEls[scriptEls.length - 1];
+var scriptPath = thisScriptEl.src;
+var scriptFolder = scriptPath.substr(0, scriptPath.lastIndexOf( '/' )+1 );
+
+
+$("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
+   href: scriptFolder+"../css/searchlight.css"
+}).appendTo("head");
+
 var MyControl = L.Control.extend({
     options: {
-        position: 'bottomleft'
+        position: 'topright'
     },
 
     onAdd: function (map) {
         // create the control container with a particular class name
-        var container = L.DomUtil.create('div', 'my-custom-control leaflet-control-layers');
-
-        container.innerHTML = "<p> TESTE </p>";
+        var container = L.DomUtil.create('div', 'searchlight-control leaflet-control-layers');
+        container.innerHTML = "<div class='searchlight-opcoes'><ul> </ul></div>";
+        container.innerHTML += "<div class='searchlight-analise'></div>";
+       var stop = L.DomEvent.stopPropagation; 
         // ... initialize other DOM elements, add listeners, etc.
+        L.DomEvent
+		    .on(container, 'click', stop)
+		    .on(container, 'mousedown', stop)
+		    .on(container, 'mouseover', stop)
+		    .on(container, 'touchstart', stop)
+		    .on(container, 'touchend', stop)
+		    .on(container, 'dblclick', stop)
+		    .on(container, 'scroll', stop)
+		    .on(container, 'mousewheel', stop)
 
         return container;
     }

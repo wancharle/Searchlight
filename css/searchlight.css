@@ -1,0 +1,84 @@
+
+.searchlight-control{
+    background-image: url('../images/logo_fim.png');
+    background-repeat:no-repeat;
+    background-color:rgb(252,252,252);
+    background-position:right top;
+    min-width:55px;
+    min-height:50px;
+    overflow:auto;
+    }
+.searchlight-opcoes, .searchlight-analise{
+    margin:10px;display:none;
+    margin-top:55px;
+    min-width:190px;
+    padding:0px;
+
+}
+.searchlight-control div.sem-categoria{
+    margin:0px;
+    padding:0px;
+    padding-bottom:5px;
+    min-width:210px;
+}
+.searchlight-opcoes ul ,div.clusterPopup ul{
+    max-height: 200px; 
+    overflow-y:scroll !important;
+    padding:5px;
+    }
+.searchlight-opcoes ul li {
+    list-style:none;padding:0px;
+    
+    }
+
+.searchlight-control p.center{
+ margin:0px;padding:0px;
+ background-color:rgb(252,252,252);
+ padding-top:10px;
+ text-align:center;padding-bottom:5px; margin-bottom:0px;
+    }
+
+div.clusterPopup ul li{
+        list-style:none;padding:0px;margin:0px;
+}
+div.clusterPopup p.center{
+    text-align:center;
+    clear:both;
+    padding:0px;
+    margin:0px;
+    }
+div.clusterPopup ul.icones{
+    max-width:220px;
+    margin:0px;
+    padding:0px;
+    }
+div.clusterPopup ul.icones li {
+    float:left;
+    width:40px;
+    margin-bottom:5px;
+    margin-right:2px;
+    margin-left:2px;
+}
+div.clusterPopup ul.icones p{
+    margin:0px;
+    padding:0px;
+    }
+div.clusterPopup ul.icones p.img{
+    line-height:40px;
+    height:40px;
+    }
+div.clusterPopup ul.icones img{
+    width:40px;
+    height:40px;
+    }
+
+div.clusterPopup ul.icones li p.texto{
+    height:20px;
+    line-height:20px;
+    text-align:center;
+}
+.searchlight-analise p.center{
+    margin:0px;
+    padding:0px;
+
+    }
