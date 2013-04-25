@@ -19,6 +19,7 @@ var MyControl = L.Control.extend({
         // create the control container with a particular class name
         var container = L.DomUtil.create('div', 'searchlight-control leaflet-control-layers');
         container.innerHTML = "<div class='searchlight-opcoes'><ul> </ul></div>";
+        container.innerHTML += "<div class='searchlight-analise'></div>";
        var stop = L.DomEvent.stopPropagation; 
         // ... initialize other DOM elements, add listeners, etc.
         L.DomEvent

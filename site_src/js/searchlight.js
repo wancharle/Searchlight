@@ -813,6 +813,7 @@ var MyControl = L.Control.extend({
         // create the control container with a particular class name
         var container = L.DomUtil.create('div', 'searchlight-control leaflet-control-layers');
         container.innerHTML = "<div class='searchlight-opcoes'><ul> </ul></div>";
+        container.innerHTML += "<div class='searchlight-analise'></div>";
        var stop = L.DomEvent.stopPropagation; 
         // ... initialize other DOM elements, add listeners, etc.
         L.DomEvent
@@ -1069,6 +1070,15 @@ Searchlight.prototype.carregaDados = (function(data) {
 Searchlight.prototype.addItem = (function(item) {
   this.dados.addItem(item, this.func_convert);
 });
+Searchlight.prototype.mostrarCamadaMarkers = (function() {
+  this.map.addLayer(this.markers);
+  this.map.setView(this.map_ultimo_center, this.map_ultimo_zoom);
+});
+Searchlight.prototype.esconderCamadaMarkers = (function() {
+  this.map.removeLayer(this.markers);
+  this.map_ultimo_zoom = this.map.getZoom();
+  this.map_ultimo_center = this.map.getCenter();
+});
 ClusterCtr = function(sl) {
   var obj;
   this.sl = sl;
@@ -1077,18 +1087,41 @@ ClusterCtr = function(sl) {
   this.clusters = {
     
   };
+  this.id_analise = (("#" + this.sl.map_id) + " div.searchlight-analise");
+  $(this.id_analise).append((("<p class='center'><a href='javascript:SL(\"" + this.sl.map_id) + "\").control.clusterCtr.desfocar()'>DESFOCAR</a></p>"));
+  $(this.id_analise).hide();
   this.sl.map.on("dblclick", (function(a) {
     obj.clusterDuploClick();
   }));
-  this.sl.markers.on("clusterdblclick", (function(a) {
-    obj.clusterDuploClick(a);
-  }));
-  this.sl.markers.on("clusterclick", (function(a) {
-    obj.clusterClick(a);
-  }));
-  this.clickOrdem = 0;
+  this.registraEventosClusters();
 };
 
+ClusterCtr.prototype.registraEventosClusters = (function() {
+  var obj;
+  obj = this;
+  if (this.camadaAnalise) {
+    this.camadaAnalise.on("clusterdblclick", (function(a) {
+      a.layer.zoomToBounds();
+    }));
+    this.camadaAnalise.on("clusterclick", (function(a) {
+      a.layer.zoomToBounds();
+    }));
+  } else {
+    this.sl.markers.on("clusterdblclick", (function(a) {
+      obj.clusterDuploClick(a);
+    }));
+    this.sl.markers.on("clusterclick", (function(a) {
+      if ((dict.keys(obj.sl.dados.categorias).length > 1)) {
+        obj.clusterClick(a);
+      } else {
+        a.layer.zoomToBounds();
+      }
+
+    }));
+  }
+
+  this.clickOrdem = 0;
+});
 ClusterCtr.prototype.criaPopup = (function() {
   var popup;
   popup = L.popup();
@@ -1118,13 +1151,63 @@ ClusterCtr.prototype.cancelPopup = (function() {
   this.clickOrdem = 2;
   this.zoomGrupo();
 });
-ClusterCtr.prototype.showPopup = (function(map_id) {
+ClusterCtr.prototype.mostraPopup = (function() {
+  this.atualizaPopup();
+  this.popup.openOn(this.sl.map);
+});
+ClusterCtr.prototype.showPopup = (function() {
   if ((this.clickOrdem == 1)) {
-    this.atualizaPopup();
-    this.popup.openOn(this.sl.map);
+    this.mostraPopup();
   }
 
   this.clickOrdem = 0;
+});
+ClusterCtr.prototype.desfocar = (function() {
+  this.sl.map.closePopup();
+  $(this.id_analise).hide();
+  this.sl.map.removeLayer(this.camadaAnalise);
+  this.sl.mostrarCamadaMarkers();
+  this.camadaAnalise = null;
+  this.desfocou = true;
+  this.registraEventosClusters();
+});
+ClusterCtr.prototype.focar = (function(cat) {
+  var c, cats, m;
+  this.sl.esconderCamadaMarkers();
+  this.camadaAnalise = new L.MarkerClusterGroup({
+    zoomToBoundsOnClick: false
+  });
+  this.sl.map.addLayer(this.camadaAnalise);
+  this.camadaAnalise.fire("data:loading");
+  cats = this.getCatsCluster();
+  var _$tmp10_data = _$rapyd$_iter(cats);
+  var _$tmp11_len = _$tmp10_data.length;
+  for (var _$tmp12_index = 0; _$tmp12_index < _$tmp11_len; _$tmp12_index++) {
+    c = _$tmp10_data[_$tmp12_index];
+
+    if ((cat == c[0])) {
+      var _$tmp7_data = _$rapyd$_iter(c[1]);
+      var _$tmp8_len = _$tmp7_data.length;
+      for (var _$tmp9_index = 0; _$tmp9_index < _$tmp8_len; _$tmp9_index++) {
+        m = _$tmp7_data[_$tmp9_index];
+
+        this.camadaAnalise.addLayer(m);
+      }
+
+    }
+
+  }
+
+  this.sl.map.fitBounds(this.camadaAnalise.getBounds());
+  this.camadaAnalise.fire("data:loaded");
+  this.sl.control.registraEventosCamadaAnalise();
+  this.registraEventosClusters();
+  $(this.id_analise).show();
+});
+ClusterCtr.prototype.update = (function() {
+  this.clusters = {
+    
+  };
 });
 ClusterCtr.prototype.getCatsCluster = (function() {
   var cat, cats, cats_ord, cluster_cats, cluster_id, m;
@@ -1137,10 +1220,10 @@ ClusterCtr.prototype.getCatsCluster = (function() {
   cats = {
     
   };
-  var _$tmp7_data = _$rapyd$_iter(this.cluster_clicado.layer.getAllChildMarkers());
-  var _$tmp8_len = _$tmp7_data.length;
-  for (var _$tmp9_index = 0; _$tmp9_index < _$tmp8_len; _$tmp9_index++) {
-    m = _$tmp7_data[_$tmp9_index];
+  var _$tmp13_data = _$rapyd$_iter(this.cluster_clicado.layer.getAllChildMarkers());
+  var _$tmp14_len = _$tmp13_data.length;
+  for (var _$tmp15_index = 0; _$tmp15_index < _$tmp14_len; _$tmp15_index++) {
+    m = _$tmp13_data[_$tmp15_index];
 
     if (m.slinfo) {
       cat = m.slinfo.cat;
@@ -1155,10 +1238,10 @@ ClusterCtr.prototype.getCatsCluster = (function() {
   }
 
   cats_ord = [];
-  var _$tmp10_data = _$rapyd$_iter(dict.keys(cats));
-  var _$tmp11_len = _$tmp10_data.length;
-  for (var _$tmp12_index = 0; _$tmp12_index < _$tmp11_len; _$tmp12_index++) {
-    cat = _$tmp10_data[_$tmp12_index];
+  var _$tmp16_data = _$rapyd$_iter(dict.keys(cats));
+  var _$tmp17_len = _$tmp16_data.length;
+  for (var _$tmp18_index = 0; _$tmp18_index < _$tmp17_len; _$tmp18_index++) {
+    cat = _$tmp16_data[_$tmp18_index];
 
     cats_ord.append([cat, cats[cat]]);
   }
@@ -1176,29 +1259,28 @@ ClusterCtr.prototype.atualizaPopup = (function() {
   if ((!this.sl.Icones)) {
     html += "<ul>";
     cat = cats_ord[0];
-    html += (((("<li><strong>" + cat[0]) + " (") + cat[1].length) + ")</strong></li>");
-    var _$tmp13_data = _$rapyd$_iter(cats_ord.slice(1));
-    var _$tmp14_len = _$tmp13_data.length;
-    for (var _$tmp15_index = 0; _$tmp15_index < _$tmp14_len; _$tmp15_index++) {
-      cat = _$tmp13_data[_$tmp15_index];
+    var _$tmp19_data = _$rapyd$_iter(cats_ord);
+    var _$tmp20_len = _$tmp19_data.length;
+    for (var _$tmp21_index = 0; _$tmp21_index < _$tmp20_len; _$tmp21_index++) {
+      cat = _$tmp19_data[_$tmp21_index];
 
-      html += (((("<li>" + cat[0]) + " (") + cat[1].length) + ") </li>");
+      html += (((((((((("<li><a title='Focar no subgrupo " + cat[0]) + "'  href='javascript:SL(\"") + this.sl.map_id) + "\").control.clusterCtr.focar(\"") + cat[0]) + "\")'>") + cat[0]) + "</a> (") + cat[1].length) + ")</li>");
     }
 
     html += "</ul>";
   } else {
     html += "<ul class=\"icones\">";
-    var _$tmp16_data = _$rapyd$_iter(cats_ord);
-    var _$tmp17_len = _$tmp16_data.length;
-    for (var _$tmp18_index = 0; _$tmp18_index < _$tmp17_len; _$tmp18_index++) {
-      cat = _$tmp16_data[_$tmp18_index];
+    var _$tmp22_data = _$rapyd$_iter(cats_ord);
+    var _$tmp23_len = _$tmp22_data.length;
+    for (var _$tmp24_index = 0; _$tmp24_index < _$tmp23_len; _$tmp24_index++) {
+      cat = _$tmp22_data[_$tmp24_index];
 
-      console.info(cat);
       cat_id = this.sl.dados.categorias_id[cat[0]];
-      console.info(cat_id);
-      console.info(this.sl.Icones[cat_id].options);
       iconUrl = this.sl.Icones[cat_id].options.iconUrl;
-      html += (((("<li><p class='img'><img src='" + iconUrl) + "'></p><p class='texto'>") + cat[1].length) + "</p></li>");
+      html += "<li>";
+      html += (((((((("<p class='img'><a title='Focar no subgrupo " + cat[0]) + "' href='javascript:SL(\"") + this.sl.map_id) + "\").control.clusterCtr.focar(\"") + cat[0]) + "\")'><img src='") + iconUrl) + "'></a></p>");
+      html += (((((((("<p class='texto'><a title='Focar no subgrupo " + cat[0]) + "' href='javascript:SL(\"") + this.sl.map_id) + "\").control.clusterCtr.focar(\"") + cat[0]) + "\")'>") + cat[1].length) + "</a></p>");
+      html += "</li>";
     }
 
     html += "</ul>";
@@ -1230,7 +1312,10 @@ Controle = function(sl) {
   this.id_opcoes = (("#" + this.sl.map_id) + " div.searchlight-opcoes");
   this.id_camadas = (this.opcoes + "ul");
   this.show = (function(event) {
-    $(obj.id_opcoes).show();
+    if ((obj.clusterCtr.camadaAnalise == null)) {
+      $(obj.id_opcoes).show();
+    }
+
   });
   $(this.id_control).mouseenter(this.show);
   $(this.id_control).bind("touchstart", this.show);
@@ -1246,6 +1331,11 @@ Controle = function(sl) {
       obj.marcador_clicado = null;
     }
 
+    if (obj.clusterCtr.desfocou) {
+      obj.clusterCtr.desfocou = false;
+      obj.clusterCtr.mostraPopup();
+    }
+
     obj.atualizarIconesMarcVisiveis();
   }));
   this.sl.map.on("moveend", (function() {
@@ -1257,6 +1347,13 @@ Controle = function(sl) {
   this.clusterCtr = new ClusterCtr(sl);
 };
 
+Controle.prototype.registraEventosCamadaAnalise = (function() {
+  var obj;
+  obj = this;
+  this.clusterCtr.camadaAnalise.on("click", (function(ev) {
+    obj.markerClick(ev);
+  }));
+});
 Controle.prototype.atualizarIconesMarcVisiveis = (function() {
   if ((this.sl.map.getZoom() >= 16)) {
     this.mostrarIconesMarcVisiveis();
@@ -1267,10 +1364,10 @@ Controle.prototype.atualizarIconesMarcVisiveis = (function() {
 });
 Controle.prototype.mostrarIconesMarcVisiveis = (function() {
   var m;
-  var _$tmp19_data = _$rapyd$_iter(this.getMarcadoresVisiveis());
-  var _$tmp20_len = _$tmp19_data.length;
-  for (var _$tmp21_index = 0; _$tmp21_index < _$tmp20_len; _$tmp21_index++) {
-    m = _$tmp19_data[_$tmp21_index];
+  var _$tmp25_data = _$rapyd$_iter(this.getMarcadoresVisiveis());
+  var _$tmp26_len = _$tmp25_data.length;
+  for (var _$tmp27_index = 0; _$tmp27_index < _$tmp26_len; _$tmp27_index++) {
+    m = _$tmp25_data[_$tmp27_index];
 
     m.setIcon(m.slinfo.icon);
   }
@@ -1278,10 +1375,10 @@ Controle.prototype.mostrarIconesMarcVisiveis = (function() {
 });
 Controle.prototype.esconderIconesMarcVisiveis = (function() {
   var m;
-  var _$tmp22_data = _$rapyd$_iter(this.getMarcadoresVisiveis());
-  var _$tmp23_len = _$tmp22_data.length;
-  for (var _$tmp24_index = 0; _$tmp24_index < _$tmp23_len; _$tmp24_index++) {
-    m = _$tmp22_data[_$tmp24_index];
+  var _$tmp28_data = _$rapyd$_iter(this.getMarcadoresVisiveis());
+  var _$tmp29_len = _$tmp28_data.length;
+  for (var _$tmp30_index = 0; _$tmp30_index < _$tmp29_len; _$tmp30_index++) {
+    m = _$tmp28_data[_$tmp30_index];
 
     m.setIcon(sl_IconCluster);
   }
@@ -1289,12 +1386,17 @@ Controle.prototype.esconderIconesMarcVisiveis = (function() {
 });
 Controle.prototype.getMarcadoresVisiveis = (function() {
   var m, marcadores, marcadores_visiveis, mark;
-  marcadores = this.sl.markers._layers;
+  if (this.clusterCtr.camadaAnalise) {
+    marcadores = this.clusterCtr.camadaAnalise._layers;
+  } else {
+    marcadores = this.sl.markers._layers;
+  }
+
   marcadores_visiveis = [];
-  var _$tmp25_data = _$rapyd$_iter(dict.keys(marcadores));
-  var _$tmp26_len = _$tmp25_data.length;
-  for (var _$tmp27_index = 0; _$tmp27_index < _$tmp26_len; _$tmp27_index++) {
-    m = _$tmp25_data[_$tmp27_index];
+  var _$tmp31_data = _$rapyd$_iter(dict.keys(marcadores));
+  var _$tmp32_len = _$tmp31_data.length;
+  for (var _$tmp33_index = 0; _$tmp33_index < _$tmp32_len; _$tmp33_index++) {
+    m = _$tmp31_data[_$tmp33_index];
 
     mark = marcadores[m];
     if (mark.hasOwnProperty("slinfo")) {
@@ -1324,32 +1426,38 @@ Controle.prototype.markerClick = (function(ev) {
 });
 Controle.prototype.addCatsToControl = (function(map_id) {
   var c, cats, k, op, ul;
-  op = (("#" + map_id) + " div.searchlight-opcoes");
-  ul = (op + " ul");
-  cats = [];
-  var _$tmp28_data = _$rapyd$_iter(dict.keys(this.sl.dados.categorias));
-  var _$tmp29_len = _$tmp28_data.length;
-  for (var _$tmp30_index = 0; _$tmp30_index < _$tmp29_len; _$tmp30_index++) {
-    k = _$tmp28_data[_$tmp30_index];
+  if ((dict.keys(this.sl.dados.categorias).length > 1)) {
+    op = (("#" + map_id) + " div.searchlight-opcoes");
+    ul = (op + " ul");
+    cats = [];
+    var _$tmp34_data = _$rapyd$_iter(dict.keys(this.sl.dados.categorias));
+    var _$tmp35_len = _$tmp34_data.length;
+    for (var _$tmp36_index = 0; _$tmp36_index < _$tmp35_len; _$tmp36_index++) {
+      k = _$tmp34_data[_$tmp36_index];
 
-    cats.append([k, this.sl.dados.categorias[k].length]);
+      cats.append([k, this.sl.dados.categorias[k].length]);
+    }
+
+    cats.sort((function(a, b) {
+      return (b[1] - a[1]);
+    }));
+    var _$tmp37_data = _$rapyd$_iter(cats);
+    var _$tmp38_len = _$tmp37_data.length;
+    for (var _$tmp39_index = 0; _$tmp39_index < _$tmp38_len; _$tmp39_index++) {
+      c = _$tmp37_data[_$tmp39_index];
+
+      $(ul).append((((((((("<li><input type='checkbox' checked name='" + map_id) + "-cat' value='") + c[0]) + "' class='categoria'/>") + c[0]) + " (") + c[1]) + ")</li>"));
+    }
+
+    $(op).append((("<p class='center'><input type='button' onclick='SL(\"" + map_id) + "\").control.update();' value='Atualizar Mapa' /></p>"));
+  } else {
+    $(this.id_opcoes).addClass("sem-categoria");
   }
 
-  cats.sort((function(a, b) {
-    return (b[1] - a[1]);
-  }));
-  var _$tmp31_data = _$rapyd$_iter(cats);
-  var _$tmp32_len = _$tmp31_data.length;
-  for (var _$tmp33_index = 0; _$tmp33_index < _$tmp32_len; _$tmp33_index++) {
-    c = _$tmp31_data[_$tmp33_index];
-
-    $(ul).append((((((((("<li><input type='checkbox' checked name='" + map_id) + "-cat' value='") + c[0]) + "' class='categoria'/>") + c[0]) + " (") + c[1]) + ")</li>"));
-  }
-
-  $(op).append((("<p class='center'><input type='button' onclick='SL(\"" + map_id) + "\").control.update();' value='Atualizar Mapa' /></p>"));
 });
 Controle.prototype.update = (function() {
   $(this.id_opcoes).hide();
+  this.clusterCtr.update();
   this.sl.markers.clearLayers();
   this.sl.markers.fire("data:loading");
   setTimeout((("SL('" + this.sl.map_id) + "').control.carregaDados()"), 50);
@@ -1431,10 +1539,10 @@ Dados.prototype.addItem = (function(i, func_convert) {
 });
 Dados.prototype.catAddMarkers = (function(name, cluster) {
   var m;
-  var _$tmp34_data = _$rapyd$_iter(this.categorias[name]);
-  var _$tmp35_len = _$tmp34_data.length;
-  for (var _$tmp36_index = 0; _$tmp36_index < _$tmp35_len; _$tmp36_index++) {
-    m = _$tmp34_data[_$tmp36_index];
+  var _$tmp40_data = _$rapyd$_iter(this.categorias[name]);
+  var _$tmp41_len = _$tmp40_data.length;
+  for (var _$tmp42_index = 0; _$tmp42_index < _$tmp41_len; _$tmp42_index++) {
+    m = _$tmp40_data[_$tmp42_index];
 
     cluster.addLayer(m.getMark());
   }
@@ -1442,10 +1550,10 @@ Dados.prototype.catAddMarkers = (function(name, cluster) {
 });
 Dados.prototype.addMarkersTo = (function(cluster) {
   var k;
-  var _$tmp37_data = _$rapyd$_iter(dict.keys(this.categorias));
-  var _$tmp38_len = _$tmp37_data.length;
-  for (var _$tmp39_index = 0; _$tmp39_index < _$tmp38_len; _$tmp39_index++) {
-    k = _$tmp37_data[_$tmp39_index];
+  var _$tmp43_data = _$rapyd$_iter(dict.keys(this.categorias));
+  var _$tmp44_len = _$tmp43_data.length;
+  for (var _$tmp45_index = 0; _$tmp45_index < _$tmp44_len; _$tmp45_index++) {
+    k = _$tmp43_data[_$tmp45_index];
 
     this.catAddMarkers(k, cluster);
   }

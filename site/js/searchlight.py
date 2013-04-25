@@ -116,21 +116,48 @@ class Searchlight:
     def addItem(self,item):
         self.dados.addItem(item,self.func_convert)
 
+    def mostrarCamadaMarkers(self):
+        self.map.addLayer(self.markers)
+        self.map.setView(self.map_ultimo_center, self.map_ultimo_zoom)
+
+    def esconderCamadaMarkers(self):
+        self.map.removeLayer(self.markers)
+        self.map_ultimo_zoom =  self.map.getZoom()
+        self.map_ultimo_center = self.map.getCenter()
+
 class ClusterCtr:
     def __init__(self,sl):
         self.sl = sl
         obj = self
         self.criaPopup()
         self.clusters = {} 
+        self.id_analise = "#"+self.sl.map_id+ " div.searchlight-analise" 
+        $(self.id_analise).append("<p class='center'><a href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.desfocar()'>DESFOCAR</a></p>")
+        $(self.id_analise).hide()
         self.sl.map.on('dblclick', def(a):
             obj.clusterDuploClick()      
         )
-        self.sl.markers.on('clusterdblclick', def (a) :
-            obj.clusterDuploClick(a)
-        );
-        self.sl.markers.on('clusterclick', def (a): 
-            obj.clusterClick(a)
-        )
+        self.registraEventosClusters()
+    def registraEventosClusters(self):
+        obj = self
+        if self.camadaAnalise:
+            self.camadaAnalise.on('clusterdblclick', def (a) :
+                a.layer.zoomToBounds()    
+            );
+            self.camadaAnalise.on('clusterclick', def (a): 
+                a.layer.zoomToBounds()    
+            )
+        else:
+            self.sl.markers.on('clusterdblclick', def (a) :
+                obj.clusterDuploClick(a)
+            );
+            self.sl.markers.on('clusterclick', def (a): 
+                if dict.keys(obj.sl.dados.categorias).length > 1:
+                    obj.clusterClick(a)
+                else:
+                    a.layer.zoomToBounds()    
+            )
+
         self.clickOrdem = 0
     
     def criaPopup(self):
@@ -142,6 +169,7 @@ class ClusterCtr:
         d = Date()
         if (d.getTime() - self.timeUltimoClick)>1500: # 2s
             self.clickOrdem = 1
+
             self.popupOrZoom(a)
         self.timeUltimoClick = d.getTime()
              
@@ -156,14 +184,43 @@ class ClusterCtr:
         self.clickOrdem = 2
         self.zoomGrupo()
 
-    def showPopup(self, map_id): 
+    def mostraPopup(self):
+        self.atualizaPopup()
+        self.popup.openOn(self.sl.map)
+    def showPopup(self): 
         if self.clickOrdem == 1:
-            self.atualizaPopup()
-            self.popup.openOn(self.sl.map)
-
+            self.mostraPopup()
         self.clickOrdem = 0
 
-    
+    def desfocar(self):
+        self.sl.map.closePopup()
+        $(self.id_analise).hide()
+        self.sl.map.removeLayer(self.camadaAnalise)
+        self.sl.mostrarCamadaMarkers()
+        self.camadaAnalise = None
+        self.desfocou = True 
+        self.registraEventosClusters()
+
+    def focar(self,cat):
+        self.sl.esconderCamadaMarkers()
+        self.camadaAnalise = new L.MarkerClusterGroup({ zoomToBoundsOnClick: false})
+        self.sl.map.addLayer(self.camadaAnalise)
+        self.camadaAnalise.fire("data:loading") 
+        cats = self.getCatsCluster()
+        for c in cats:
+            if cat == c[0]:
+                for m in c[1]:
+                    self.camadaAnalise.addLayer(m)
+        self.sl.map.fitBounds(self.camadaAnalise.getBounds())
+        self.camadaAnalise.fire("data:loaded") 
+        self.sl.control.registraEventosCamadaAnalise()
+        self.registraEventosClusters()
+        $(self.id_analise).show()
+       
+    def update(self):
+        #apaga cache dos clusters 
+        self.clusters = {}
+
     def getCatsCluster(self):
         cluster_id = self.cluster_clicado.layer._leaflet_id;
         cluster_cats = self.clusters[cluster_id]
@@ -195,19 +252,18 @@ class ClusterCtr:
         if not self.sl.Icones:
             html+="<ul>"
             cat = cats_ord[0]
-            html += "<li><strong>"+cat[0]+" ("+cat[1].length+")</strong></li>"
-            for cat in cats_ord[1:]:
-                html += "<li>"+cat[0]+" ("+cat[1].length+") </li>"
+            for cat in cats_ord:
+                html += "<li><a title='Focar no subgrupo "+cat[0]+"'  href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.focar(\""+cat[0]+"\")'>"+cat[0]+"</a> ("+cat[1].length+")</li>"
             html +="</ul>"
         else:
             html+='<ul class="icones">'
             for cat in cats_ord:
-                console.info(cat)
                 cat_id = self.sl.dados.categorias_id[cat[0]]
-                console.info(cat_id)
-                console.info(self.sl.Icones[cat_id].options)
                 iconUrl = self.sl.Icones[cat_id].options.iconUrl
-                html += "<li><p class='img'><img src='"+iconUrl+"'></p><p class='texto'>"+cat[1].length+"</p></li>"
+                html += "<li>"
+                html += "<p class='img'><a title='Focar no subgrupo "+cat[0]+"' href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.focar(\""+cat[0]+"\")'><img src='"+iconUrl+"'></a></p>"
+                html += "<p class='texto'><a title='Focar no subgrupo "+cat[0]+"' href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.focar(\""+cat[0]+"\")'>"+cat[1].length+"</a></p>"
+                html +="</li>"
             html +="</ul>"
 
 
@@ -221,6 +277,7 @@ class ClusterCtr:
         obj = self
         if self.clickOrdem == 1:
             self.cluster_clicado = cluster
+
             setTimeout(def (): 
                 obj.showPopup(obj.sl.map_id);
             , 600)
@@ -234,7 +291,8 @@ class Controle:
         self.id_opcoes = "#"+self.sl.map_id+ " div.searchlight-opcoes" 
         self.id_camadas = self.opcoes + "ul"
         self.show = def(event):
-            $(obj.id_opcoes).show()
+            if obj.clusterCtr.camadaAnalise == None:
+                $(obj.id_opcoes).show()
         $(self.id_control).mouseenter(self.show )
         $(self.id_control).bind('touchstart',self.show);
         self.hide = def(event):
@@ -250,6 +308,9 @@ class Controle:
                 obj.sl.map.closePopup()
             else:
                 obj.marcador_clicado = None
+            if obj.clusterCtr.desfocou:
+                obj.clusterCtr.desfocou = False
+                obj.clusterCtr.mostraPopup()
             obj.atualizarIconesMarcVisiveis()
         )
         self.sl.map.on('moveend', def():
@@ -258,8 +319,14 @@ class Controle:
         self.sl.markers.on('click',def(ev):
             obj.markerClick(ev)
         )
-        self.clusterCtr = ClusterCtr(sl)
-       
+        self.clusterCtr = ClusterCtr(sl)    
+
+    def registraEventosCamadaAnalise(self):
+        obj = self
+        self.clusterCtr.camadaAnalise.on('click',def(ev):
+            obj.markerClick(ev)
+        )
+
     def atualizarIconesMarcVisiveis(self):
         if self.sl.map.getZoom() >= 16:
             self.mostrarIconesMarcVisiveis()
@@ -275,7 +342,10 @@ class Controle:
             m.setIcon(sl_IconCluster)
 
     def getMarcadoresVisiveis(self):
-        marcadores = self.sl.markers._layers
+        if self.clusterCtr.camadaAnalise:
+            marcadores =  self.clusterCtr.camadaAnalise._layers
+        else:
+            marcadores = self.sl.markers._layers
         marcadores_visiveis = []
         for m in dict.keys(marcadores):
             mark = marcadores[m]
@@ -300,21 +370,25 @@ class Controle:
 
   
     def addCatsToControl(self,map_id):
-        op ="#"+map_id+ " div.searchlight-opcoes" 
-        ul =op + " ul"
-        cats = []
-        for k in dict.keys(self.sl.dados.categorias):
-            cats.append([k,self.sl.dados.categorias[k].length])
-        cats.sort(def (a,b):
-            return b[1]-a[1]
-        )
-        for c in cats:
-            $(ul).append("<li><input type='checkbox' checked name='"+map_id+"-cat' value='"+c[0]+"' class='categoria'/>"+c[0]+" ("+c[1]+")</li>")
-        
-        $(op).append("<p class='center'><input type='button' onclick='SL(\""+map_id+"\").control.update();' value='Atualizar Mapa' /></p>")
+        if dict.keys(self.sl.dados.categorias).length > 1:
+            op ="#"+map_id+ " div.searchlight-opcoes" 
+            ul =op + " ul"
+            cats = []
+            for k in dict.keys(self.sl.dados.categorias):
+                cats.append([k,self.sl.dados.categorias[k].length])
+            cats.sort(def (a,b):
+                return b[1]-a[1]
+            )
+            for c in cats:
+                $(ul).append("<li><input type='checkbox' checked name='"+map_id+"-cat' value='"+c[0]+"' class='categoria'/>"+c[0]+" ("+c[1]+")</li>")
+            
+            $(op).append("<p class='center'><input type='button' onclick='SL(\""+map_id+"\").control.update();' value='Atualizar Mapa' /></p>")
+        else:
+            $(self.id_opcoes).addClass("sem-categoria")
 
     def update(self):
         $(self.id_opcoes).hide()
+        self.clusterCtr.update()
         self.sl.markers.clearLayers();
         self.sl.markers.fire("data:loading")
         setTimeout("SL('"+self.sl.map_id+"').control.carregaDados()",50);
