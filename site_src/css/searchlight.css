@@ -32,3 +32,10 @@
  padding-top:10px;
  text-align:center;padding-bottom:5px; margin-bottom:0px;
     }
+
+div.clusterPopup ul li{
+        list-style:none;padding:0px;margin:0px;
+}
+div.clusterPopup p.center{
+    text-align:center;
+    }

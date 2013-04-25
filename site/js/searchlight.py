@@ -36,13 +36,16 @@ def main():
 def searchlight_callback(data):
     referencia_atual.carregaDados(data)
 
-
-
 sl_IconCluster = new L.DivIcon({ html: '<div><span>1</span></div>', className: 'marker-cluster marker-cluster-small', iconSize: new L.Point(40, 40) });
 sl_IconePadrao = new L.Icon.Default()
+
 # referencia para callback
 referencia_atual = None
 sl_referencias = {}
+def SL(map_id):
+    "funcao global para pegar a referencia do objeto mapa"
+    return sl_referencias[map_id]
+
 class Searchlight:
 
     def __init__(self, url=None,func_convert=None,map_id="map_gdoc",icones = None):
@@ -208,20 +211,48 @@ class Controle:
     def clusterDuploClick(self, a =None):
         self.cancelPopup()
 
-    def cancelPopup(self):
-        self.clickOrdem = 2
+    def zoomGrupo(self):
         self.sl.map.closePopup()
         self.cluster_clicado.layer.zoomToBounds()
-        
+   
+    def cancelPopup(self):
+        self.clickOrdem = 2
+        self.zoomGrupo()
+
     def showPopup(self, map_id):
         sl = sl_referencias[map_id]
         obj=sl.control;
         
         if obj.clickOrdem == 1:
+            self.atualizaPopup()
             obj.popup.openOn(self.sl.map)
 
         obj.clickOrdem = 0
 
+    
+    def atualizaPopup(self):
+        cats = {}
+        for m in self.cluster_clicado.layer.getAllChildMarkers():
+            if m.slinfo:
+                cat = m.slinfo.cat
+                cats[cat]= cats[cat] + 1  if (cats[cat])  else 1
+        cats_ord =[]
+        for cat in dict.keys(cats):
+            cats_ord.append([cat,cats[cat]])
+        cats_ord.sort(def (a,b):
+            return b[1]-a[1]
+        );    
+        #----
+        html = "<div class='clusterPopup'><ul>"
+        cat = cats_ord[0]
+        html += "<li><strong>"+cat[0]+" ("+cat[1]+")</strong></li>"
+        for cat in cats_ord[1:]:
+            html += "<li>"+cat[0]+" ("+cat[1]+") </li>"
+        html +="</ul>"
+        html +="<p class='center'><input type='button' onclick='SL(\""+self.sl.map_id+"\").control.zoomGrupo();' value='expandir grupo' /></p>"
+        html +="</div>"
+        self.popup.setContent(html)
+            
     def popupOrZoom(self,cluster):
         self.sl.map.closePopup() 
         self.popup.setLatLng(cluster.layer.getLatLng())
@@ -234,28 +265,33 @@ class Controle:
    
     def addCatsToControl(self,map_id):
         op ="#"+map_id+ " div.searchlight-opcoes" 
-        ul =op + " ul" 
-        for k in dict.keys(self.sl.dados.categorias).sort():
-            $(ul).append("<li><input type='checkbox' checked name='"+map_id+"-cat' value='"+k+"' class='categoria'/>"+k+" ("+self.sl.dados.categorias[k].length+")</li>")
+        ul =op + " ul"
+        cats = []
+        for k in dict.keys(self.sl.dados.categorias):
+            cats.append([k,self.sl.dados.categorias[k].length])
+        cats.sort(def (a,b):
+            return b[1]-a[1]
+        )
+        for c in cats:
+            $(ul).append("<li><input type='checkbox' checked name='"+map_id+"-cat' value='"+c[0]+"' class='categoria'/>"+c[0]+" ("+c[1]+")</li>")
         
-        $(op).append("<p class='center'><input type='button' onclick='Controle.update(\""+map_id+"\");' value='Atualizar Mapa' /></p>")
+        $(op).append("<p class='center'><input type='button' onclick='SL(\""+map_id+"\").control.update();' value='Atualizar Mapa' /></p>")
 
-Controle.update = def (self,map_id):
-        sl = sl_referencias[map_id]
-        $(sl.control.id_opcoes).hide()
-        sl.markers.clearLayers();
-        sl.markers.fire("data:loading")
-        setTimeout("Controle.carregaDados('"+map_id+"')",50);
+    def update(self):
+        $(self.id_opcoes).hide()
+        self.sl.markers.clearLayers();
+        self.sl.markers.fire("data:loading")
+        setTimeout("SL('"+self.sl.map_id+"').control.carregaDados()",50);
 
-Controle.carregaDados = def (self, map_id)
-        sl = sl_referencias[map_id]
-        $("input:checkbox[name="+map_id.replace("#","")+"-cat]:checked").each(def ():
+    def carregaDados(self)
+        sl = self.sl
+        $("input:checkbox[name="+self.sl.map_id.replace("#","")+"-cat]:checked").each(def ():
             cat=$(self).val();
-            console.info(cat);
             sl.dados.catAddMarkers(cat,sl.markers);
         );
         sl.map.fitBounds(sl.markers.getBounds())
         sl.markers.fire("data:loaded") 
+        sl.control.atualizarIconesMarcVisiveis()
 
 
 
@@ -270,6 +306,12 @@ class Marcador:
         else:
             self.icon = sl_IconePadrao
         self.cat_id = geoItem.cat_id
+ 
+        if geoItem.cat:
+            self.cat = geoItem.cat.replace(",","").replace('"','')
+        else:
+            self.cat = "descategorizado"
+
 
     def getMark(self):
         if self.m == None:
@@ -279,7 +321,6 @@ class Marcador:
             self.m = m
             self.m.slinfo = self
             self.m.bindPopup(m.slinfo.texto)
-            self.m.cat_id=self.cat_id
         return self.m
 
 class Dados:
@@ -288,9 +329,6 @@ class Dados:
         self.categorias = {}
 
     def getCat(self, name):
-        if not name:
-            name = "semcategoria"
-        name = name.replace(",","").replace('"','')
         cat=self.categorias[name]
         if cat:
             return cat
@@ -300,8 +338,8 @@ class Dados:
 
     def addItem(self,i,func_convert): 
         geoItem = func_convert(i)
-        cat = self.getCat(geoItem.cat)
         m =  Marcador(geoItem)
+        cat = self.getCat(m.cat)
         cat.append(m)
 
     def catAddMarkers(self,name,cluster):

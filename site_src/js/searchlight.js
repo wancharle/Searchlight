@@ -970,6 +970,11 @@ referencia_atual = null;
 sl_referencias = {
   
 };
+SL = function(map_id) {
+  "funcao global para pegar a referencia do objeto mapa";
+  return sl_referencias[map_id];
+};
+
 Searchlight = function(url, func_convert, map_id, icones) {
   if (typeof url === "undefined") {url = null};
   if (typeof func_convert === "undefined") {func_convert = null};
@@ -1190,20 +1195,69 @@ Controle.prototype.clusterDuploClick = (function(a) {
   if (typeof a === "undefined") {a = null};
   this.cancelPopup();
 });
-Controle.prototype.cancelPopup = (function() {
-  this.clickOrdem = 2;
+Controle.prototype.zoomGrupo = (function() {
   this.sl.map.closePopup();
   this.cluster_clicado.layer.zoomToBounds();
+});
+Controle.prototype.cancelPopup = (function() {
+  this.clickOrdem = 2;
+  this.zoomGrupo();
 });
 Controle.prototype.showPopup = (function(map_id) {
   var obj, sl;
   sl = sl_referencias[map_id];
   obj = sl.control;
   if ((obj.clickOrdem == 1)) {
+    this.atualizaPopup();
     obj.popup.openOn(this.sl.map);
   }
 
   obj.clickOrdem = 0;
+});
+Controle.prototype.atualizaPopup = (function() {
+  var cat, cats, cats_ord, html, m;
+  cats = {
+    
+  };
+  var _$tmp16_data = _$rapyd$_iter(this.cluster_clicado.layer.getAllChildMarkers());
+  var _$tmp17_len = _$tmp16_data.length;
+  for (var _$tmp18_index = 0; _$tmp18_index < _$tmp17_len; _$tmp18_index++) {
+    m = _$tmp16_data[_$tmp18_index];
+
+    if (m.slinfo) {
+      cat = m.slinfo.cat;
+      cats[cat] = (cats[cat] ? (cats[cat] + 1) : 1);
+    }
+
+  }
+
+  cats_ord = [];
+  var _$tmp19_data = _$rapyd$_iter(dict.keys(cats));
+  var _$tmp20_len = _$tmp19_data.length;
+  for (var _$tmp21_index = 0; _$tmp21_index < _$tmp20_len; _$tmp21_index++) {
+    cat = _$tmp19_data[_$tmp21_index];
+
+    cats_ord.append([cat, cats[cat]]);
+  }
+
+  cats_ord.sort((function(a, b) {
+    return (b[1] - a[1]);
+  }));
+  html = "<div class='clusterPopup'><ul>";
+  cat = cats_ord[0];
+  html += (((("<li><strong>" + cat[0]) + " (") + cat[1]) + ")</strong></li>");
+  var _$tmp22_data = _$rapyd$_iter(cats_ord.slice(1));
+  var _$tmp23_len = _$tmp22_data.length;
+  for (var _$tmp24_index = 0; _$tmp24_index < _$tmp23_len; _$tmp24_index++) {
+    cat = _$tmp22_data[_$tmp24_index];
+
+    html += (((("<li>" + cat[0]) + " (") + cat[1]) + ") </li>");
+  }
+
+  html += "</ul>";
+  html += (("<p class='center'><input type='button' onclick='SL(\"" + this.sl.map_id) + "\").control.zoomGrupo();' value='expandir grupo' /></p>");
+  html += "</div>";
+  this.popup.setContent(html);
 });
 Controle.prototype.popupOrZoom = (function(cluster) {
   var obj;
@@ -1219,38 +1273,48 @@ Controle.prototype.popupOrZoom = (function(cluster) {
 
 });
 Controle.prototype.addCatsToControl = (function(map_id) {
-  var k, op, ul;
+  var c, cats, k, op, ul;
   op = (("#" + map_id) + " div.searchlight-opcoes");
   ul = (op + " ul");
-  var _$tmp16_data = _$rapyd$_iter(dict.keys(this.sl.dados.categorias).sort());
-  var _$tmp17_len = _$tmp16_data.length;
-  for (var _$tmp18_index = 0; _$tmp18_index < _$tmp17_len; _$tmp18_index++) {
-    k = _$tmp16_data[_$tmp18_index];
+  cats = [];
+  var _$tmp25_data = _$rapyd$_iter(dict.keys(this.sl.dados.categorias));
+  var _$tmp26_len = _$tmp25_data.length;
+  for (var _$tmp27_index = 0; _$tmp27_index < _$tmp26_len; _$tmp27_index++) {
+    k = _$tmp25_data[_$tmp27_index];
 
-    $(ul).append((((((((("<li><input type='checkbox' checked name='" + map_id) + "-cat' value='") + k) + "' class='categoria'/>") + k) + " (") + this.sl.dados.categorias[k].length) + ")</li>"));
+    cats.append([k, this.sl.dados.categorias[k].length]);
   }
 
-  $(op).append((("<p class='center'><input type='button' onclick='Controle.update(\"" + map_id) + "\");' value='Atualizar Mapa' /></p>"));
+  cats.sort((function(a, b) {
+    return (b[1] - a[1]);
+  }));
+  var _$tmp28_data = _$rapyd$_iter(cats);
+  var _$tmp29_len = _$tmp28_data.length;
+  for (var _$tmp30_index = 0; _$tmp30_index < _$tmp29_len; _$tmp30_index++) {
+    c = _$tmp28_data[_$tmp30_index];
+
+    $(ul).append((((((((("<li><input type='checkbox' checked name='" + map_id) + "-cat' value='") + c[0]) + "' class='categoria'/>") + c[0]) + " (") + c[1]) + ")</li>"));
+  }
+
+  $(op).append((("<p class='center'><input type='button' onclick='SL(\"" + map_id) + "\").control.update();' value='Atualizar Mapa' /></p>"));
 });
-Controle.update = (function(map_id) {
-  var sl;
-  sl = sl_referencias[map_id];
-  $(sl.control.id_opcoes).hide();
-  sl.markers.clearLayers();
-  sl.markers.fire("data:loading");
-  setTimeout((("Controle.carregaDados('" + map_id) + "')"), 50);
+Controle.prototype.update = (function() {
+  $(this.id_opcoes).hide();
+  this.sl.markers.clearLayers();
+  this.sl.markers.fire("data:loading");
+  setTimeout((("SL('" + this.sl.map_id) + "').control.carregaDados()"), 50);
 });
-Controle.carregaDados = (function(map_id) {
+Controle.prototype.carregaDados = (function() {
   var sl;
-  sl = sl_referencias[map_id];
-  $((("input:checkbox[name=" + map_id.replace("#", "")) + "-cat]:checked")).each((function() {
+  sl = this.sl;
+  $((("input:checkbox[name=" + this.sl.map_id.replace("#", "")) + "-cat]:checked")).each((function() {
     var cat;
     cat = $(this).val();
-    console.info(cat);
     sl.dados.catAddMarkers(cat, sl.markers);
   }));
   sl.map.fitBounds(sl.markers.getBounds());
   sl.markers.fire("data:loaded");
+  sl.control.atualizarIconesMarcVisiveis();
 });
 Marcador = function(geoItem) {
   this.m = null;
@@ -1264,6 +1328,12 @@ Marcador = function(geoItem) {
   }
 
   this.cat_id = geoItem.cat_id;
+  if (geoItem.cat) {
+    this.cat = geoItem.cat.replace(",", "").replace("\"", "");
+  } else {
+    this.cat = "descategorizado";
+  }
+
 };
 
 Marcador.prototype.getMark = (function() {
@@ -1275,7 +1345,6 @@ Marcador.prototype.getMark = (function() {
     this.m = m;
     this.m.slinfo = this;
     this.m.bindPopup(m.slinfo.texto);
-    this.m.cat_id = this.cat_id;
   }
 
   return this.m;
@@ -1289,11 +1358,6 @@ Dados = function() {
 
 Dados.prototype.getCat = (function(name) {
   var cat;
-  if ((!name)) {
-    name = "semcategoria";
-  }
-
-  name = name.replace(",", "").replace("\"", "");
   cat = this.categorias[name];
   if (cat) {
     return cat;
@@ -1306,16 +1370,16 @@ Dados.prototype.getCat = (function(name) {
 Dados.prototype.addItem = (function(i, func_convert) {
   var cat, geoItem, m;
   geoItem = func_convert(i);
-  cat = this.getCat(geoItem.cat);
   m = new Marcador(geoItem);
+  cat = this.getCat(m.cat);
   cat.append(m);
 });
 Dados.prototype.catAddMarkers = (function(name, cluster) {
   var m;
-  var _$tmp19_data = _$rapyd$_iter(this.categorias[name]);
-  var _$tmp20_len = _$tmp19_data.length;
-  for (var _$tmp21_index = 0; _$tmp21_index < _$tmp20_len; _$tmp21_index++) {
-    m = _$tmp19_data[_$tmp21_index];
+  var _$tmp31_data = _$rapyd$_iter(this.categorias[name]);
+  var _$tmp32_len = _$tmp31_data.length;
+  for (var _$tmp33_index = 0; _$tmp33_index < _$tmp32_len; _$tmp33_index++) {
+    m = _$tmp31_data[_$tmp33_index];
 
     cluster.addLayer(m.getMark());
   }
@@ -1323,10 +1387,10 @@ Dados.prototype.catAddMarkers = (function(name, cluster) {
 });
 Dados.prototype.addMarkersTo = (function(cluster) {
   var k;
-  var _$tmp22_data = _$rapyd$_iter(dict.keys(this.categorias));
-  var _$tmp23_len = _$tmp22_data.length;
-  for (var _$tmp24_index = 0; _$tmp24_index < _$tmp23_len; _$tmp24_index++) {
-    k = _$tmp22_data[_$tmp24_index];
+  var _$tmp34_data = _$rapyd$_iter(dict.keys(this.categorias));
+  var _$tmp35_len = _$tmp34_data.length;
+  for (var _$tmp36_index = 0; _$tmp36_index < _$tmp35_len; _$tmp36_index++) {
+    k = _$tmp34_data[_$tmp36_index];
 
     this.catAddMarkers(k, cluster);
   }
