@@ -4,18 +4,18 @@ pacc_jsonp = "https://dl.dropbox.com/u/877911/portoalegre.js"
 
 
 Icones = {}
-Icones["1"] = new L.icon({ iconUrl:"images/pin_1.png",iconSize:     [45, 58], iconAnchor:   [23, 58], popupAnchor: [0, -50] })
-Icones["2"] = new L.icon({ iconUrl:"images/pin_2.png",iconSize:     [45, 58], iconAnchor:   [23, 58], popupAnchor: [0, -50] })
-Icones["3"] = new L.icon({ iconUrl:"images/pin_3.png",iconSize:     [45, 58], iconAnchor:   [23, 58], popupAnchor: [0, -50] })
-Icones["4"] = new L.icon({ iconUrl:"images/pin_4.png",iconSize:     [45, 58], iconAnchor:   [23, 58], popupAnchor: [0, -50] })
-Icones["5"] = new L.icon({ iconUrl:"images/pin_5.png",iconSize:     [45, 58], iconAnchor:   [23, 58], popupAnchor: [0, -50] })
-Icones["6"] = new L.icon({ iconUrl:"images/pin_6.png",iconSize:     [45, 58], iconAnchor:   [23, 58], popupAnchor: [0, -50] })
-Icones["7"] = new L.icon({ iconUrl:"images/pin_7.png",iconSize:     [45, 58], iconAnchor:   [23, 58], popupAnchor: [0, -50] })
-Icones["8"] = new L.icon({ iconUrl:"images/pin_8.png",iconSize:     [45, 58], iconAnchor:   [23, 58], popupAnchor: [0, -50] })
-Icones["9"] = new L.icon({ iconUrl:"images/pin_9.png",iconSize:     [45, 58], iconAnchor:   [23, 58], popupAnchor: [0, -50] })
-Icones["10"] = new L.icon({ iconUrl:"images/pin_10.png",iconSize:     [45, 58], iconAnchor:   [23, 58], popupAnchor: [0, -50] })
-Icones["11"] = new L.icon({ iconUrl:"images/pin_11.png",iconSize:     [45, 58], iconAnchor:   [23, 58], popupAnchor: [0, -50] })
-Icones["12"] = new L.icon({ iconUrl:"images/pin_12.png",iconSize:     [45, 58], iconAnchor:   [23, 58], popupAnchor: [0, -50] })
+Icones["1"] = new L.icon({ iconUrl:"images/pin_1.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
+Icones["2"] = new L.icon({ iconUrl:"images/pin_2.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
+Icones["3"] = new L.icon({ iconUrl:"images/pin_3.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
+Icones["4"] = new L.icon({ iconUrl:"images/pin_4.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
+Icones["5"] = new L.icon({ iconUrl:"images/pin_5.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
+Icones["6"] = new L.icon({ iconUrl:"images/pin_6.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
+Icones["7"] = new L.icon({ iconUrl:"images/pin_7.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
+Icones["8"] = new L.icon({ iconUrl:"images/pin_8.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
+Icones["9"] = new L.icon({ iconUrl:"images/pin_9.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
+Icones["10"] = new L.icon({ iconUrl:"images/pin_10.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
+Icones["11"] = new L.icon({ iconUrl:"images/pin_11.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
+Icones["12"] = new L.icon({ iconUrl:"images/pin_12.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
 
 def portoalegre_cc():
     convert_item = def (item):

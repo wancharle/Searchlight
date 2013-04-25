@@ -246,7 +246,10 @@ class Controle:
         #registrando eventos popup e markers
         
         self.sl.map.on('zoomend', def():
-            obj.sl.map.closePopup()
+            if obj.marcador_clicado == None:
+                obj.sl.map.closePopup()
+            else:
+                obj.marcador_clicado = None
             obj.atualizarIconesMarcVisiveis()
         )
         self.sl.map.on('moveend', def():
@@ -282,6 +285,7 @@ class Controle:
     
     def markerClick(self,ev):
         m = ev.layer
+        self.marcador_clicado = m
         if m.slinfo.ultimo_zoom:
             self.sl.map.setView(m.slinfo.ultimo_center,m.slinfo.ultimo_zoom)
             m.slinfo.ultimo_zoom = None 

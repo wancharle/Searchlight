@@ -837,74 +837,74 @@ Icones = {
 Icones["1"] = new L.icon({
   iconUrl: "images/pin_1.png",
   iconSize: [45, 58],
-  iconAnchor: [23, 58],
-  popupAnchor: [0, (-50)]
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
 });
 Icones["2"] = new L.icon({
   iconUrl: "images/pin_2.png",
   iconSize: [45, 58],
-  iconAnchor: [23, 58],
-  popupAnchor: [0, (-50)]
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
 });
 Icones["3"] = new L.icon({
   iconUrl: "images/pin_3.png",
   iconSize: [45, 58],
-  iconAnchor: [23, 58],
-  popupAnchor: [0, (-50)]
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
 });
 Icones["4"] = new L.icon({
   iconUrl: "images/pin_4.png",
   iconSize: [45, 58],
-  iconAnchor: [23, 58],
-  popupAnchor: [0, (-50)]
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
 });
 Icones["5"] = new L.icon({
   iconUrl: "images/pin_5.png",
   iconSize: [45, 58],
-  iconAnchor: [23, 58],
-  popupAnchor: [0, (-50)]
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
 });
 Icones["6"] = new L.icon({
   iconUrl: "images/pin_6.png",
   iconSize: [45, 58],
-  iconAnchor: [23, 58],
-  popupAnchor: [0, (-50)]
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
 });
 Icones["7"] = new L.icon({
   iconUrl: "images/pin_7.png",
   iconSize: [45, 58],
-  iconAnchor: [23, 58],
-  popupAnchor: [0, (-50)]
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
 });
 Icones["8"] = new L.icon({
   iconUrl: "images/pin_8.png",
   iconSize: [45, 58],
-  iconAnchor: [23, 58],
-  popupAnchor: [0, (-50)]
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
 });
 Icones["9"] = new L.icon({
   iconUrl: "images/pin_9.png",
   iconSize: [45, 58],
-  iconAnchor: [23, 58],
-  popupAnchor: [0, (-50)]
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
 });
 Icones["10"] = new L.icon({
   iconUrl: "images/pin_10.png",
   iconSize: [45, 58],
-  iconAnchor: [23, 58],
-  popupAnchor: [0, (-50)]
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
 });
 Icones["11"] = new L.icon({
   iconUrl: "images/pin_11.png",
   iconSize: [45, 58],
-  iconAnchor: [23, 58],
-  popupAnchor: [0, (-50)]
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
 });
 Icones["12"] = new L.icon({
   iconUrl: "images/pin_12.png",
   iconSize: [45, 58],
-  iconAnchor: [23, 58],
-  popupAnchor: [0, (-50)]
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
 });
 portoalegre_cc = function() {
   var convert_item, mps;
@@ -1240,7 +1240,12 @@ Controle = function(sl) {
   $(("#" + this.sl.map_id)).mouseover(this.hide);
   $(("#" + this.sl.map_id)).bind("touchstart", this.hide);
   this.sl.map.on("zoomend", (function() {
-    obj.sl.map.closePopup();
+    if ((obj.marcador_clicado == null)) {
+      obj.sl.map.closePopup();
+    } else {
+      obj.marcador_clicado = null;
+    }
+
     obj.atualizarIconesMarcVisiveis();
   }));
   this.sl.map.on("moveend", (function() {
@@ -1303,6 +1308,7 @@ Controle.prototype.getMarcadoresVisiveis = (function() {
 Controle.prototype.markerClick = (function(ev) {
   var center, m;
   m = ev.layer;
+  this.marcador_clicado = m;
   if (m.slinfo.ultimo_zoom) {
     this.sl.map.setView(m.slinfo.ultimo_center, m.slinfo.ultimo_zoom);
     m.slinfo.ultimo_zoom = null;
