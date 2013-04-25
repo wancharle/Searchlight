@@ -116,7 +116,115 @@ class Searchlight:
     def addItem(self,item):
         self.dados.addItem(item,self.func_convert)
 
-        
+class ClusterCtr:
+    def __init__(self,sl):
+        self.sl = sl
+        obj = self
+        self.criaPopup()
+        self.clusters = {} 
+        self.sl.map.on('dblclick', def(a):
+            obj.clusterDuploClick()      
+        )
+        self.sl.markers.on('clusterdblclick', def (a) :
+            obj.clusterDuploClick(a)
+        );
+        self.sl.markers.on('clusterclick', def (a): 
+            obj.clusterClick(a)
+        )
+        self.clickOrdem = 0
+    
+    def criaPopup(self):
+       popup = L.popup()
+       self.popup = popup
+       self.timeUltimoClick = Date().getTime()
+
+    def clusterClick(self,a=None):
+        d = Date()
+        if (d.getTime() - self.timeUltimoClick)>1500: # 2s
+            self.clickOrdem = 1
+            self.popupOrZoom(a)
+        self.timeUltimoClick = d.getTime()
+             
+    def clusterDuploClick(self, a =None):
+        self.cancelPopup()
+
+    def zoomGrupo(self):
+        self.sl.map.closePopup()
+        self.cluster_clicado.layer.zoomToBounds()
+   
+    def cancelPopup(self):
+        self.clickOrdem = 2
+        self.zoomGrupo()
+
+    def showPopup(self, map_id): 
+        if self.clickOrdem == 1:
+            self.atualizaPopup()
+            self.popup.openOn(self.sl.map)
+
+        self.clickOrdem = 0
+
+    
+    def getCatsCluster(self):
+        cluster_id = self.cluster_clicado.layer._leaflet_id;
+        cluster_cats = self.clusters[cluster_id]
+        if cluster_cats:
+            return cluster_cats
+
+        cats = {}
+        for m in self.cluster_clicado.layer.getAllChildMarkers():
+            if m.slinfo:
+                cat = m.slinfo.cat
+                if (cats[cat]):
+                    cats[cat].append(m)
+                else:
+                    cats[cat]=[m]
+
+        cats_ord =[]
+        for cat in dict.keys(cats):
+            cats_ord.append([cat,cats[cat]])
+        cats_ord.sort(def (a,b):
+            return b[1].length-a[1].length
+        );  
+        self.clusters[cluster_id]=cats_ord 
+        return cats_ord
+
+    def atualizaPopup(self):
+        cats_ord = self.getCatsCluster()
+        #----
+        html = "<div class='clusterPopup'>"
+        if not self.sl.Icones:
+            html+="<ul>"
+            cat = cats_ord[0]
+            html += "<li><strong>"+cat[0]+" ("+cat[1].length+")</strong></li>"
+            for cat in cats_ord[1:]:
+                html += "<li>"+cat[0]+" ("+cat[1].length+") </li>"
+            html +="</ul>"
+        else:
+            html+='<ul class="icones">'
+            for cat in cats_ord:
+                console.info(cat)
+                cat_id = self.sl.dados.categorias_id[cat[0]]
+                console.info(cat_id)
+                console.info(self.sl.Icones[cat_id].options)
+                iconUrl = self.sl.Icones[cat_id].options.iconUrl
+                html += "<li><p class='img'><img src='"+iconUrl+"'></p><p class='texto'>"+cat[1].length+"</p></li>"
+            html +="</ul>"
+
+
+        html +="<p class='center'><input type='button' onclick='SL(\""+self.sl.map_id+"\").control.clusterCtr.zoomGrupo();' value='expandir grupo' /></p>"
+        html +="</div>"
+        self.popup.setContent(html)
+            
+    def popupOrZoom(self,cluster):
+        self.sl.map.closePopup() 
+        self.popup.setLatLng(cluster.layer.getLatLng())
+        obj = self
+        if self.clickOrdem == 1:
+            self.cluster_clicado = cluster
+            setTimeout(def (): 
+                obj.showPopup(obj.sl.map_id);
+            , 600)
+  
 class Controle:
     def __init__(self,sl):
         obj = self
@@ -134,15 +242,11 @@ class Controle:
  
         $("#"+self.sl.map_id).mouseover(self.hide)
         $("#"+self.sl.map_id).bind('touchstart',self.hide)
-        self.criaPopup()
     
         #registrando eventos popup e markers
-
-       
-        self.sl.map.on('dblclick', def(a):
-            obj.clusterDuploClick()      
-        )
+        
         self.sl.map.on('zoomend', def():
+            obj.sl.map.closePopup()
             obj.atualizarIconesMarcVisiveis()
         )
         self.sl.map.on('moveend', def():
@@ -151,12 +255,8 @@ class Controle:
         self.sl.markers.on('click',def(ev):
             obj.markerClick(ev)
         )
-        self.sl.markers.on('clusterdblclick', def (a) :
-            obj.clusterDuploClick(a)
-        );
-        self.sl.markers.on('clusterclick', def (a): 
-            obj.clusterClick(a)
-        )
+        self.clusterCtr = ClusterCtr(sl)
+       
     def atualizarIconesMarcVisiveis(self):
         if self.sl.map.getZoom() >= 16:
             self.mostrarIconesMarcVisiveis()
@@ -194,75 +294,7 @@ class Controle:
             self.sl.map.setView(center, 18)
             #self.showMarcPopup(m)
 
-    def criaPopup(self):
-       popup = L.popup()
-       self.tout= 0
-       self.popup = popup
-       popup.setContent('<p>Hello world!<br />This is a nice popup.</p>')
-       self.timeUltimoClick = Date().getTime()
-
-    def clusterClick(self,a=None):
-        d = Date()
-        if (d.getTime() - self.timeUltimoClick)>1500: # 2s
-            self.clickOrdem = 1
-            self.popupOrZoom(a)
-        self.timeUltimoClick = d.getTime()
-             
-    def clusterDuploClick(self, a =None):
-        self.cancelPopup()
-
-    def zoomGrupo(self):
-        self.sl.map.closePopup()
-        self.cluster_clicado.layer.zoomToBounds()
-   
-    def cancelPopup(self):
-        self.clickOrdem = 2
-        self.zoomGrupo()
-
-    def showPopup(self, map_id):
-        sl = sl_referencias[map_id]
-        obj=sl.control;
-        
-        if obj.clickOrdem == 1:
-            self.atualizaPopup()
-            obj.popup.openOn(self.sl.map)
-
-        obj.clickOrdem = 0
-
-    
-    def atualizaPopup(self):
-        cats = {}
-        for m in self.cluster_clicado.layer.getAllChildMarkers():
-            if m.slinfo:
-                cat = m.slinfo.cat
-                cats[cat]= cats[cat] + 1  if (cats[cat])  else 1
-        cats_ord =[]
-        for cat in dict.keys(cats):
-            cats_ord.append([cat,cats[cat]])
-        cats_ord.sort(def (a,b):
-            return b[1]-a[1]
-        );    
-        #----
-        html = "<div class='clusterPopup'><ul>"
-        cat = cats_ord[0]
-        html += "<li><strong>"+cat[0]+" ("+cat[1]+")</strong></li>"
-        for cat in cats_ord[1:]:
-            html += "<li>"+cat[0]+" ("+cat[1]+") </li>"
-        html +="</ul>"
-        html +="<p class='center'><input type='button' onclick='SL(\""+self.sl.map_id+"\").control.zoomGrupo();' value='expandir grupo' /></p>"
-        html +="</div>"
-        self.popup.setContent(html)
-            
-    def popupOrZoom(self,cluster):
-        self.sl.map.closePopup() 
-        self.popup.setLatLng(cluster.layer.getLatLng())
-        obj = self
-        if self.clickOrdem == 1:
-            self.cluster_clicado = cluster
-            setTimeout(def (): 
-                obj.showPopup(obj.sl.map_id);
-            , 600)
-   
+  
     def addCatsToControl(self,map_id):
         op ="#"+map_id+ " div.searchlight-opcoes" 
         ul =op + " ul"
@@ -305,13 +337,13 @@ class Marcador:
             self.icon = geoItem.icon
         else:
             self.icon = sl_IconePadrao
-        self.cat_id = geoItem.cat_id
- 
+        
         if geoItem.cat:
+            self.cat_id = geoItem.cat_id
             self.cat = geoItem.cat.replace(",","").replace('"','')
         else:
             self.cat = "descategorizado"
-
+            self.cat_id = 1
 
     def getMark(self):
         if self.m == None:
@@ -327,19 +359,21 @@ class Dados:
     def __init__(self):
         self.marcadores = []
         self.categorias = {}
+        self.categorias_id = {}
 
-    def getCat(self, name):
-        cat=self.categorias[name]
+    def getCat(self, m):
+        cat=self.categorias[m.cat]
         if cat:
             return cat
         else:
-            self.categorias[name] = []
-            return self.categorias[name]
+            self.categorias[m.cat] = []
+            self.categorias_id[m.cat] = m.cat_id
+            return self.categorias[m.cat]
 
     def addItem(self,i,func_convert): 
         geoItem = func_convert(i)
         m =  Marcador(geoItem)
-        cat = self.getCat(m.cat)
+        cat = self.getCat(m)
         cat.append(m)
 
     def catAddMarkers(self,name,cluster):

@@ -16,7 +16,7 @@
     padding:0px;
 
 }
-.searchlight-opcoes ul {
+.searchlight-opcoes ul ,div.clusterPopup ul{
     max-height: 200px; 
     overflow-y:scroll !important;
     padding:5px;
@@ -38,4 +38,38 @@ div.clusterPopup ul li{
 }
 div.clusterPopup p.center{
     text-align:center;
+    clear:both;
+    padding:0px;
+    margin:0px;
     }
+div.clusterPopup ul.icones{
+    max-width:220px;
+    margin:0px;
+    padding:0px;
+    }
+div.clusterPopup ul.icones li {
+    float:left;
+    width:40px;
+    margin-bottom:5px;
+    margin-right:2px;
+    margin-left:2px;
+}
+div.clusterPopup ul.icones p{
+    margin:0px;
+    padding:0px;
+    }
+div.clusterPopup ul.icones p.img{
+    line-height:40px;
+    height:40px;
+    }
+div.clusterPopup ul.icones img{
+    width:40px;
+    height:40px;
+    }
+
+div.clusterPopup ul.icones li p.texto{
+    height:20px;
+    line-height:20px;
+    text-align:center;
+}
+
