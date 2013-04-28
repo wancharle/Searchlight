@@ -1,12 +1,18 @@
 \section{Contextualização}
-Crowdsourcing é a prática de obtenção de serviços necessários, idéias ou conteúdo solicitando contribuições de um grande grupo de pessoas e, especialmente, a partir de uma comunidade on-line, ao invés de funcionários ou fornecedores tradicionais \footnote{\label{wiki-crowd} Definição completa de crowdsourcing \url{ http://en.wikipedia.org/wiki/Crowdsourcing}}.
+O estado atual da comunicação mundial permite as pessoas, de qualquer país, comunicar e trocar conhecimento dos mais diversos assuntos. Essa facilidade de comunicação também facilita a união de indivíduos, que não se conhecem e com realidades sociais completamente opostas, em um projeto com metas em comum.
+
+Um exemplo, dessa união incomum, é o caso de um carpinteiro sul-africano que, ao perder os dedos numa serra, e ficar insatisfeito com os preços e qualidade das próteses disponíveis no mercado, resolveu iniciar um projeto open source de mão biônica com a ajuda de um técnico de efeitos especiais que mora nos EUA. Juntos, esses dois indíviduos que até então não se conheciam, conseguiram criar um projeto de mão biônica por 150 dólares. Após isso, o projeto ganhou visibilidade e patrocínio e já está sendo testado por algumas crianças deficientes da africa do sul\footnote{\label{maobionica} Notícia sobre projeto de mão biônica \url{http://meiobit.com/115807/}}.
+
+Essa melhoria de comunicação, obviamente, também  afeta o campo empresarial. Em algumas empresas, o sistema de "Outsourcing", que é um sistema de aquisição de conhecimento ou tecnologia, começou a ser substituído pelo sistema de "Crowndsourcing", que no campo empresarial, funciona como uma espécie de concorrência: a empresa lança uma espécie de edital informando quanto pode pagar por determinada solução e quem quer que seja poderá oferecer a resposta adequada ao que se procura, independente de ser uma, duas, ou cem pessoas, contanto que resolva o problema.
+
+De modo geral Crowdsourcing é a prática de obtenção de serviços, idéias ou conteúdo solicitando contribuições de um grande grupo de pessoas e, especialmente, a partir de uma comunidade on-line, ao invés de funcionários ou fornecedores tradicionais \footnote{\label{wiki-crowd} Definição completa de crowdsourcing \url{ http://en.wikipedia.org/wiki/Crowdsourcing}}.
 Existem diversos tipos de crowdsourcing, mas nesse trabalho iremos nos focar no crowdsourcing conhecido como \emph{Wisdom of the Crowd} que é um tipo de crowdsourcing que coleta grandes quantidades de informação e as agrega para obter uma visão completa e precisa sobre um determinado tema. Essa visão, dependo do tema de estudo, pode ser representada por um mapa de crowdsourcing.
 
 A produção de mapas crowdsourcing é geralmente feita de forma automática, usualmente temos algum software e/ou site que coleta as informações e as agrupa por meio de algum algorítimo desenvolvido especificamente para o mapa.
 
 A coleta dessas informações pode ocorrer de várias formas, tanto manual como automática. Por exemplo, no site \citeauthoronline{portoalegre} os usuários podem adicionar novas informações através do site, ou seja, ela é feita de forma manual. Alguns sistemas podem coletar informações de forma automática usando programas de computadores, aplicativos de smartphones \cite{thiagarajan_cooperative_2010}  e até mesmo da internet\footnote{ Mapa com informações coletadas do Twitter \url{http://trendsmap.com}}.
 
-Uma vez coletada, essa informação é analisada e exibida em um mapa, mas as vezes o mapa em si não é o produto final e sim algumas informações específicas retiradas dele. Por exemplo, podemos ter mapas que mostrem os congestionamentos no trânsito de uma cidade e um sistema \cite{thiagarajan_vtrack:_2009} que através desse mapa consegue identificar  uma rota mais eficiente com menor consumo de energia, evitando assim ficar parado no congestionamento gastando gasolina.
+Uma vez coletada, essa informação é analisada e exibida em um mapa, mas o mapa em si não é o produto final, e sim algumas informações específicas retiradas dele. Por exemplo, podemos ter mapas que mostrem os congestionamentos no trânsito de uma cidade e um sistema \cite{thiagarajan_vtrack:_2009} que através desse mapa consegue identificar  uma rota mais eficiente com menor consumo de energia, evitando assim ficar parado no congestionamento gastando gasolina.
 
 Em alguns casos, mapas de crowdsourcing possuem informações posicionadas em regiões muito próximas entre si, que devido a quantidade elevada, acabam poluindo a visualização e dificultando a compreensão do mapa. Esse problema pode ser resolvido quando os mapas oferecem mecanismos para agrupar e filtrar essas informações. Um mecanismo ideal é o zoom contextual ou zoom em grupo, que filtra informações irrelevantes, em determinados níveis de zoom, deixando o mapa mais leve e compreensível.
 
@@ -69,16 +75,16 @@ Segundo \cite[42,44]{silva2010solap+} esse tipo de agrupamento, baseado em grelh
 	\legend{Fonte: \citeonline{crimemapatl}}
 \end{figure}
 
-Esse algorítimo resolve o problema de sobreposição de informações. Porém o problema do zoom arbitrário permanece, ilustrado na \autoref{fig-zoomab}, permanece.
+Esse algorítimo resolve o problema de sobreposição de informações. Porém o problema do zoom arbitrário, ilustrado na \autoref{fig-zoomab}, permanece.
 
-O usuário precisa aplicar vários zoons para ir do ZOOM A para o ZOOM C. Mas durante essa interação é gasto tempo e banda, da conexão deinternet, do usuário para exibir os zoons intermediários, quando o ideal seria exibir apenas o ZOOM B.
+O usuário precisa aplicar vários zoons para ir do ZOOM A para o ZOOM C. Mas durante essa interação é gasto tempo e banda, da conexão de internet, do usuário para exibir os zoons intermediários, quando o ideal seria exibir apenas o ZOOM B.
 
-Esse gasto de banda, prejudica\footnote{dispositivos móveis que usam mapas vetoriais, como o iphone da apple, não sofrem desse problema.} a usabilidade de mapas em dispositivos móveis pois, geralmente, eles possuem pouca banda de internet.
+Esse gasto de banda, prejudica a usabilidade de mapas em dispositivos móveis pois, geralmente, eles possuem pouca banda de internet.
 
-Uma abordagem para esse problema é o uso de um zoom inteligente que siga uma hierarquia espacial invés de de simplesmente dobrar a visualização atual. 
+Uma abordagem para esse problema é o uso de um zoom inteligente que siga uma hierarquia espacial invés de simplesmente dobrar a visualização atual. 
 
 \subsubsection{Informações arbitrárias}
-Um subproblema do zoom arbitrário é a exibição de informações desnecessárias em todos os níveis de zoom. Na \autoref{fig-mapaufes} podemos observar o problema, que neste caso, a arbitrariedade esta na exibição de informações e não no numero de zoons. 
+Um subproblema do zoom arbitrário é a exibição de informações desnecessárias em todos os níveis de zoom. Na \autoref{fig-mapaufes} podemos observar o problema, que neste caso, a arbitrariedade está na exibição de informações, e não no número de zoons. 
  \begin{figure}[htb]
 	\caption{\label{fig-mapaufes}Informações necessárias em níveis superiores, de zoom, visualizadas em níveis inferiores}
 	\begin{center}
@@ -99,3 +105,17 @@ A contribuição deste trabalho é o desenvolvimento de um framework para exibi�
 Além disso também foi criado um website do projeto\cite{gitsite} que explica e documenta o framework. O website fornece também um pagina de geração e compartilhamento de mapas por pessoas que não sabem programar.
 
 \section{Estrutura da Monografia}
+Este trabalho está organizado da seguinte forma:
+
+Nesta introdução, é apresentado o contexto geral do projeto, a definição do problema, a solução proposta e a estrutura da monografia.
+
+No capítulo 2, Fundamentação Teórica, apresenta-se uma explicação básica sobre os elementos comuns em mapas geográficos, usados na web, e suas relações com crowdsourcing; uma pesquisa sobre as estratégias para lidar com mapas que possuem muitos marcadores; uma pesquisa sobre algorítimos para agrupamento de pontos; uma revisão sobre o uso de planilhas eletrônicas como principal ambiente de programação para usuários finais em órgãos governamentais e seus usos como base de dados para informações geográficas.
+
+No capítulo 3, Desenvolvimento, é explicado como o projeto foi desenvolvido, quais foram as ferramentas utilizadas, e o motivo da escolha de determinadas tecnologias. 
+
+No capítulo 4, Solução Desenvolvida, é apresentado em detalhes a solução que foi desenvolvida e como utilizá-la.
+
+No capitulo 5, Conclusão, é apresentado as dificuldades encontradas no decorrer do projeto, trabalhos futuros e conclusão geral sobre o projeto.
+
+
+

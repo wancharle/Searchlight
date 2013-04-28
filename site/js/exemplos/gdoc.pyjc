@@ -23,7 +23,7 @@ function showInfo(data) {
         for (i=0;i<data.length;i++){
              var p =  [parseFloat(data[i].latitude.replace(',','.')), 
                        parseFloat(data[i].longitude.replace(',','.'))]; 
-            L.marker(p).addTo(map_gdoc).bindPopup(data[i].textomarcador);
+            L.marker(p).addTo(map_gdoc).bindPopup(data[i].texto);
         }
 }
 
