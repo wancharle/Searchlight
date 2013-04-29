@@ -7,16 +7,6 @@
   <meta name="description" content="Searchlight Facilitando a visualização de informações crowdsourcing em Mapas Web através de Zoom.." />
   <link rel="stylesheet" type="text/css" media="screen" href="css/stylesheet.css">
   <link rel="stylesheet" type="text/css" media="screen" href="css/exemplos.css">
-  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
-  <!--[if lte IE 8]>
-  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
-  <![endif]-->
-
-  <!-- marker cluster -->
-  <link rel="stylesheet" href="js/libs/leaflet/markercluster/MarkerCluster.css" />
-  <link rel="stylesheet" href="js/libs/leaflet/markercluster/MarkerCluster.Default.css" />
-  <!--[if lte IE 8]><link rel="stylesheet" href="js/libs/leaflet.markercluser/MarkerCluster.Default.ie.css" /><![endif]-->
-
 
   <script src="js/searchlight.js"></script>
   <script src="js/exemplos.js"></script>
@@ -50,39 +40,33 @@
 <p>O projeto tem 3 objetivos principais:</p>
 
 <ul>
-<li>Organizar os dados: por camadas, grupos e categorias.</li>
+<li>Organizar os dados no mapa de forma que evite sobreposição de informações.</li>
 
-<li>Filtrar os dados: por zoom contextual, conteudo, categorias, tempo e hierarquia.</li>
+<li>Permitir o filtro dos dados por zoom, categorias e tempo.</li>
 
-<li>Usabilidade: fácil acesso para programadores mas também para usuários finais.</li>
+<li>Fácilitar a geração de mapas tanto por programadores quanto por usuários finais.</li>
 </ul>
 
 <h2 id='exemplos'>Exemplos</h2>
 
-<p>Alguns exemplos, dos recursos fornecidos pelo framework, podem ser vistos a seguir.</p>
+<p>Alguns exemplos, dos recursos fornecidos pelo framework Searchlight, podem ser vistos a seguir.</p>
 
-<h3 id='escolha_de_camadas'>Escolha de camadas</h3>
+<h3 id='filtro_por_categorias'>Filtro por categorias</h3>
 
-<p>No mapa abaixo, alguns marcadores não são exibidos se desabilitarmos a visualização da camada &#8216;centros&#8217;. <div id='map'> </div></p>
-
-<h3 id='zoom_inteligente'>Zoom Inteligente</h3>
-
-<p>Um problema irritante dos mapas atuais é quantidade de zooms necessários para se chegar ao lugar de interesse no mapa.</p>
-
-<p>Um forma de contornar isso é evitando zooms intermediários. No exemplo abaixo é possivel diminuir o zoom do mapa, mas ao tentar aumentá-lo , o mapa pula para um zoom específico e mais relevante. <div id='map2'> </div></p>
+<p>O mapa abaixo exibe a localização de todos os pontos de ônibus da linha 163 da cidade de Vitória - ES. O filtro de categorias, no canto superior direito, nos permite filtrar os pontos de ônibus pelas categorias IDA e VOLTA, separando assim os pontos que o ônibus para na ida e volta da viagem. <div id='map1'> </div></p>
 
 <h3 id='agrupamento_e_zoom_contextual'>Agrupamento e Zoom Contextual</h3>
 
 <p>Quando temos muitos marcadores podemos agrupá-los para melhorar a visualização. Além disso, algumas informações são irrelevantes para determinados níveis de zoom, e podem ser agrupadas de acordo com o zoom.</p>
 <div id='map_cluster'> </div>
-<p>Um recurso interessante é o zoom contextual. No mapa acima, esse zoom pode ser feito ao clicarmos em um grupo. Observe que nesse caso é feito um zoom inteligente que mostra toda a area do agrupamento.</p>
+<p>Um recurso interessante é o zoom contextual. No mapa acima, esse zoom pode ser feito ao clicarmos em um grupo. Observe que nesse caso é feito um zoom que mostra toda a area do agrupamento. Esse zoon varia de acordo com o contexto, de forma que para exibir alguns grupos o zoom terá que avancar nivéis diferences na hieraquia padrão de zoom.</p>
 
-<p>No mapa anterior usamos o agrupamento como contexto, mas outros contextos podem ser usados como parâmetro de zoom. Podemos efeutar um zoom baseado num atributo, categoria ou região dos marcadores.</p>
+<h3 id='baloes_de_resumo_e_foco'>Balãoes de Resumo e Foco</h3>
 
-<p>O mapa abaixo exemplifica isso:</p>
+<p>No mapa anterior usamos o grupo como contexto do zoom, porém em mapas maiores, com grupos maiores, isso ponde não ser suficiente. Em casos assim, focar em um subgrupo específico, exbindo no mapa apenas os elementos pertencentes do subgrupo, pode ser uma estratégia útil.</p>
 
-<p>&#8212;&#8212;&#8211; Em construção &#8212;&#8212;&#8212;&#8212;-</p>
-
+<p>O mapa abaixo exemplifica isso. Ao clicarmos num grupo, o mapa nos apresenta um balão com um resumo sobre os subgrupos pertencentes ao grupo. Se clicarmos em subgrupo o mapa exibe apenas os elementos do subgrupo. Para voltar a visualizção anterior basta clicar na opção DESFOCAR:</p>
+<div id='map'> </div>
 <h3 id='gerao_automtica_de_mapa'>Geração automática de mapa</h3>
 
 <p>Searchlight permite o uso de planilhas eletrônicas do google docs como base de dados para o seu mapa automaticamente (não é preciso saber programar).</p>
@@ -91,36 +75,19 @@
 
 <p>Qualquer alteração na planilha é refletida automaticamente no mapa. Se adicionarmos uma nova linha na planilha, com dados de um marcador, o mapa automaticamente exibe o novo marcador, se tirarmos uma linha o marcador respectivo some.</p>
 
-<h4 id='gerando_e_compartilhando_um_mapa'>Gerando e compartilhando um mapa</h4>
+<h3 id='compartilhar_mapa'>Compartilhar mapa</h3>
 
 <p>Para criar e compartilhar seu próprio mapa, basta criar uma planilha publica no google docs contendo os dados geograficos que deseja compartilhar. Observe, é claro, a convenção de nomes para as colunas da planilha.</p>
 
-<p>Após criar a planilha, cole o link publico no campo abaixo e clique em compartilhar. <form method='GET' action='view.html'>Endereço da planilha:  <input type='text' value='https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html' name='data' style='width:600px' />
+<p>Após criar a planilha, cole o link publico no campo abaixo e clique em compartilhar. <form method='GET' action='view.html'>Endereço da planilha:  <input style='width:600px' type='text' name='data' value='https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html' />
   <input type='submit' value='compartilhar' />
 </form></p>
 
-<h3 id='bales_de_resumo'>Balões de Resumo</h3>
+<h3 id='filtro_por_tempo'>Filtro por Tempo</h3>
 
-<p>No mapa abaixo observamos o uso de balões para mostrar o conteúdo resumido de um agrupamento de marcadores.</p>
+<p>No mapa abaixo podemos filtrar e exibir apenas os marcadores que pertencem as categorias escolhidos e com atributo data dentro do período de tempo escolhido.</p>
 
-<p>O balão exibe as categorias em que os membros do grupo pertecem assim como o número de membros por categoria.</p>
-
-<p>&#8212;&#8212;&#8211; Em construção &#8212;&#8212;&#8212;&#8212;-</p>
-
-<h3 id='filtro_por_categoria_e_tempo'>Filtro por Categoria e Tempo</h3>
-
-<p>No mapa abaixo podemos filtrar os marcadores e exibir apenas os que pertencem as categorias escolhidos e com atributo data dentro do período de tempo escolhido.</p>
-
-<p>&#8212;&#8212;&#8211; Em construção &#8212;&#8212;&#8212;&#8212;-</p>
-
-<h3 id='buscar_em_mapa'>Buscar em mapa</h3>
-
-<p>No mapa abaixo podemos buscar por um marcador, ou um conjunto de marcadores, usando o seu título e/ou outros atributos no campo de busca.</p>
-
-<p>&#8212;&#8212;&#8211; Em construção &#8212;&#8212;&#8212;&#8212;-</p>
-
-<h3 id='geocoding'>geocoding</h3>
-<div id='map_geo'> </div>
+<p>&#8212;- em construção &#8212;&#8211;</p>
       </section>
     </div>
 

@@ -12,7 +12,6 @@ import libs.jquery191min
 import libs.jquery.getUrlParam
 import libs.tabletop
 import control
-import exemplos.portoalegre
 import utilidades
 
 # marcadores
@@ -33,8 +32,6 @@ def main():
     else:
        mps = new Searchlight()
     
-def searchlight_callback(data):
-    referencia_atual.carregaDados(data)
 
 sl_IconCluster = new L.DivIcon({ html: '<div><span>1</span></div>', className: 'marker-cluster marker-cluster-small', iconSize: new L.Point(40, 40) });
 sl_IconePadrao = new L.Icon.Default()
@@ -45,10 +42,10 @@ sl_referencias = {}
 def SL(map_id):
     "funcao global para pegar a referencia do objeto mapa"
     return sl_referencias[map_id]
-
+window.SL = SL
 class Searchlight:
 
-    def __init__(self, url=None,func_convert=None,map_id="map_gdoc",icones = None,clusterizar=True,esconder_icones=True):
+    def __init__(self, url=None,func_convert=None,map_id="map",icones = None,clusterizar=True,esconder_icones=True):
         nonlocal referencias
         sl_referencias[map_id]  = self 
         self.map_id= map_id
@@ -88,20 +85,24 @@ class Searchlight:
         self.control = new Controle(self)
     
     def get_data(self):
-        nonlocal referencia_atual
-        referencia_atual = self
 
         obj = self
         self.markers.fire("data:loading")
        
         # obtendo dados
         if self.url.indexOf("docs.google.com/spreadsheet") > -1 :
-            Tabletop.init( { 'key': self.url, 'callback': searchlight_callback, 'simpleSheet': true } )
+            Tabletop.init( { 'key': self.url, 'callback': def (data):
+                obj.carregaDados(data)
+            , 'simpleSheet': true } )
         else:
             if self.url[:4]=="http":
-                getJSONP(self.url, searchlight_callback)
+                getJSONP(self.url, def (data):
+                    obj.carregaDados(data)
+                )
             else:
-                getJSON(self.url, searchlight_callback)
+                getJSON(self.url, def (data):
+                    obj.carregaDados(data)
+                )
     
     def add_itens_gdoc(self,data):
         for d in data:
@@ -400,12 +401,14 @@ class Controle:
         $(self.id_opcoes).hide()
         self.clusterCtr.update()
         self.sl.markers.clearLayers();
-        self.sl.markers.fire("data:loading")
-        setTimeout("SL('"+self.sl.map_id+"').control.carregaDados()",50);
+
+        if $("input:checkbox[name="+self.sl.map_id+"-cat]:checked").size() > 0:
+            self.sl.markers.fire("data:loading")
+            setTimeout("SL('"+self.sl.map_id+"').control.carregaDados()",50);
 
     def carregaDados(self)
         sl = self.sl
-        $("input:checkbox[name="+self.sl.map_id.replace("#","")+"-cat]:checked").each(def ():
+        $("input:checkbox[name="+self.sl.map_id+"-cat]:checked").each(def ():
             cat=$(self).val();
             sl.dados.catAddMarkers(cat,sl.markers);
         );

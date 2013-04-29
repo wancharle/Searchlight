@@ -17,8 +17,8 @@ Icones["10"] = new L.icon({ iconUrl:"images/pin_10.png",iconSize:     [45, 58], 
 Icones["11"] = new L.icon({ iconUrl:"images/pin_11.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
 Icones["12"] = new L.icon({ iconUrl:"images/pin_12.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
 
-def portoalegre_cc():
-    convert_item = def (item):
+def portoalegre_cc(map_id="map"):
+    convert_item_porto = def (item):
         item_convertido = {}
         item_convertido.longitude = ""+item.cause.longitude
         item_convertido.latitude = "" +item.cause.latitude
@@ -27,4 +27,6 @@ def portoalegre_cc():
         item_convertido.cat_id = item.cause.category_id
         item_convertido.icon = Icones[item_convertido.cat_id]
         return item_convertido 
-    mps = new Searchlight(pacc_jsonp,convert_item,"map_gdoc",Icones)
+    mps2 = new Searchlight(pacc_jsonp,convert_item_porto,map_id,Icones)
+
+window.portoalegre_cc = portoalegre_cc

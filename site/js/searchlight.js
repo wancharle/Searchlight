@@ -853,101 +853,6 @@ var MyControl = L.Control.extend({
     }
 });
 
-portoalegrecc_json = "http://portoalegre.cc/causes/visibles?topLeftY=-29.993308319952344&topLeftX=-51.05793032165525&bottomRightY=-30.127023880027313&bottomRightX=-51.34906801696775&currentZoom=1&maxZoom=6";
-pacc_jsonp = "https://dl.dropbox.com/u/877911/portoalegre.js";
-Icones = {
-  
-};
-Icones["1"] = new L.icon({
-  iconUrl: "images/pin_1.png",
-  iconSize: [45, 58],
-  iconAnchor: [23, 48],
-  popupAnchor: [0, (-40)]
-});
-Icones["2"] = new L.icon({
-  iconUrl: "images/pin_2.png",
-  iconSize: [45, 58],
-  iconAnchor: [23, 48],
-  popupAnchor: [0, (-40)]
-});
-Icones["3"] = new L.icon({
-  iconUrl: "images/pin_3.png",
-  iconSize: [45, 58],
-  iconAnchor: [23, 48],
-  popupAnchor: [0, (-40)]
-});
-Icones["4"] = new L.icon({
-  iconUrl: "images/pin_4.png",
-  iconSize: [45, 58],
-  iconAnchor: [23, 48],
-  popupAnchor: [0, (-40)]
-});
-Icones["5"] = new L.icon({
-  iconUrl: "images/pin_5.png",
-  iconSize: [45, 58],
-  iconAnchor: [23, 48],
-  popupAnchor: [0, (-40)]
-});
-Icones["6"] = new L.icon({
-  iconUrl: "images/pin_6.png",
-  iconSize: [45, 58],
-  iconAnchor: [23, 48],
-  popupAnchor: [0, (-40)]
-});
-Icones["7"] = new L.icon({
-  iconUrl: "images/pin_7.png",
-  iconSize: [45, 58],
-  iconAnchor: [23, 48],
-  popupAnchor: [0, (-40)]
-});
-Icones["8"] = new L.icon({
-  iconUrl: "images/pin_8.png",
-  iconSize: [45, 58],
-  iconAnchor: [23, 48],
-  popupAnchor: [0, (-40)]
-});
-Icones["9"] = new L.icon({
-  iconUrl: "images/pin_9.png",
-  iconSize: [45, 58],
-  iconAnchor: [23, 48],
-  popupAnchor: [0, (-40)]
-});
-Icones["10"] = new L.icon({
-  iconUrl: "images/pin_10.png",
-  iconSize: [45, 58],
-  iconAnchor: [23, 48],
-  popupAnchor: [0, (-40)]
-});
-Icones["11"] = new L.icon({
-  iconUrl: "images/pin_11.png",
-  iconSize: [45, 58],
-  iconAnchor: [23, 48],
-  popupAnchor: [0, (-40)]
-});
-Icones["12"] = new L.icon({
-  iconUrl: "images/pin_12.png",
-  iconSize: [45, 58],
-  iconAnchor: [23, 48],
-  popupAnchor: [0, (-40)]
-});
-portoalegre_cc = function() {
-  var convert_item, mps;
-  convert_item = (function(item) {
-    var item_convertido;
-    item_convertido = {
-      
-    };
-    item_convertido.longitude = ("" + item.cause.longitude);
-    item_convertido.latitude = ("" + item.cause.latitude);
-    item_convertido.texto = item.cause.category_name;
-    item_convertido.cat = item.cause.category_name;
-    item_convertido.cat_id = item.cause.category_id;
-    item_convertido.icon = Icones[item_convertido.cat_id];
-    return item_convertido;
-  });
-  mps = new Searchlight(pacc_jsonp, convert_item, "map_gdoc", Icones);
-};
-
 getJSONP = function(url, func) {
   $.ajax({
     "url": url,
@@ -997,10 +902,6 @@ main = function() {
 
 };
 
-searchlight_callback = function(data) {
-  referencia_atual.carregaDados(data);
-};
-
 sl_IconCluster = new L.DivIcon({
   html: "<div><span>1</span></div>",
   className: "marker-cluster marker-cluster-small",
@@ -1016,10 +917,11 @@ SL = function(map_id) {
   return sl_referencias[map_id];
 };
 
+window.SL = SL;
 Searchlight = function(url, func_convert, map_id, icones, clusterizar, esconder_icones) {
   if (typeof url === "undefined") {url = null};
   if (typeof func_convert === "undefined") {func_convert = null};
-  if (typeof map_id === "undefined") {map_id = "map_gdoc"};
+  if (typeof map_id === "undefined") {map_id = "map"};
   if (typeof icones === "undefined") {icones = null};
   if (typeof clusterizar === "undefined") {clusterizar = true};
   if (typeof esconder_icones === "undefined") {esconder_icones = true};
@@ -1071,21 +973,25 @@ Searchlight.prototype.create = (function() {
 });
 Searchlight.prototype.get_data = (function() {
   var obj;
-  
-  referencia_atual = this;
   obj = this;
   this.markers.fire("data:loading");
   if ((this.url.indexOf("docs.google.com/spreadsheet") > (-1))) {
     Tabletop.init({
       "key": this.url,
-      "callback": searchlight_callback,
+      "callback": (function(data) {
+        obj.carregaDados(data);
+      }),
       "simpleSheet": true
     });
   } else {
     if ((this.url.slice(0, 4) == "http")) {
-      getJSONP(this.url, searchlight_callback);
+      getJSONP(this.url, (function(data) {
+        obj.carregaDados(data);
+      }));
     } else {
-      getJSON(this.url, searchlight_callback);
+      getJSON(this.url, (function(data) {
+        obj.carregaDados(data);
+      }));
     }
 
   }
@@ -1520,13 +1426,16 @@ Controle.prototype.update = (function() {
   $(this.id_opcoes).hide();
   this.clusterCtr.update();
   this.sl.markers.clearLayers();
-  this.sl.markers.fire("data:loading");
-  setTimeout((("SL('" + this.sl.map_id) + "').control.carregaDados()"), 50);
+  if (($((("input:checkbox[name=" + this.sl.map_id) + "-cat]:checked")).size() > 0)) {
+    this.sl.markers.fire("data:loading");
+    setTimeout((("SL('" + this.sl.map_id) + "').control.carregaDados()"), 50);
+  }
+
 });
 Controle.prototype.carregaDados = (function() {
   var sl;
   sl = this.sl;
-  $((("input:checkbox[name=" + this.sl.map_id.replace("#", "")) + "-cat]:checked")).each((function() {
+  $((("input:checkbox[name=" + this.sl.map_id) + "-cat]:checked")).each((function() {
     var cat;
     cat = $(this).val();
     sl.dados.catAddMarkers(cat, sl.markers);

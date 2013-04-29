@@ -23,12 +23,11 @@
 }
 .searchlight-opcoes ul ,div.clusterPopup ul{
     max-height: 200px; 
-    overflow-y:scroll !important;
+    overflow-y:auto !important;
     padding:5px;
     }
 .searchlight-opcoes ul li {
     list-style:none;padding:0px;
-    
     }
 
 .searchlight-control p.center{
@@ -82,3 +81,12 @@ div.clusterPopup ul.icones li p.texto{
     padding:0px;
 
     }
+
+
+@-moz-document url-prefix() {
+    div.clusterPopup ul.icones {
+        width:220px;
+        max-width:260px!important;
+        }
+} 
+
