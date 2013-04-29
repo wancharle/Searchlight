@@ -24,14 +24,14 @@ BIBLIOTECA = [-20.276519, -40.304503]
 public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html'
 urlosm = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
 attribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
-
+L.Icon.Default.imagePath=getSLpath()+"../images/leaflet"
 
 def main():
     mainf = getURLParameter("mainf") # define uma funcao de inicializacao
     if mainf:
        eval(mainf+"()")
     else:
-        mps = new Searchlight()
+       mps = new Searchlight()
     
 def searchlight_callback(data):
     referencia_atual.carregaDados(data)
@@ -94,7 +94,10 @@ class Searchlight:
         if self.url.indexOf("docs.google.com/spreadsheet") > -1 :
             Tabletop.init( { 'key': self.url, 'callback': searchlight_callback, 'simpleSheet': true } )
         else:
-            getJSONP(self.url, searchlight_callback)
+            if self.url[:4]=="http":
+                getJSONP(self.url, searchlight_callback)
+            else:
+                getJSON(self.url, searchlight_callback)
     
     def add_itens_gdoc(self,data):
         for d in data:
@@ -104,6 +107,7 @@ class Searchlight:
         self.map.fitBounds(self.basel.getBounds())
 
     def carregaDados(self, data):
+
         for d in data:
             self.addItem(d) 
 
@@ -112,6 +116,8 @@ class Searchlight:
         self.control.atualizarIconesMarcVisiveis()
         self.markers.fire("data:loaded") 
         self.control.addCatsToControl(self.map_id)
+        if window['onSLcarregaDados'] != undefined:
+            onSLcarregaDados(self)
 
     def addItem(self,item):
         self.dados.addItem(item,self.func_convert)
@@ -277,7 +283,6 @@ class ClusterCtr:
         obj = self
         if self.clickOrdem == 1:
             self.cluster_clicado = cluster
-
             setTimeout(def (): 
                 obj.showPopup(obj.sl.map_id);
             , 600)
@@ -454,6 +459,11 @@ class Dados:
         cat = self.getCat(m)
         cat.append(m)
 
+    def getCatLatLng(self,name):
+        v = []
+        for m in self.categorias[name]:
+            v.append(m.getMark().getLatLng())
+        return v 
     def catAddMarkers(self,name,cluster):
        for m in self.categorias[name]:
             cluster.addLayer(m.getMark())

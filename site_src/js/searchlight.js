@@ -801,9 +801,32 @@ var scriptFolder = scriptPath.substr(0, scriptPath.lastIndexOf( '/' )+1 );
 $("<link/>", {
    rel: "stylesheet",
    type: "text/css",
+   href: "http://cdn.leafletjs.com/leaflet-0.5/leaflet.css"
+}).appendTo("head");
+
+$("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
+   href: scriptFolder+"libs/leaflet/markercluster/MarkerCluster.css"
+}).appendTo("head");
+
+$("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
+   href: scriptFolder+"libs/leaflet/markercluster/MarkerCluster.Default.css"
+}).appendTo("head");
+
+
+$("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
    href: scriptFolder+"../css/searchlight.css"
 }).appendTo("head");
 
+
+function getSLpath(){
+    return scriptFolder
+} 
 var MyControl = L.Control.extend({
     options: {
         position: 'topright'
@@ -934,6 +957,22 @@ getJSONP = function(url, func) {
   });
 };
 
+getJSON = function(url, func) {
+  $.ajax({
+    "url": url,
+    "success": func,
+    "dataType": "json",
+    "beforeSend": (function(xhr) {
+      if (xhr.overrideMimeType) {
+        xhr.overrideMimeType("application/json");
+      }
+
+    }),
+    "contentType": "application/json",
+    "mimeType": "textPlain"
+  });
+};
+
 getURLParameter = function(name) {
   return $(document).getUrlParam(name);
 };
@@ -946,6 +985,7 @@ BIBLIOTECA = [(-20.276519), (-40.304503)];
 public_spreadsheet_url = "https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html";
 urlosm = "http://{s}.tile.osm.org/{z}/{x}/{y}.png";
 attribution = "Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery \u00a9 <a href=\"http://cloudmade.com\">CloudMade</a>";
+L.Icon.Default.imagePath = (getSLpath() + "../images/leaflet");
 main = function() {
   var mainf, mps;
   mainf = getURLParameter("mainf");
@@ -1033,7 +1073,12 @@ Searchlight.prototype.get_data = (function() {
       "simpleSheet": true
     });
   } else {
-    getJSONP(this.url, searchlight_callback);
+    if ((this.url.slice(0, 4) == "http")) {
+      getJSONP(this.url, searchlight_callback);
+    } else {
+      getJSON(this.url, searchlight_callback);
+    }
+
   }
 
 });
@@ -1066,6 +1111,10 @@ Searchlight.prototype.carregaDados = (function(data) {
   this.control.atualizarIconesMarcVisiveis();
   this.markers.fire("data:loaded");
   this.control.addCatsToControl(this.map_id);
+  if ((window["onSLcarregaDados"] != undefined)) {
+    onSLcarregaDados(this);
+  }
+
 });
 Searchlight.prototype.addItem = (function(item) {
   this.dados.addItem(item, this.func_convert);
@@ -1537,12 +1586,25 @@ Dados.prototype.addItem = (function(i, func_convert) {
   cat = this.getCat(m);
   cat.append(m);
 });
-Dados.prototype.catAddMarkers = (function(name, cluster) {
-  var m;
+Dados.prototype.getCatLatLng = (function(name) {
+  var m, v;
+  v = [];
   var _$tmp40_data = _$rapyd$_iter(this.categorias[name]);
   var _$tmp41_len = _$tmp40_data.length;
   for (var _$tmp42_index = 0; _$tmp42_index < _$tmp41_len; _$tmp42_index++) {
     m = _$tmp40_data[_$tmp42_index];
+
+    v.append(m.getMark().getLatLng());
+  }
+
+  return v;
+});
+Dados.prototype.catAddMarkers = (function(name, cluster) {
+  var m;
+  var _$tmp43_data = _$rapyd$_iter(this.categorias[name]);
+  var _$tmp44_len = _$tmp43_data.length;
+  for (var _$tmp45_index = 0; _$tmp45_index < _$tmp44_len; _$tmp45_index++) {
+    m = _$tmp43_data[_$tmp45_index];
 
     cluster.addLayer(m.getMark());
   }
@@ -1550,10 +1612,10 @@ Dados.prototype.catAddMarkers = (function(name, cluster) {
 });
 Dados.prototype.addMarkersTo = (function(cluster) {
   var k;
-  var _$tmp43_data = _$rapyd$_iter(dict.keys(this.categorias));
-  var _$tmp44_len = _$tmp43_data.length;
-  for (var _$tmp45_index = 0; _$tmp45_index < _$tmp44_len; _$tmp45_index++) {
-    k = _$tmp43_data[_$tmp45_index];
+  var _$tmp46_data = _$rapyd$_iter(dict.keys(this.categorias));
+  var _$tmp47_len = _$tmp46_data.length;
+  for (var _$tmp48_index = 0; _$tmp48_index < _$tmp47_len; _$tmp48_index++) {
+    k = _$tmp46_data[_$tmp48_index];
 
     this.catAddMarkers(k, cluster);
   }
