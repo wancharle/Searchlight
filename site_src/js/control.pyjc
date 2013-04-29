@@ -30,7 +30,7 @@ $("<link/>", {
 }).appendTo("head");
 
 
-function getSLpath(){
+window.getSLpath= function(){
     return scriptFolder
 } 
 var MyControl = L.Control.extend({
