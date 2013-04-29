@@ -2,6 +2,11 @@
 def getJSONP(url,func):
     $.ajax({ 'url': url, 'success': func, 'type':"POST", 'dataType': 'jsonp'})
 #
+def getJSON(url,func):
+    $.ajax({ 'url': url, 'success': func, 'dataType': "json", 'beforeSend':def (xhr):
+        if (xhr.overrideMimeType):
+            xhr.overrideMimeType("application/json");
+    ,'contentType': 'application/json','mimeType': "textPlain"})
 def getURLParameter(name):
     return $(document).getUrlParam(name)
 

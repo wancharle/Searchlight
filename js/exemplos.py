@@ -1,42 +1,51 @@
 
 import exemplos.markercluster
-import exemplos.gdoc
-import exemplos.geo
-import exemplos.exemplo2
+import exemplos.portoalegre
 
-urlosm = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
-attribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>';
+OnibusAzul = new L.icon({ iconUrl:getSLpath()+"../images/onibus_azul.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
+OnibusVolta = new L.icon({ iconUrl:getSLpath()+"../images/onibus_volta.png",iconSize:     [45, 58], iconAnchor:   [23, 48], popupAnchor: [0, -40] })
+pontos_inseridos = 0
+def converte_item1(item):
+    nonlocal pontos_inseridos
+    item_convertido = {}
+    item_convertido.longitude = ""+item.longitude
+    item_convertido.latitude = "" +item.latitude
+    item_convertido.texto = item.ponto + " ordem=" + item.ordem
+    pontos_inseridos +=1
+    if (pontos_inseridos < 68):
+        item_convertido.icon = OnibusAzul
+        item_convertido.cat_id = 1
+        item_convertido.cat = 'IDA'
+    else:
+        item_convertido.cat_id = 2
+        item_convertido.cat = 'VOLTA'
+        item_convertido.icon = OnibusVolta
+    
+    return item_convertido
 
-# marcadores
-UFES = [-20.277233,-40.303752 ]
-CT = [-20.273530, -40.305448]
-CEMUNI = [ -20.279483,-40.302690]
-BIBLIOTECA = [-20.276519, -40.304503]
+def exemplo1(): 
+    mps = new Searchlight("js/exemplos/121.json",converte_item1,"map1",None,False,False)
 
-def exemplo1():
-    nonlocal UFES, CT, CEMUNI,BIBLIOTECA, urlosm,attribution
-    CamadaBasica = L.tileLayer(urlosm,  { attribution: attribution, maxZoom: 18 })
-   
-    markers = [L.marker(CT).bindPopup('CT.'),
-        L.marker(CEMUNI).bindPopup('CEMUNI'), 
-        L.marker(BIBLIOTECA).bindPopup('Biblioteca')];
-    centros =  new L.FeatureGroup(markers);     
-    map = L.map('map',{layers:[CamadaBasica,centros],center: UFES,zoom: 15});
-    L.marker(UFES).addTo(map).bindPopup('UFES').openPopup();
-    baseMaps = {};
-    overlayMaps = {"Centros": centros};
-     
-    L.control.layers(baseMaps, overlayMaps).addTo(map)
+window.onSLcarregaDados= def (sl):
+    v=sl.dados.getCatLatLng('IDA')
+    polyline = L.polyline(v, {color: 'blue'}).addTo(sl.map);
+    v=sl.dados.getCatLatLng('VOLTA')
+    polyline = L.polyline(v, {color: 'black'}).addTo(sl.map);
+
+
+ 
+
+def exemplo_gdoc():
+    public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html';
+    mps = new Searchlight(public_spreadsheet_url,null,'map_gdoc')
 
 
 
 
 def exemplos():
-    pass
     exemplo1() 
-    exemplo2()
     exemplo_markercluster()
     exemplo_gdoc()
-    exemplo_geocoding()
+    portoalegre_cc('map')
 
 

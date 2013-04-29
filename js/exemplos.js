@@ -42,134 +42,166 @@ function exemplo_markercluster(){
         
         map2.setZoom(14);
 }
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html';
-
- 
-
-var map_gdoc;
-function exemplo_gdoc(){
-
-          Tabletop.init( { key: public_spreadsheet_url,
-                         callback: showInfo,
-                         simpleSheet: true } );
-   
-   var CamadaBasica = L.tileLayer(urlosm,  { attribution: attribution, maxZoom: 18 })
-   
-   
-   map_gdoc = L.map('map_gdoc',{layers:[CamadaBasica],center: UFES,zoom: 15});
-
-    
-
-
- }
-
-function showInfo(data) {
-        for (i=0;i<data.length;i++){
-             var p =  [parseFloat(data[i].latitude.replace(',','.')), 
-                       parseFloat(data[i].longitude.replace(',','.'))]; 
-            L.marker(p).addTo(map_gdoc).bindPopup(data[i].textomarcador);
-        }
-}
-
-var map_geo;
-function add_iti(data){
-        var markerLocation = new L.LatLng(data.features[0].centroid.coordinates[1], data.features[0].centroid.coordinates[0]);
-	    L.marker(markerLocation).addTo(map_geo);  
-    
-       // console.info(markerLocation); 
-    }
-function exemplo_geocoding() {
-   var CamadaBasica = L.tileLayer(urlosm,  { attribution: attribution, maxZoom: 18 })
- 
-   map_geo = L.map('map_geo',{layers:[CamadaBasica],center: UFES,zoom: 15});
-   L.marker(UFES).addTo(map_geo)
-        .bindPopup('UFES')
-         .openPopup();
-
-    geoCode("street:Av. Fernando Ferrari;city:vitoria","vitoria",add_iti);
-    geoCode("street:BR-101 NORTE;city:serra:",'',add_iti);
-    geoCode("street:RUA sao domingos;city:serrA",'BR-101 NORTE',add_iti);
-
-   
-}
-
-function geoCode(address, centro, callback) {
-	var firstPart = 'http://geocoding.cloudmade.com/bbcf9165c23646efbb1828828278c8bc/geocoding/v2/find.geojs?query='
-	var url = firstPart + encodeURI(address)
-	$.ajax({
-	  url: url,
-	  success: callback,
-      type:"POST",
-      dataType: 'jsonp',
-	})
-}
- 
-
-var ultimo_zoom = 5; // para comecar dando zoom out
-function exemplo2() {
-
-   var CamadaBasica = L.tileLayer(urlosm,  { attribution: attribution, maxZoom: 18 })
-   
-   var  markers = [L.marker(CT).bindPopup('CT.'),
-        L.marker(CEMUNI).bindPopup('CEMUNI'), 
-        L.marker(BIBLIOTECA).bindPopup('Biblioteca')];
-   var centros = new L.FeatureGroup(markers);     
- 
-   var map = L.map('map2',{layers:[CamadaBasica,centros],center:  UFES,zoom: 5});
-    ///centros.addTo(map)
-
-    map.on('zoomend', onZoomend);
-    function onZoomend(){
-        var southWest = new L.LatLng(-20.273530, -40.305448),
-            northEast = new L.LatLng( -20.279483,-40.302690),
-            bounds = new L.LatLngBounds(southWest, northEast);
-        if(map.getZoom()>ultimo_zoom){ 
-            ultimo_zoom = map.getZoom();
-            map.fitBounds(bounds.pad(0.1));
-        };
-        ultimo_zoom = map.getZoom();
-     };
- 
- }
-
-
-urlosm = "http://{s}.tile.osm.org/{z}/{x}/{y}.png";
-attribution = "Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery \u00a9 <a href=\"http://cloudmade.com\">CloudMade</a>";
-UFES = [(-20.277233), (-40.303752)];
-CT = [(-20.27353), (-40.305448)];
-CEMUNI = [(-20.279483), (-40.30269)];
-BIBLIOTECA = [(-20.276519), (-40.304503)];
-exemplo1 = function() {
-  var CamadaBasica, baseMaps, centros, map, markers, overlayMaps;
+portoalegrecc_json = "http://portoalegre.cc/causes/visibles?topLeftY=-29.993308319952344&topLeftX=-51.05793032165525&bottomRightY=-30.127023880027313&bottomRightX=-51.34906801696775&currentZoom=1&maxZoom=6";
+pacc_jsonp = "https://dl.dropbox.com/u/877911/portoalegre.js";
+Icones = {
   
-  CamadaBasica = L.tileLayer(urlosm, {
-    attribution: attribution,
-    maxZoom: 18
+};
+Icones["1"] = new L.icon({
+  iconUrl: "images/pin_1.png",
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+Icones["2"] = new L.icon({
+  iconUrl: "images/pin_2.png",
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+Icones["3"] = new L.icon({
+  iconUrl: "images/pin_3.png",
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+Icones["4"] = new L.icon({
+  iconUrl: "images/pin_4.png",
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+Icones["5"] = new L.icon({
+  iconUrl: "images/pin_5.png",
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+Icones["6"] = new L.icon({
+  iconUrl: "images/pin_6.png",
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+Icones["7"] = new L.icon({
+  iconUrl: "images/pin_7.png",
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+Icones["8"] = new L.icon({
+  iconUrl: "images/pin_8.png",
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+Icones["9"] = new L.icon({
+  iconUrl: "images/pin_9.png",
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+Icones["10"] = new L.icon({
+  iconUrl: "images/pin_10.png",
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+Icones["11"] = new L.icon({
+  iconUrl: "images/pin_11.png",
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+Icones["12"] = new L.icon({
+  iconUrl: "images/pin_12.png",
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+portoalegre_cc = function(map_id) {
+  var convert_item_porto, mps2;
+  convert_item_porto = (function(item) {
+    var item_convertido;
+    if (typeof map_id === "undefined") {map_id = "map"};
+    item_convertido = {
+      
+    };
+    item_convertido.longitude = ("" + item.cause.longitude);
+    item_convertido.latitude = ("" + item.cause.latitude);
+    item_convertido.texto = item.cause.category_name;
+    item_convertido.cat = item.cause.category_name;
+    item_convertido.cat_id = item.cause.category_id;
+    item_convertido.icon = Icones[item_convertido.cat_id];
+    return item_convertido;
   });
-  markers = [L.marker(CT).bindPopup("CT."), L.marker(CEMUNI).bindPopup("CEMUNI"), L.marker(BIBLIOTECA).bindPopup("Biblioteca")];
-  centros = new L.FeatureGroup(markers);
-  map = L.map("map", {
-    layers: [CamadaBasica, centros],
-    center: UFES,
-    zoom: 15
-  });
-  L.marker(UFES).addTo(map).bindPopup("UFES").openPopup();
-  baseMaps = {
+  mps2 = new Searchlight(pacc_jsonp, convert_item_porto, map_id, Icones);
+};
+
+window.portoalegre_cc = portoalegre_cc;
+OnibusAzul = new L.icon({
+  iconUrl: (getSLpath() + "../images/onibus_azul.png"),
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+OnibusVolta = new L.icon({
+  iconUrl: (getSLpath() + "../images/onibus_volta.png"),
+  iconSize: [45, 58],
+  iconAnchor: [23, 48],
+  popupAnchor: [0, (-40)]
+});
+pontos_inseridos = 0;
+converte_item1 = function(item) {
+  var item_convertido;
+  
+  item_convertido = {
     
   };
-  overlayMaps = {
-    "Centros": centros
-  };
-  L.control.layers(baseMaps, overlayMaps).addTo(map);
+  item_convertido.longitude = ("" + item.longitude);
+  item_convertido.latitude = ("" + item.latitude);
+  item_convertido.texto = ((item.ponto + " ordem=") + item.ordem);
+  pontos_inseridos += 1;
+  if ((pontos_inseridos < 68)) {
+    item_convertido.icon = OnibusAzul;
+    item_convertido.cat_id = 1;
+    item_convertido.cat = "IDA";
+  } else {
+    item_convertido.cat_id = 2;
+    item_convertido.cat = "VOLTA";
+    item_convertido.icon = OnibusVolta;
+  }
+
+  return item_convertido;
+};
+
+exemplo1 = function() {
+  var mps;
+  mps = new Searchlight("js/exemplos/121.json", converte_item1, "map1", null, false, false);
+};
+
+window.onSLcarregaDados = (function(sl) {
+  var polyline, v;
+  v = sl.dados.getCatLatLng("IDA");
+  polyline = L.polyline(v, {
+    color: "blue"
+  }).addTo(sl.map);
+  v = sl.dados.getCatLatLng("VOLTA");
+  polyline = L.polyline(v, {
+    color: "black"
+  }).addTo(sl.map);
+});
+exemplo_gdoc = function() {
+  var mps, public_spreadsheet_url;
+  public_spreadsheet_url = "https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html";
+  mps = new Searchlight(public_spreadsheet_url, null, "map_gdoc");
 };
 
 exemplos = function() {
-  
   exemplo1();
-  exemplo2();
   exemplo_markercluster();
   exemplo_gdoc();
-  exemplo_geocoding();
+  portoalegre_cc("map");
 };
 
 

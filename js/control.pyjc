@@ -7,9 +7,32 @@ var scriptFolder = scriptPath.substr(0, scriptPath.lastIndexOf( '/' )+1 );
 $("<link/>", {
    rel: "stylesheet",
    type: "text/css",
+   href: "http://cdn.leafletjs.com/leaflet-0.5/leaflet.css"
+}).appendTo("head");
+
+$("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
+   href: scriptFolder+"libs/leaflet/markercluster/MarkerCluster.css"
+}).appendTo("head");
+
+$("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
+   href: scriptFolder+"libs/leaflet/markercluster/MarkerCluster.Default.css"
+}).appendTo("head");
+
+
+$("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
    href: scriptFolder+"../css/searchlight.css"
 }).appendTo("head");
 
+
+window.getSLpath= function(){
+    return scriptFolder
+} 
 var MyControl = L.Control.extend({
     options: {
         position: 'topright'

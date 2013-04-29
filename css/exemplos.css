@@ -1,4 +1,3 @@
-#map,#map2,#map_cluster,
-#map_geo { height: 340px; }
-
-#map_gdoc {height: 480px;
+#map1,
+#map_cluster,
+#map_gdoc,#map {height: 480px;}
