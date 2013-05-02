@@ -112,18 +112,21 @@ class Searchlight:
         self.map.fitBounds(self.basel.getBounds())
 
     def carregaDados(self, data):
+        try:
+            for d in data:
+                self.addItem(d) 
 
-        for d in data:
-            self.addItem(d) 
-
-        self.dados.addMarkersTo(self.markers)
-        self.map.fitBounds(self.markers.getBounds())
-        self.control.atualizarIconesMarcVisiveis()
-        self.markers.fire("data:loaded") 
-        self.control.addCatsToControl(self.map_id)
-        if window['onSLcarregaDados'] != undefined:
-            onSLcarregaDados(self)
-
+            self.dados.addMarkersTo(self.markers)
+            self.map.fitBounds(self.markers.getBounds())
+            self.control.atualizarIconesMarcVisiveis()
+            self.markers.fire("data:loaded") 
+            self.control.addCatsToControl(self.map_id)
+            if window['onSLcarregaDados'] != undefined:
+                onSLcarregaDados(self)
+        except:
+            self.markers.fire("data:loaded") 
+            alert("Não foi possivel carregar os dados do mapa. Verifique se a fonte de dados está formatada corretamente.")
+        
     def addItem(self,item):
         self.dados.addItem(item,self.func_convert)
 

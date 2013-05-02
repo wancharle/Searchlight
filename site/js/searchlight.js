@@ -1014,21 +1014,27 @@ Searchlight.prototype.add_itens_gdoc = (function(data) {
 });
 Searchlight.prototype.carregaDados = (function(data) {
   var d;
-  var _$tmp4_data = _$rapyd$_iter(data);
-  var _$tmp5_len = _$tmp4_data.length;
-  for (var _$tmp6_index = 0; _$tmp6_index < _$tmp5_len; _$tmp6_index++) {
-    d = _$tmp4_data[_$tmp6_index];
+  try {
+    var _$tmp4_data = _$rapyd$_iter(data);
+    var _$tmp5_len = _$tmp4_data.length;
+    for (var _$tmp6_index = 0; _$tmp6_index < _$tmp5_len; _$tmp6_index++) {
+      d = _$tmp4_data[_$tmp6_index];
 
-    this.addItem(d);
-  }
+      this.addItem(d);
+    }
 
-  this.dados.addMarkersTo(this.markers);
-  this.map.fitBounds(this.markers.getBounds());
-  this.control.atualizarIconesMarcVisiveis();
-  this.markers.fire("data:loaded");
-  this.control.addCatsToControl(this.map_id);
-  if ((window["onSLcarregaDados"] != undefined)) {
-    onSLcarregaDados(this);
+    this.dados.addMarkersTo(this.markers);
+    this.map.fitBounds(this.markers.getBounds());
+    this.control.atualizarIconesMarcVisiveis();
+    this.markers.fire("data:loaded");
+    this.control.addCatsToControl(this.map_id);
+    if ((window["onSLcarregaDados"] != undefined)) {
+      onSLcarregaDados(this);
+    }
+
+  } catch(_$rapyd$_Exception) {
+    this.markers.fire("data:loaded");
+    alert("N\u00e3o foi possivel carregar os dados do mapa. Verifique se a fonte de dados est\u00e1 formatada corretamente.");
   }
 
 });
