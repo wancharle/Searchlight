@@ -115,18 +115,18 @@ class Searchlight:
         try:
             for d in data:
                 self.addItem(d) 
-
-            self.dados.addMarkersTo(self.markers)
-            self.map.fitBounds(self.markers.getBounds())
-            self.control.atualizarIconesMarcVisiveis()
-            self.markers.fire("data:loaded") 
-            self.control.addCatsToControl(self.map_id)
-            if window['onSLcarregaDados'] != undefined:
-                onSLcarregaDados(self)
         except:
             self.markers.fire("data:loaded") 
             alert("Não foi possivel carregar os dados do mapa. Verifique se a fonte de dados está formatada corretamente.")
-        
+            return 
+        self.dados.addMarkersTo(self.markers)
+        self.map.fitBounds(self.markers.getBounds())
+        self.control.atualizarIconesMarcVisiveis()
+        self.markers.fire("data:loaded") 
+        self.control.addCatsToControl(self.map_id)
+        if window['onSLcarregaDados'] != undefined:
+            onSLcarregaDados(self)
+   
     def addItem(self,item):
         self.dados.addItem(item,self.func_convert)
 

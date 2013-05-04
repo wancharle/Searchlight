@@ -1023,18 +1023,19 @@ Searchlight.prototype.carregaDados = (function(data) {
       this.addItem(d);
     }
 
-    this.dados.addMarkersTo(this.markers);
-    this.map.fitBounds(this.markers.getBounds());
-    this.control.atualizarIconesMarcVisiveis();
-    this.markers.fire("data:loaded");
-    this.control.addCatsToControl(this.map_id);
-    if ((window["onSLcarregaDados"] != undefined)) {
-      onSLcarregaDados(this);
-    }
-
   } catch(_$rapyd$_Exception) {
     this.markers.fire("data:loaded");
     alert("N\u00e3o foi possivel carregar os dados do mapa. Verifique se a fonte de dados est\u00e1 formatada corretamente.");
+    return;
+  }
+
+  this.dados.addMarkersTo(this.markers);
+  this.map.fitBounds(this.markers.getBounds());
+  this.control.atualizarIconesMarcVisiveis();
+  this.markers.fire("data:loaded");
+  this.control.addCatsToControl(this.map_id);
+  if ((window["onSLcarregaDados"] != undefined)) {
+    onSLcarregaDados(this);
   }
 
 });
