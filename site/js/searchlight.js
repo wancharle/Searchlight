@@ -1029,12 +1029,19 @@ Searchlight.prototype.carregaDados = (function(data) {
     return;
   }
 
+  this.markers.clearLayers();
   this.dados.addMarkersTo(this.markers);
-  this.map.fitBounds(this.markers.getBounds());
+  if ((this.map.getBoundsZoom(this.markers.getBounds()) == this.map.getZoom())) {
+    this.carregando = false;
+  } else {
+    this.map.fitBounds(this.markers.getBounds());
+    this.carregando = true;
+  }
+
   this.control.atualizarIconesMarcVisiveis();
   this.markers.fire("data:loaded");
   this.control.addCatsToControl(this.map_id);
-  if ((window["onSLcarregaDados"] != undefined)) {
+  if (((this.carregando == false) && (window["onSLcarregaDados"] != undefined))) {
     onSLcarregaDados(this);
   }
 
@@ -1309,6 +1316,14 @@ Controle = function(sl) {
     }
 
     obj.atualizarIconesMarcVisiveis();
+    if ((obj.sl.carregando == true)) {
+      obj.sl.carregando = false;
+      if ((window["onSLcarregaDados"] != undefined)) {
+        onSLcarregaDados(obj.sl);
+      }
+
+    }
+
   }));
   this.sl.map.on("moveend", (function() {
     obj.atualizarIconesMarcVisiveis();
@@ -1416,6 +1431,7 @@ Controle.prototype.addCatsToControl = (function(map_id) {
     cats.sort((function(a, b) {
       return (b[1] - a[1]);
     }));
+    $(ul).empty();
     var _$tmp37_data = _$rapyd$_iter(cats);
     var _$tmp38_len = _$tmp37_data.length;
     for (var _$tmp39_index = 0; _$tmp39_index < _$tmp38_len; _$tmp39_index++) {
@@ -1426,7 +1442,10 @@ Controle.prototype.addCatsToControl = (function(map_id) {
 
     $(op).append((("<p class='center'><input type='button' onclick='SL(\"" + map_id) + "\").control.update();' value='Atualizar Mapa' /></p>"));
   } else {
-    $(this.id_opcoes).addClass("sem-categoria");
+    if ((!$(this.id_opcoes).hasClass("sem-categoria"))) {
+      $(this.id_opcoes).addClass("sem-categoria");
+    }
+
   }
 
 });
@@ -1487,6 +1506,10 @@ Marcador.prototype.getMark = (function() {
   return this.m;
 });
 Dados = function() {
+  this.clear();
+};
+
+Dados.prototype.clear = (function() {
   this.marcadores = [];
   this.categorias = {
     
@@ -1494,8 +1517,7 @@ Dados = function() {
   this.categorias_id = {
     
   };
-};
-
+});
 Dados.prototype.getCat = (function(m) {
   var cat;
   cat = this.categorias[m.cat];
