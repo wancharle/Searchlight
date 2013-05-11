@@ -27,6 +27,7 @@ def portoalegre_cc(map_id="map"):
         item_convertido.cat_id = item.cause.category_id
         item_convertido.icon = Icones[item_convertido.cat_id]
         return item_convertido 
+        
     mps2 = new Searchlight(pacc_jsonp,convert_item_porto,map_id,Icones)
 
 window.portoalegre_cc = portoalegre_cc

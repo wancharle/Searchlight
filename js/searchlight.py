@@ -115,18 +115,26 @@ class Searchlight:
         try:
             for d in data:
                 self.addItem(d) 
-
-            self.dados.addMarkersTo(self.markers)
-            self.map.fitBounds(self.markers.getBounds())
-            self.control.atualizarIconesMarcVisiveis()
-            self.markers.fire("data:loaded") 
-            self.control.addCatsToControl(self.map_id)
-            if window['onSLcarregaDados'] != undefined:
-                onSLcarregaDados(self)
         except:
             self.markers.fire("data:loaded") 
             alert("Não foi possivel carregar os dados do mapa. Verifique se a fonte de dados está formatada corretamente.")
+            return 
+        self.markers.clearLayers()
+        self.dados.addMarkersTo(self.markers)
         
+        if self.map.getBoundsZoom(self.markers.getBounds()) == self.map.getZoom():
+            self.carregando = False 
+        else:
+            self.map.fitBounds(self.markers.getBounds())
+            self.carregando = True
+   
+        self.control.atualizarIconesMarcVisiveis()
+        self.markers.fire("data:loaded") 
+        self.control.addCatsToControl(self.map_id)
+
+        if self.carregando == False and window['onSLcarregaDados'] != undefined:
+                onSLcarregaDados(self)
+
     def addItem(self,item):
         self.dados.addItem(item,self.func_convert)
 
@@ -325,6 +333,11 @@ class Controle:
                 obj.clusterCtr.desfocou = False
                 obj.clusterCtr.mostraPopup()
             obj.atualizarIconesMarcVisiveis()
+        
+            if obj.sl.carregando == True:
+                obj.sl.carregando = False
+                if window['onSLcarregaDados'] != undefined:
+                    onSLcarregaDados(obj.sl)
         )
         self.sl.map.on('moveend', def():
             obj.atualizarIconesMarcVisiveis()
@@ -393,12 +406,14 @@ class Controle:
             cats.sort(def (a,b):
                 return b[1]-a[1]
             )
+            $(ul).empty()
             for c in cats:
                 $(ul).append("<li><input type='checkbox' checked name='"+map_id+"-cat' value='"+c[0]+"' class='categoria'/>"+c[0]+" ("+c[1]+")</li>")
             
             $(op).append("<p class='center'><input type='button' onclick='SL(\""+map_id+"\").control.update();' value='Atualizar Mapa' /></p>")
         else:
-            $(self.id_opcoes).addClass("sem-categoria")
+            if not $(self.id_opcoes).hasClass("sem-categoria"):
+                $(self.id_opcoes).addClass("sem-categoria")
 
     def update(self):
         $(self.id_opcoes).hide()
@@ -451,6 +466,9 @@ class Marcador:
 
 class Dados:
     def __init__(self):
+        self.clear()
+    
+    def clear(self):
         self.marcadores = []
         self.categorias = {}
         self.categorias_id = {}
