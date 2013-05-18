@@ -1,7 +1,9 @@
-\section{Fundamentos de Mapas Geográficos}
+\section{Fundamentos de Mapas Web}
 	
-	\subsection{Coordenadas}
-	Coordenadas são usadas para expressar localizações no mundo. Existem vários sistemas de coordenadas diferentes. O usado pelo Google Maps é o Word Geodetic System 84 (WGS84), que é o mesmo sistema que o Global Position System(GPS) usa. As coordenadas são expressas usando o conceito de latitude e longitude. Onde latitude mede do sul ao norte e longitude me do oeste para o leste. No equador a latitude é 0. Isso significa que tudo abaixo do equador (hemisfério sul) possui uma latitude negativa, e tudo acima possui uma latitude positiva. Similarmente também existe uma linha zero para longitude. É conhecida como meridiano, e por razões históricas passa por Greenwich, Inglaterra. Cada posição que é localizada a leste desta linha tem um número positivo e tudo a oeste tem um número negativo\cite[4]{livroGoogleApiV3}. 
+	\subsection{Coordenadas Geográficas}
+	Coordenadas geográficas são usadas para expressar localizações no mundo. Existem vários sistemas de coordenadas diferentes. O usado pelo Google Maps é o Word Geodetic System 84 (WGS84), que é o mesmo sistema que o Global Position System(GPS) usa.
+	
+	As coordenadas são expressas usando o conceito de latitude e longitude. Onde latitude mede do sul ao norte e longitude mede do oeste para o leste. No equador a latitude é 0. Isso significa que tudo abaixo do equador (hemisfério sul) possui uma latitude negativa, e tudo acima possui uma latitude positiva. Similarmente também existe uma linha zero para longitude. É conhecida como meridiano, e por razões históricas passa por Greenwich, Inglaterra. Cada posição que é localizada a leste desta linha tem um número positivo e tudo a oeste tem um número negativo\cite[4]{livroGoogleApiV3}. 
 	
 	A \autoref{fig-coordenadas} permite uma melhor observação desses conceitos:
 	\begin{figure}[htb]
@@ -12,10 +14,14 @@
 	\legend{Fonte: \cite[5]{livroGoogleApiV3}}
 	\end{figure}
 	
-	
 	Dessa forma é possível representar o mapa do mundo em uma imagem retangular que é projetada sobre o plano cartesiano.
 	
-	As coordenadas de latitude e longitude servem para localizar um ponto numa imagem retangular. Porém mapas também fornecem um terceira coordenada chamada Zoom. Esta  coordenada controla qual o tamanho da imagem que será usada para projetar o mapa sobre o plano cartesiano. Usualmente, um mapa com coordenada zoom, ou nível de zoom, igual a zero possui uma imagem de tamanho 256x256 pixels. A cada incremento da coordenada de zoom dobra-se o tamanho da imagem usada para representar o mapa, e consequentemente o nível de detalhes. De forma que que no zoom 2 a imagem do mapa do mundo terá 512x512 pixels, no zoom 3 1024x1024 e assim por diante. A \autoref{fig-zoomlevels} exemplifica esse processo:
+	Caso seja necessário um maior grau de detalhamento, do mapa, basta que se aumente a resolução da imagem mantendo as proporções e relações entre as coordenadas (x,y), do plano cartesiano, com as coordenadas (longitude, latitude) que são usadas pelo mapa.
+		
+	\subsection{Zoom}
+	As coordenadas de longitude e latitude servem para localizar um ponto numa imagem retangular, através de suas correspondentes x e y do plano cartesiano. Porém mapas também fornecem uma terceira coordenada conhecida como coordenada de Zoom.
+	
+	 Esta  coordenada controla qual o tamanho da imagem que será usada para projetar o mapa sobre o plano cartesiano. Usualmente, um mapa com coordenada zoom, ou nível de zoom, igual a zero possui uma imagem de tamanho 256x256 pixels. A cada incremento, da coordenada de zoom, dobra-se o tamanho da imagem usada para representar o mapa, e consequentemente o nível de detalhes. De forma que  para zoom=1 a imagem terá 512x512 pixels, para zoom=2 terá 1024x1024 e assim por diante. A \autoref{fig-zoomlevels} exemplifica esse processo:
 	\begin{figure}[htb]
 	\caption{\label{fig-zoomlevels} A cada incremento de zoom um mapa dobra a sua resolução de imagems}
 	\begin{center}
@@ -24,16 +30,10 @@
 	\legend{Fonte: http://workshops.opengeo.org/suiteintro/geowebcache/basics.html}
 	\end{figure}
 
-	Portanto para localizar uma posição  em um mapa web, precisamos de 3 coordenadas: latitude, longitude, zoom. Além disso, como o tamanho da imagem da projeção varia de acordo com o nível de zoom, o mapa precisa ajustar os valores das coordenadas latitude e longitude para que mantenham suas proporções para os diversos níveis de zoom.
-
-	\subsection{Interação}
-	Para fornecer uma melhor interação com os usuários, é comum encontrar mapas com 2 elementos básicos: Marcadores e Janelas de Informação.
-	Marcadores são pequenas imagens que ficam sobrepostas ao mapa para indicar uma determinada posição no mapa. Em alguns, casos para facilitar a visualização de informações, usa-se de imagens diferentes para representar marcadores.
-	Janelas de informação são usadas, geralmente, para detalhar alguma informação relativa a posição indicada pelo marcador e, em alguns casos, são exibidas quando o usuário clica em um marcador.
-	A combinação desses dois elementos, nos mais diversos contextos, é responsável pela maioria das interações entre mapa e usuário.
+	Portanto para localizar uma posição  em um mapa web, de forma detalhada, precisamos de 3 coordenadas: latitude, longitude e zoom. Além disso, como o tamanho da imagem da projeção varia de acordo com o nível de zoom, o mapa precisa ajustar os valores das coordenadas latitude e longitude para que mantenham suas proporções para os diversos níveis de zoom.
 
 \section{Estratégias para lidar com muitos marcadores}
-	Um problema comum, ao lidarmos com mapas de crowdsourcing, é a enorme quantidade de marcadores necessários para representar os dados do mapa.Isto geralmente afeta a performance do mapa, pois quanto mais marcadores inserimos no mapa mais lento ele fica. 
+	Um problema comum, ao se trabalhar com mapas de crowdsourcing, é a enorme quantidade de marcadores necessários para representar os dados do mapa. Isto geralmente afeta a performance do mapa, pois quanto mais marcadores são inseridos mais lenta fica a exibição do mapa. 
 	
 	É difícil calcular exatamente qual o número máximo de marcadores que um mapa suporta antes de começar a ficar lento, pois a velocidade de exibição do mapa depende tanto do navegador quando do computador em que é exibido. Por exemplo, um mapa pode ser exibido bem rápido em um navegador como o Google Chrome e ao mesmo tempo ser lento quando exibido no Internet Explorer.\cite[177]{livroGoogleApiV3}
 	
@@ -52,12 +52,19 @@
 	\legend{Fonte: http://maps.google.com}
 	\end{figure}
 	 
-	 A \autoref{fig-estrategiabusca}  exemplifica bem isso, pois o google maps possui um catálogo enorme de informações, sobre regiões geográficas, se ele resolve-se mostrar todas essas informações ao mesmo tempo o mapa ficaria muito poluído, e praticamente inutilizável. Como ele implementa o mecanismo de busca isto não acontece . 
+	 A \autoref{fig-estrategiabusca}  exemplifica isso ao mostrar o exemplo de busca no google maps. O google maps possui um catálogo enorme de informações, sobre diversas regiões geográficas, mostrar todas essas informações ao mesmo tempo deixaria o mapa muito poluído, e praticamente inutilizável. Como ele implementa o mecanismo de busca isto não acontece.
+	
+	 Na \autoref{fig-estrategiabusca} observa-se a exibição de uma busca pela palavra chave shopping. Nesta mesma região de interesse existem estabelecimentos de outras categorias como supermercados, lojas, padarias etc. Mas o google maps exibe apenas os marcadores relativos a categoria shopping, que é a palavra chave da busca. Ao fazer isso o mapa fica mais limpo e compreensivo.
+	 
 	
 	\subsubsection{Filtro}
-	De forma similar ao mecanismo de busca, um mapa também pode possuir um mecanismo para filtrar grupos de marcadores de acordo com algum critério de seleção do grupo. Dessa forma somente somente os marcadores que pertençam aos grupos marcados no filtro são exibidos no mapa.
+	De forma similar ao mecanismo de busca, um mapa também pode possuir um mecanismo para filtrar grupos de marcadores de acordo com algum critério de seleção do grupo. Dessa forma somente os marcadores que pertençam aos grupos marcados no filtro são exibidos no mapa. 
 	
-	A \autoref{fig-estrategiafiltro} mostra um mapa com filtro a esquerda. Observa-se que apenas os marcadores dos grupos  "Student Housing" e "Food/Dining"  são exibidos no mapa.
+	Diferente do método de busca, este método permite ser mais específico e direto, pois cada campo do filtro é relacionado diretamente com alguma categoria contida nas informações. No método de busca esta relação é menos direta e depende do algorítimo de busca utilizado.  
+	
+	Como exemplo, ao utilizar-se do método de filtro para marcar 2 categorias, obrigatoriamente, deve ser retornado o resultado para as duas categorias que foram marcadas. Já com o método de busca isto nem sempre é verdade, pois dependendo do algorítimo de busca ele pode entender que a busca por ``categoria 1 categoria 2'' é uma busca por 2 categorias ou uma busca por uma categoria conhecida como ``categoria 1 categoria 1'', que obviamente não seria encontrada. 
+	
+	A \autoref{fig-estrategiafiltro} mostra um mapa com filtro a esquerda. Observa-se que apenas os marcadores dos grupos  ``Student Housing'' e ``Food/Dining''  são exibidos no mapa.
 	 \begin{figure}[htb]
 	\caption{\label{fig-estrategiafiltro}Filtro como estratégia para redução do número de marcadores}
 	\begin{center}
@@ -67,9 +74,9 @@
 	\end{figure}
 	 
 	\subsubsection{Otimização Visual}
-	Nem sempre é preciso usar marcadores para representar dados de um mapa. Em alguns mapas faz mais sentido usar polígonos ou grupo de polígonos para representar um dado ao invés de simplesmente um ponto para o marcador. Por exemplo, ao exibir uma rota  num mapa não é necessário um marcador para cada vértice vértice da rota, pois para representar a rota precisa-se apenas desenhar uma linha passando por cada vértice.
+	Nem sempre é preciso usar marcadores para representar dados de um mapa. Em alguns mapas faz mais sentido usar polígonos ou grupo de polígonos para representar um dado ao invés de simplesmente um ponto para o marcador. Por exemplo, ao exibir uma rota  não é necessário um marcador para cada vértice da rota, pois precisa-se apenas do desenho de uma linha, passando por cada vértice, para que a rota seja representada.
 	
-	A \autoref{fig-otimizacao} mostra um exemplo desse tipo de otimização. Ela exibe, no mapa a esquerda, uma rota com marcadores em cada vértice do trajeto percorrido. No mapa a direita, ela exibe a mesma rota só que sem colocar marcadores nos vértices do trajeto, deixando apenas um marcador para exibir o ponto de início do trajeto.
+	A \autoref{fig-otimizacao} mostra um exemplo desse tipo de otimização. No mapa à esquerda, ela exibe uma rota com marcadores em cada vértice do trajeto percorrido. No mapa à direita, ela exibe a mesma rota só que sem colocar marcadores nos vértices do trajeto, deixando apenas um marcador para exibir o ponto de início do trajeto.
 	
 	 \begin{figure}[htb]
 	\caption{\label{fig-otimizacao}Otimização Visual como estratégia para redução do número de marcadores}
@@ -78,7 +85,9 @@
 	\end{center}
 	\end{figure}
 	
+	Nesse exemplo, cada vértice da rota representa um ponto de parada para os ônibus que percorrem esse trajeto. Inicialmente, pode se achar necessário a exibição de marcadores nesses vértices como mecanismos de interação com os dados que eles representam. Por exemplo, os usuários do transporte público poderiam querer saber quais são os horários que determinados ônibus passam naquele ponto específico, e com um simples clique no marcador o mapa poderia exibir essa informação. 
 	
+	Porém, para que este tipo de interação seja possível o mapa teria que exibir os marcadores em cada vértice, que como mostrado na \autoref{fig-otimizacao} não é o melhor caminho. Felizmente existem alternativas para esse processo que não exigem a presença de um marcador, por exemplo ao clicar na linha da rota o mapa pode fazer uma busca, baseada em proximidade, e localizar o ponto que o usuário deseja saber mais informações. Após isso o mapa pode até exibir um marcador temporário como reforço visual do local que está sendo exibida a informação.
 	
 
   \subsection{Agrupamento/Clustering}
