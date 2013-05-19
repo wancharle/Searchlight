@@ -1,9 +1,9 @@
 \section{Fundamentos de Mapas Web}
 	
 	\subsection{Coordenadas Geográficas}
-	Coordenadas geográficas são usadas para expressar localizações no mundo. Existem vários sistemas de coordenadas diferentes. O usado pelo Google Maps é o Word Geodetic System 84 (WGS84), que é o mesmo sistema que o Global Position System(GPS) usa.
+	Coordenadas geográficas são usadas para expressar localizações no mundo. Existem vários sistemas de coordenadas diferentes. O sistema de coordenadas usado pelo Google Maps é o Word Geodetic System 84 (WGS84), que é o mesmo sistema que o Global Position System(GPS) usa.
 	
-	As coordenadas são expressas usando o conceito de latitude e longitude. Onde latitude mede do sul ao norte e longitude mede do oeste para o leste. No equador a latitude é 0. Isso significa que tudo abaixo do equador (hemisfério sul) possui uma latitude negativa, e tudo acima possui uma latitude positiva. Similarmente também existe uma linha zero para longitude. É conhecida como meridiano, e por razões históricas passa por Greenwich, Inglaterra. Cada posição que é localizada a leste desta linha tem um número positivo e tudo a oeste tem um número negativo\cite[4]{livroGoogleApiV3}. 
+	As coordenadas são expressas usando o conceito de latitude e longitude. Onde latitude mede do sul ao norte e longitude mede do oeste para o leste. No equador a latitude é 0. Isso significa que tudo abaixo do equador (hemisfério sul) possui uma latitude negativa, e tudo acima possui uma latitude positiva. Similarmente também existe uma linha zero para longitude. Ela é conhecida como meridiano, e por razões históricas passa por Greenwich, Inglaterra. Cada posição que é localizada a leste desta linha tem um número positivo e tudo a oeste tem um número negativo\cite[4]{livroGoogleApiV3}. 
 	
 	A \autoref{fig-coordenadas} permite uma melhor observação desses conceitos:
 	\begin{figure}[htb]
@@ -90,7 +90,7 @@
 	Porém, para que este tipo de interação seja possível o mapa teria que exibir os marcadores em cada vértice, que como mostrado na \autoref{fig-otimizacao} não é o melhor caminho. Felizmente, existe algumas alternativas para esse processo que não exigem a presença de um marcador. Por exemplo, ao clicar na linha da rota o mapa pode fazer uma busca, baseada em proximidade, e localizar o ponto que o usuário deseja saber mais informações. Após isso o mapa pode até exibir um marcador temporário como reforço visual do local que está sendo exibida a informação.
 	
 
-  \subsection{Agrupamento/Clustering}
+  \subsection{Agrupamento/Clustering\label{secagrupamento}}
   A segunda estratégia citada por \cite[capítulo~9]{livroGoogleApiV3} para reduzir o número de informações exibidas por um mapa, é conhecida como clustering, ou em português, agrupamento.
   
   A estratégia de agrupamento de marcadores consiste em agrupar marcadores que estejam próximos, por algum critério de proximidade, e exibir apenas 1 marcador para cada grupo e 1 marcador para cada marcador individual, que não pertença a nenhum grupo. Ou seja, em vez de exibir um marcador individual para cada marcador são exibidos marcadores para grupos e marcadores individuais. 
@@ -99,15 +99,15 @@
   
    O processo contrário também ocorre ao diminuirmos o zoom de um grupo. Neste caso o grupo pode se agrupar com grupos vizinhos e formar um novo grupo como mais elementos, de forma, que em alguns mapas, no zoom=0 o mapa exibe apenas 1 marcador representando o grupo com todos os marcadores do mapa.
 
-   Existem diversos métodos para agrupamento de marcadores, mas os mais comuns são implementados usando alguma das seguintes técnicas: agrupamento por grelha, por distancia, ou por região.
+   Existem diversos métodos para agrupamento de marcadores, mas os mais comuns são implementados usando algum dos seguintes parâmetros para agrupamento: agrupamento por grade, por distancia, ou por região.
      
-		\subsubsection{Agrupamento Por Grelha}
-		Agrupamento baseado em grelha é provavelmente a abordagem mais comum para agrupar marcadores. Esta abordagem, divide o mapa em uma grelha e agrupa todos os marcadores de cada quadrado em um grupo. 
+		\subsubsection{Agrupamento Por Grade}
+		Agrupamento baseado em grade é provavelmente a abordagem mais comum para agrupar marcadores. Esta abordagem, divide o mapa em uma grade e agrupa todos os marcadores de cada quadrado em um grupo. 
 		
-		Apesar de ser uma técnica eficiente, ela possui limitações óbvias, pois pode levar a resultados indesejados. Por exemplo, considere 2 marcadores próximos mas localizados em quadrados diferentes da grelha. Neste caso, eles não serão agrupados no mesmo grupo. Para ficar mais claro, veja a \autoref{fig-porgrelha}. 
+		Apesar de ser uma técnica eficiente, ela possui limitações óbvias, pois pode levar a resultados indesejados. Por exemplo, considere 2 marcadores próximos mas localizados em quadrados diferentes da grade. Neste caso, eles não serão agrupados no mesmo grupo. Para ficar mais claro, veja a \autoref{fig-porgrelha}. 
 
 \begin{figure}[htb]
-	\caption{\label{fig-porgrelha}Estes 2 marcadores não serão agrupados pois residem em quadrados diferentes da grelha}
+	\caption{\label{fig-porgrelha}Estes 2 marcadores não serão agrupados pois residem em quadrados diferentes da grade}
 	\begin{center}
 	    \includegraphics[scale=0.7]{porgrelha}
 	\end{center}
@@ -115,9 +115,9 @@
 \end{figure}
 
 		\subsubsection{Agrupamento Por Distância}
-			Nesta técnica, não ocorre o problema comentado no agrupamento por grelha, pois nela é observado cada marcador e para cada um é procurado marcadores vizinhos, se os marcadores forem próximos o suficiente eles são colocados no mesmo grupo.
+			Nesta técnica, não ocorre o problema comentado no agrupamento por grade, pois nela é observado cada marcador e para cada um é procurado marcadores vizinhos, se os marcadores forem próximos o suficiente eles são colocados no mesmo grupo.
 		
-			Alguns podem achar esta técnica problemática para certos mapas. Pois por agrupar marcadores próximos entre si, os grupos não possuem uma localização fixa como acontece no agrupamento por grelha. Assim no agrupamento por distancia os grupos podem aparecer em posições aleatórias que podem não fazer sentido para o usuário que observa o mapa.
+			Alguns podem achar esta técnica problemática para certos mapas. Pois por agrupar marcadores próximos entre si, os grupos não possuem uma localização fixa como acontece no agrupamento por grade. Assim no agrupamento por distancia os grupos podem aparecer em posições aleatórias que podem não fazer sentido para o usuário que observa o mapa.
 
 		\subsubsection{Agrupamento Por Região}
 			No agrupamento por região, define-se diferentes regiões geográficas como países, estados, cidades. E todos os marcadores, de cada região, podem ser agrupados em um grupo para representar a região. Além disso, também é possível definir em que nível de zoom os grupos serão quebrados em subgrupos. 
@@ -154,20 +154,56 @@
 
 	Além disso, os gerentes dessas lojas,  poderiam efetuar um zoom no gráfico da loja que gerenciam e ver os subgrupos divididos por bairros, com cada grupo exibindo o gráfico de vendas do bairro, permitindo aos gerentes a criação de uma estratégia de marketing localizada.
 	
-\section{Algorítimos de agrupamento}
-	\subsection{Métodos baseados em grelha}
+\section{Algorítimos de agrupamento}	
+	Basicamente os algorítimos de agrupamentos de pontos podem ser classificados em quatro categorias: (i) método por partição (ii) método hierárquico (iii) método baseado em densidade (iv) método baseado em grade. Isto é ilustrado na \autoref{fig-algoritimos} onde SILVA destaca os potenciais melhores algorítimos para este tipo de problema. Com exceção dos algorítimos k-Means e k-Medoid que foram introduzidos apenas por motivos históricos \cite[35]{silva2010solap+}.
+	
+	Observa-se que em \cite[capítulo 2]{silva2010solap+} é feito um estudo mais aprofundado sobre os principais algorítimos de agrupamentos de pontos. Por isso, nesta seção será descrito apenas o algorítimo que engloba o contexto deste trabalho. Ou seja, o algorítimo WaveCluster que é baseado no método de grade. 
+		
+\begin{figure}[htb]
+	\caption{\label{fig-algoritimos}Principais algorítimos de agrupamentos de pontos}
+	\begin{center}
+	    \includegraphics[scale=0.8]{algoritimos}
+	\end{center}
+		\legend{Fonte: \cite[figura 15]{silva2010solap+}  }
+\end{figure}
+
+		\subsection{Métodos baseados em grade}
+		Como já foi comentado na \autoref{secagrupamento}, agrupamentos baseados em grade são aqueles que dividem o espaço do mapa em uma grade e agrupa os marcadores de cada quadrado ou célula da grade.  Ou seja, algorítimos baseados em grade são aqueles que usam o agrupamento por grade como parâmetro de agrupamento. 
+		Pode se observar na \autoref{fig-algoritimos} que os principais algorítimos são: STING, STING+, CLIQUE, WaveCluster e MOSAIC. E, apesar de não ser o mais indicado para o contexto SOLAP+ que SILVA estudava, o melhor entre os algorítimos baseados em grade é o WaveCluster.
+		
+		
 		\subsubsection{WaveCluster}
-	\subsection{Aplicações}
-		\subsubsection{MarkerCluster}
-		pagina 206 a 212
-		\subsubsection{MarkerClustered}
+			Uma boa abordagem para agrupamentos deve ser eficiente e detectar grupos de formas arbitrárias. Ela também tem que ser insensível a dados discrepantes e a ordem de entrada dos dados.
+			
+			O algorítimo WaveCluster atende todos esses requisitos. Sua definição completa é encontrada em \cite{wavecluster} mas em resumo o algorítimo faz o seguinte:
+\begin{algorithm}
+\caption{WaveCluster}
+\textbf{Entrada} Vetores de características dos objetos de dados multidimensionais
 
+\textbf{Saida} Objetos agrupados
+\begin{enumerate}
+\item Quantizar o espaço de características, atribuir objetos as celulas da grade.
+\item Aplicar a transformação $wavelet^1$ no espaço de características quantizado.
+\item Encontrar os componentes conectados (clusters) nas sub-bandas
+\item Transformar o espaço original, em diferentes níveis.
+\item Atribuir rótulos as células.
+\item Criar a tabela de pesquisa.
+\item Mapear objetos aos clusters/grupos.
+\end{enumerate}
+\end{algorithm}
+\footnotetext{Uma transformada de wavelet é uma tecnica de processamento de sinais que decompõe o sinal em diferentes sub-bandas de frequencia.} 
 
+O WaveCluster possui complexidade O(n). Além disso, por causa do uso das técnicas de processamento de sinais a propriedade de multi-resolução, ou agrupamento nos níveis hierárquicos, também é aplicada ao WaveCluster.
 
-\section{Planilhas eletrônicas e Mapas}
-\subsection{O desafio chinês}
-mostra o uso de planilhas pelo governo chines \cite{chinaPlanilha}
-\subsection{Domínios de conhecimento}
-Mostra a importância do uso de planilhas \cite{credinePlanilha} 
-\subsection{Usando planilhas como fonte de dados para Mapas Geográficos}
-Mostra \cite{lieberman2009spatio}
+O seu uso não é limitado apenas à dados espaciais, o algorítimo WaveCluster pode ser aplicado a qualquer conjunto de atributos com valores numéricos ordenados.
+	
+%
+%
+%\section{Planilhas eletrônicas e Mapas}
+%\subsection{Domínios de conhecimento}
+%Mostra a importância do uso de planilhas \cite{credinePlanilha} 
+%\subsection{O desafio chinês}
+%mostra o uso de planilhas pelo governo chines e as dificuldades encontradas \cite{chinaPlanilha}
+%
+%\subsection{Usando planilhas como fonte de dados para Mapas Geográficos}
+%Mostra \cite{lieberman2009spatio}
