@@ -25,13 +25,27 @@ De modo geral, um framework é conjunto de ferramentas que trabalham em conjunto
 O framework Searchlight tem como objetivo facilitar a criação e a visualização de mapas de crowdsourcing por meio de automatização do processo de criação do mapa. O público alvo abrange tanto  programadores de mapas web quanto  usuários sem nenhum conhecimento de programação. Para atingir este objetivo o framework faz uso do seguinte conjunto de ferramentas: GitHub, Lealflet.js, jQuery, Tabletop.js e RapydScript. 
 
 \subsection{Github}
-	
-\subsection{GithubPages}
+GitHub é um Serviço de Web Hosting Compartilhado para projetos que usam o controle de versionamento Git. Mais do que isso, Github incorpora recursos sociais e de pesquisa que na prática o transformam em uma rede social para programadores. GitHub incorpora elementos tanto do facebook como do twitter. Por exemplo é possivel favoritar um projeto, seguir um programador, ver quais sãos as tendencias de programação, quais projetos estão se destacando, quais projetos se relacionam entre si e muitos outros recursos.
 
-\subsection{Aplicações Comerciais de Agrupamento de Pontos}
+Neste projeto o github foi usado para hospedar o código fonte da solução desenvolvida e o código latex desta monografia. Todos esses dados podem ser acessados através do endereço \url{https://github.com/wancharle/Searchlight}. 
+
+Na \autoref{fig-gitsource} podemos observar a pagina do código fonte do projeto. A partir dela um programador pode reportar um bug, solicitar permissões para contribuir com o projeto, copiar o código fonte e muitos outros recursos. 
+
+	\begin{figure}[htb]
+	\caption{\label{fig-gitsource}Pagina do github.com que hospeda o código fonte deste projeto.}
+	\begin{center}
+	    \includegraphics[scale=0.5]{gitsource}
+	\end{center}
+\end{figure}
+
+Além de hospedar os códigos fontes do projeto, o GitHub também participa ativamente do framework Searchlight. Seu papel no framework é realizado através da ferramenta GitHub Pages. Essa ferramenta estende o uso do GitHub para que ele se comporte como um servidor de paginas web simples. Isto permite ao framework Searchlight hospedar a pagina de geração e compartilhamento de mapas sem que seja preciso contratar um servidor web apenas para esse propósito.
+
+
+\subsection{Ferramentas para Agrupamento de Pontos}
 		Durante a fase de pesquisa, deste trabalho, foi feito uma busca por aplicações acadêmicas, e comerciais, que já fizessem o uso de algorítimos de agrupamento de pontos. Duas aplicações se destacaram: MarkerClusterer e Leaflet.MarkerCluster.
-		\subsubsection{MarkerClusterer}
 		
+		
+		\subsubsection{MarkerClusterer}		
 		MarkerClusterer \cite[188]{livroGoogleApiV3} é uma ferramenta fornecida pelo google que estende o uso da API do Google Maps para o uso de algorítimos de agrupamentos.
 		
 		MarkerClusterer é uma solução baseada em grelha. Ela agrupa marcadores de acordo com sua distância ao centro de um grupo. Quando um marcador é adicionado, ele pesquisa sua posição em todos os grupos. Caso não seja colocado em nenhum grupo, um novo grupo é criado para este marcador. A \autoref{fig-markerclusterer} demonstra a aplicação da ferramenta nos marcadores de um mapa.
@@ -48,10 +62,56 @@ O framework Searchlight tem como objetivo facilitar a criação e a visualizaç�
 		
 		Este plugin, faz basicamente as mesmas funções da ferramenta MarkerCluster, porém com algumas melhorias. Por exemplo, ao fazer zoom o mapa exibe uma pequena animação do processo de agrupamento; ao se passar o mouse sobre um marcador do grupo o mapa exibe um polígono que mostra os limites alcançados pelo grupo; os grupos que não são visíveis  na visualização atual do mapa são retirados do mapa para aumentar a performance. Além dessas melhorias, uma que merece destaque é a sua incrível capacidade de customização. 
 
-		Ao contrário da biblioteca MarkerClusterer, o plugin Leaflet.MarkerCluster possui um documentação bem completa que pode ser encontrada em \citeonline{gitleafletmaker}. Inicialmente, procurou-se por uma documentação mais abrangente da biblioteca MarkerCluster, mas até o momento da confeção desse trabalho não foi possível encontrar nada além de alguns poucos exemplos de uso. Isto, e outros fatores, contribuíram para a escolha da biblioteca Leaflet.js como API de visualização de mapas do framework Searchlight.
+		Ao contrário da biblioteca MarkerClusterer, o plugin Leaflet.MarkerCluster possui um documentação bem completa que pode ser encontrada em \cite{gitleafletmarker}. 
+		
+		É importante observar, que inicialmente, procurou-se por uma documentação mais abrangente da biblioteca MarkerCluster do Google Maps, mas até o momento da confecção desse trabalho não foi possível encontrar nada além de alguns poucos exemplos de uso. Isto, e outros fatores, contribuíram para a escolha da biblioteca Leaflet.js como API de visualização de mapas do framework Searchlight.
 		  
 \subsection{Leaflet.js}
-\subsection{Leaflet.markercluster}
+Leaflet é uma biblioteca open-source feita em JavaScript para visualização de mapas interativos. Seu design é baseado em simplicidade, performance e usabilidade. Devido a isso é bastante amigável a dispositivos móveis como tablets e smartphones.
+
+Leaflet é uma biblioteca moderna e robusta, que tira vantagem dos recursos de navegadores modernos como o uso de HTML5  e CSS3 mas ainda mantém suporte aos navegadores antigos.  É bastante confiável e sua estabilidade já foi testada por grandes sites da internet como Foursquare\footnote{Foursquare abandona Google Maps em prol de leaflet.js \url{http://goo.gl/JXPCW}} e Flickr.
+
+Uma característica interessante dessa biblioteca é que ela trabalha em conjunto com o OpenStreetMap e diversos provedores de imagens de mapas. Por facilitar o processo de customização ela permite ao usuário escolher seu provedor de imagens, ou até mesmo criar o seu próprio provedor de imagens. Com isso, é possivel exibir mapas customizados e com uma aparência bem agradável.
+
+Neste projeto, Leaflet foi escolhida como bib.....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \subsection{Leaflet.spin}
 
 \subsection{jQuery}
