@@ -11,18 +11,43 @@ O único requisito é fornecer um endereço web onde o gerador de mapas deve bus
 Em relação ao conteúdo usado pelo compartilhador de mapas, o framework atualmente suporta o armazenamento numa planilha eletrônica ou em um arquivo de formato JSON\footnote{Formato muito usado para troca de dados entre websites \url{http://www.json.org}}. Quando o conteúdo é oriundo de planilha eletrônica é necessário que esta esteja armazenada no Google Docs e seja pública. De forma similar, quando o conteúdo é armazenado em um arquivo JSON é necessário que o website que hospeda o arquivo suporte o protocolo JSONP. Caso contrário, o usuário deve instalar o framework Searchlight no website que deseja visualizar o mapa.
 
 
-Em relação as ferramentas que foram utilizadas no projeto, o objetivo inicial era usar a api do Google Maps para a visualização dos mapas. Porém,  na época em que esta pesquisa era feita, circulava notícias que o Google estaria mudando seus termos de serviço e iria começar a cobrar\footnote{Uma notícia sobre o inicio das cobranças do Google Maps \url{http://goo.gl/f1E3K}} pelo uso da API do Google Maps. Além disso, no mesmo período, a Apple anunciou que iria abandonar o uso do Google Maps em seus smartphones e adotaria uma solução própria. Isto trouxe a necessidade de procurar uma alternativa ao Google Maps, e a alternativa encontrada foi a biblioteca open-source \textbf{Leaflet.js} que será descrita no decorrer deste capítulo.
+Em relação a API de mapas utilizada pelo projeto, o objetivo inicial era usar a api do Google Maps para a visualização dos mapas. Porém,  na época em que esta pesquisa era feita, circulava notícias que o Google estaria mudando seus termos de serviço e iria começar a cobrar\footnote{Uma notícia sobre o inicio das cobranças do Google Maps \url{http://goo.gl/f1E3K}} pelo uso da API do Google Maps. Além disso, no mesmo período, a Apple anunciou que iria abandonar o uso do Google Maps em seus smartphones e adotaria uma solução própria. Isto trouxe a necessidade de procurar uma alternativa ao Google Maps. A alternativa encontrada foi a biblioteca open-source Leaflet.jss \cite{leaflet} que será descrita no decorrer deste capítulo.
 
+\subsection{Agrupamento de Pontos}
+		Durante a fase de pesquisa, deste trabalho, foi feito uma busca por ferramentas acadêmicas, e comerciais, que já fizessem o uso de algorítimos de agrupamento de pontos. Foram encontradas duas ferramentas promissoras: MarkerClusterer e Leaflet.MarkerCluster.
+		
+		
+		\subsubsection{MarkerClusterer}		
+		MarkerClusterer \cite[188]{livroGoogleApiV3} é uma ferramenta fornecida pelo google que estende o uso da API do Google Maps para o uso de algorítimos de agrupamentos.
+		
+		MarkerClusterer é uma solução baseada em grelha. Ela agrupa marcadores de acordo com sua distância ao centro de um grupo. Quando um marcador é adicionado, ele pesquisa sua posição em todos os grupos. Caso não seja colocado em nenhum grupo, um novo grupo é criado para este marcador. A \autoref{fig-markerclusterer} demonstra a aplicação da ferramenta nos marcadores de um mapa.
+	\begin{figure}[htb]
+	\caption{\label{fig-markerclusterer}Exemplo de utilização da API MarkerClusterer }
+	\begin{center}
+	    \includegraphics[scale=0.8]{markerclusterer}
+	\end{center}
+		\legend{Fonte: \cite[figura 20]{silva2010solap+}  }
+\end{figure}
 
+		\subsubsection{Leaflet.MarkerCluster}
+		Assim como a biblioteca MarkerCLusterer estende a API do Google Maps para uso de agrupamento de marcadores, o plugin Leaflet.MarkerCluster\cite{gitleafletmarker} serve como uma extensão para a API Leaflet. 
+		
+		Este plugin, faz basicamente as mesmas funções da ferramenta MarkerCluster, porém com algumas melhorias. Por exemplo, ao fazer zoom o mapa exibe uma pequena animação do processo de agrupamento; ao se passar o mouse sobre um marcador do grupo o mapa exibe um polígono que mostra os limites alcançados pelo grupo; os grupos que não são visíveis  na visualização atual do mapa são retirados do mapa para aumentar a performance. Além dessas melhorias, uma que merece destaque é a sua incrível capacidade de customização. 
 
+		Ao contrário da biblioteca MarkerClusterer, o plugin Leaflet.MarkerCluster possui um documentação bem completa que pode ser encontrada em \cite{gitleafletmarker}. 
+		
+		É importante observar, que inicialmente, procurou-se por uma documentação mais abrangente da biblioteca MarkerCluster do Google Maps, mas até o momento da confecção desse trabalho não foi possível encontrar nada além de alguns poucos exemplos de uso. Isto, e outros fatores, contribuíram para a escolha da biblioteca Leaflet.js como API de visualização de mapas do framework Searchlight.
+		  
 
-\section{Ferramentas e bibliotecas us	tilizadas}
+\section{Ferramentas Utilizadas}
 
 Um framework, em desenvolvimento de software, é uma abstração que une códigos comuns entre vários projetos de software provendo uma funcionalidade genérica. Um framework pode atingir uma funcionalidade específica, por configuração, durante a programação de uma aplicação. Ao contrário das bibliotecas, é o framework quem dita o fluxo de controle da aplicação, chamado de Inversão de Controle\footnote{Definição completa em: \url{http://pt.wikipedia.org/wiki/Framework}}.
 
 De modo geral, um framework é conjunto de ferramentas que trabalham em conjunto. O que une as ferramentas são as regras do framework que tem como objetivo prover as funcionalidades que motivaram a criação do framework.
 
-O framework Searchlight tem como objetivo facilitar a criação e a visualização de mapas de crowdsourcing por meio de automatização do processo de criação do mapa. O público alvo abrange tanto  programadores de mapas web quanto  usuários sem nenhum conhecimento de programação. Para atingir este objetivo o framework faz uso do seguinte conjunto de ferramentas: GitHub, Lealflet.js, jQuery, Tabletop.js e RapydScript. 
+O framework Searchlight tem como objetivo facilitar a criação e a visualização de mapas de crowdsourcing por meio de automatização do processo de criação do mapa. O público alvo abrange  programadores e usuários sem nenhum conhecimento de programação. Para atingir este objetivo o framework faz uso do seguinte conjunto de ferramentas: GitHub, Lealflet.js,  Tabletop.js e RapydScript. 
+
+
 
 \subsection{Github}
 GitHub é um Serviço de Web Hosting Compartilhado para projetos que usam o controle de versionamento Git. Mais do que isso, Github incorpora recursos sociais e de pesquisa que na prática o transformam em uma rede social para programadores. GitHub incorpora elementos tanto do facebook como do twitter. Por exemplo é possivel favoritar um projeto, seguir um programador, ver quais sãos as tendencias de programação, quais projetos estão se destacando, quais projetos se relacionam entre si e muitos outros recursos.
@@ -41,89 +66,33 @@ Na \autoref{fig-gitsource} podemos observar a pagina do código fonte do projeto
 Além de hospedar os códigos fontes do projeto, o GitHub também participa ativamente do framework Searchlight. Seu papel no framework é realizado através da ferramenta GitHub Pages. Essa ferramenta estende o uso do GitHub para que ele se comporte como um servidor de paginas web simples. Isto permite ao framework Searchlight hospedar a pagina de geração e compartilhamento de mapas sem que seja preciso contratar um servidor web apenas para esse propósito.
 
 
-\subsection{Ferramentas para Agrupamento de Pontos}
-		Durante a fase de pesquisa, deste trabalho, foi feito uma busca por aplicações acadêmicas, e comerciais, que já fizessem o uso de algorítimos de agrupamento de pontos. Duas aplicações se destacaram: MarkerClusterer e Leaflet.MarkerCluster.
-		
-		
-		\subsubsection{MarkerClusterer}		
-		MarkerClusterer \cite[188]{livroGoogleApiV3} é uma ferramenta fornecida pelo google que estende o uso da API do Google Maps para o uso de algorítimos de agrupamentos.
-		
-		MarkerClusterer é uma solução baseada em grelha. Ela agrupa marcadores de acordo com sua distância ao centro de um grupo. Quando um marcador é adicionado, ele pesquisa sua posição em todos os grupos. Caso não seja colocado em nenhum grupo, um novo grupo é criado para este marcador. A \autoref{fig-markerclusterer} demonstra a aplicação da ferramenta nos marcadores de um mapa.
-	\begin{figure}[htb]
-	\caption{\label{fig-markerclusterer}Exemplo de utilização da API MarkerClusterer }
-	\begin{center}
-	    \includegraphics[scale=0.8]{markerclusterer}
-	\end{center}
-		\legend{Fonte: \cite[figura 20]{silva2010solap+}  }
-\end{figure}
-
-		\subsubsection{Leaflet.MarkerCluster}
-		Assim como a biblioteca MarkerCLusterer estende a API do Google Maps para uso de agrupamento de marcadores, o plugin Leaflet.MarkerCluster serve como uma extensão para a API, de visualização de mapas, Leaflet.js\footnote{\url{http://leafletjs.com} é uma alternativa  a API do Google Maps, pois fornece um melhor suporte a dispositivos móveis como tablets e smartphones }. 
-		
-		Este plugin, faz basicamente as mesmas funções da ferramenta MarkerCluster, porém com algumas melhorias. Por exemplo, ao fazer zoom o mapa exibe uma pequena animação do processo de agrupamento; ao se passar o mouse sobre um marcador do grupo o mapa exibe um polígono que mostra os limites alcançados pelo grupo; os grupos que não são visíveis  na visualização atual do mapa são retirados do mapa para aumentar a performance. Além dessas melhorias, uma que merece destaque é a sua incrível capacidade de customização. 
-
-		Ao contrário da biblioteca MarkerClusterer, o plugin Leaflet.MarkerCluster possui um documentação bem completa que pode ser encontrada em \cite{gitleafletmarker}. 
-		
-		É importante observar, que inicialmente, procurou-se por uma documentação mais abrangente da biblioteca MarkerCluster do Google Maps, mas até o momento da confecção desse trabalho não foi possível encontrar nada além de alguns poucos exemplos de uso. Isto, e outros fatores, contribuíram para a escolha da biblioteca Leaflet.js como API de visualização de mapas do framework Searchlight.
-		  
 \subsection{Leaflet.js}
+
 Leaflet é uma biblioteca open-source feita em JavaScript para visualização de mapas interativos. Seu design é baseado em simplicidade, performance e usabilidade. Devido a isso é bastante amigável a dispositivos móveis como tablets e smartphones.
 
 Leaflet é uma biblioteca moderna e robusta, que tira vantagem dos recursos de navegadores modernos como o uso de HTML5  e CSS3 mas ainda mantém suporte aos navegadores antigos.  É bastante confiável e sua estabilidade já foi testada por grandes sites da internet como Foursquare\footnote{Foursquare abandona Google Maps em prol de leaflet.js \url{http://goo.gl/JXPCW}} e Flickr.
 
-Uma característica interessante dessa biblioteca é que ela trabalha em conjunto com o OpenStreetMap e diversos provedores de imagens de mapas. Por facilitar o processo de customização ela permite ao usuário escolher seu provedor de imagens, ou até mesmo criar o seu próprio provedor de imagens. Com isso, é possivel exibir mapas customizados e com uma aparência bem agradável.
+Neste projeto, a biblioteca Leaflet é utilizada para fornecer os recursos de exibição e interação com mapas na web.  Além disso, o framework a extensão  \textbf{Leaflet.Spin}, para controlar o processo de carregamento de dados, e Leaflet.MarkerCluster, para agrupar marcadores.
 
-Neste projeto, Leaflet foi escolhida como bib.....
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\subsection{Leaflet.spin}
-
-\subsection{jQuery}
-\subsection{jQueryUI}
 
 \subsection{TableTop.js}
 
+Tabletop\cite{tabletop} é uma biblioteca JavaScript que se comunica com o Google Docs e permite a leitura de planilhas eletrônicas por websites via Javascript. 
+
+O framework Searchlight utiliza a biblioteca Tabletop na geração e compartilhamento de mapas. A função da biblioteca neste caso é ler as planilhas com as informações do mapa e converter os dados para o formato JSON que é um dos formatos de dados mais utilizado em JavaScript.
+
+
 \subsection{Rapydscript}
 
+Rapydscript \cite{rapydscript} é um pré-compilador para JavaScript com sintaxe bem próxima da linguagem Python. Sua principal vantagem, é a facilidade de se programar orientado a objetos de forma bem similar como é feito Python. 
 
-\section{Arquitetura do Sistema}
-\subsection{Processamento de dados}
-\subsection{Interface com usuário} 
-\subsection{Compartilhamento de mapas}
-s
+A maior parte do framework Searchlight é escrita usando a sintaxe do Rapydscript, as partes restantes são escritas em JavaScript nativo.
+
+Decidiu-se usar um spré-compilador para JavaScript pois a linguagem JavaScript, apesar de ser uma linguagem com suporte a orientação a objetos, não possui uma sintaxe agradável para criação de classes de objetos. Devido a isso, é possível encontrar na internet algumas dezenas de pré-compiladores de javascript\footnote{O site \url{http://altjs.org} exibe uma lista dos principais pré-compiladores de JavaScript.}
+. 
+
+\section{Desenvolvimento do Sistema}
+\subsection{Requisitos do Sistema}
+\subsection{Arquitetura do Sistema}
+	\subsubsection{Processamento de dados}
+	\subsubsection{Compartilhamento de mapas}
