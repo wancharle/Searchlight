@@ -1013,7 +1013,7 @@ Searchlight.prototype.add_itens_gdoc = (function(data) {
   this.map.fitBounds(this.basel.getBounds());
 });
 Searchlight.prototype.carregaDados = (function(data) {
-  var d;
+  var d, obj, teste;
   try {
     var _$tmp4_data = _$rapyd$_iter(data);
     var _$tmp5_len = _$tmp4_data.length;
@@ -1038,9 +1038,14 @@ Searchlight.prototype.carregaDados = (function(data) {
     this.carregando = true;
   }
 
+  this.control.addCatsToControl(this.map_id);
   this.control.atualizarIconesMarcVisiveis();
   this.markers.fire("data:loaded");
-  this.control.addCatsToControl(this.map_id);
+  obj = this;
+  teste = (function() {
+    obj.control.carregaDados();
+  });
+  setTimeout(teste, 1);
   if (((this.carregando == false) && (window["onSLcarregaDados"] != undefined))) {
     onSLcarregaDados(this);
   }

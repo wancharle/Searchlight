@@ -128,13 +128,16 @@ class Searchlight:
             self.map.fitBounds(self.markers.getBounds())
             self.carregando = True
    
-        self.control.atualizarIconesMarcVisiveis()
-        self.markers.fire("data:loaded") 
         self.control.addCatsToControl(self.map_id)
-
+        self.control.atualizarIconesMarcVisiveis()
+        self.markers.fire("data:loaded")
+        obj = self
+        teste = def ():
+            obj.control.carregaDados()
+        setTimeout(teste, 1)
         if self.carregando == False and window['onSLcarregaDados'] != undefined:
                 onSLcarregaDados(self)
-
+        
     def addItem(self,item):
         self.dados.addItem(item,self.func_convert)
 
@@ -332,12 +335,13 @@ class Controle:
             if obj.clusterCtr.desfocou:
                 obj.clusterCtr.desfocou = False
                 obj.clusterCtr.mostraPopup()
+
             obj.atualizarIconesMarcVisiveis()
-        
             if obj.sl.carregando == True:
                 obj.sl.carregando = False
                 if window['onSLcarregaDados'] != undefined:
                     onSLcarregaDados(obj.sl)
+
         )
         self.sl.map.on('moveend', def():
             obj.atualizarIconesMarcVisiveis()

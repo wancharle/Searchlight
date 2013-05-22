@@ -15,7 +15,7 @@ A missão do projeto é agrupar, numa única ferramenta, técnicas de visualiza�
 O projeto tem 3 objetivos principais:
 
 * Organizar os dados no mapa de forma que evite sobreposição de informações.
-* Permitir o filtro dos dados por zoom, categorias e tempo.
+* Permitir o filtro dos dados por zoom e categorias.
 * Fácilitar a geração de mapas tanto por programadores quanto por usuários finais. 
 
 
@@ -57,11 +57,5 @@ Após criar a planilha, cole o link publico no campo abaixo e clique em comparti
 <form method="GET" action="view.html">Endereço da planilha:  <input type="text" style="width:600px" name="data" value="https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html" />
   <input type="submit" value="compartilhar" />
 </form>
-
-
-### Filtro por Tempo
-No mapa abaixo podemos filtrar e exibir apenas os marcadores que pertencem as categorias escolhidos e com atributo data dentro do período de tempo escolhido.
-
----- em construção -----
 
 

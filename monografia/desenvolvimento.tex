@@ -88,11 +88,50 @@ Rapydscript \cite{rapydscript} é um pré-compilador para JavaScript com sintaxe
 
 A maior parte do framework Searchlight é escrita usando a sintaxe do Rapydscript, as partes restantes são escritas em JavaScript nativo.
 
-Decidiu-se usar um spré-compilador para JavaScript pois a linguagem JavaScript, apesar de ser uma linguagem com suporte a orientação a objetos, não possui uma sintaxe agradável para criação de classes de objetos. Devido a isso, é possível encontrar na internet algumas dezenas de pré-compiladores de javascript\footnote{O site \url{http://altjs.org} exibe uma lista dos principais pré-compiladores de JavaScript.}
+Decidiu-se usar um pré-compilador para JavaScript pois a linguagem JavaScript, apesar de ser uma linguagem com suporte a orientação a objetos, não possui uma sintaxe agradável para criação de classes de objetos. Devido a isso, é possível encontrar na internet algumas dezenas de pré-compiladores de javascript\footnote{O site \url{http://altjs.org} exibe uma lista dos principais pré-compiladores de JavaScript.}
 . 
 
-\section{Desenvolvimento do Sistema}
-\subsection{Requisitos do Sistema}
-\subsection{Arquitetura do Sistema}
-	\subsubsection{Processamento de dados}
-	\subsubsection{Compartilhamento de mapas}
+
+\section{Arquitetura do Sistema}
+A \autoref{fig-camadas} mostra as camadas que fazem parte da arquitetura do framework Searchlight. A arquitetura do sistema, tal como mostrada na figura, é assim explicada:
+	\begin{figure}[htb]
+	\caption{\label{fig-camadas}Arquitetura do framework Searchlight.}
+	\begin{center}
+	    \includegraphics[scale=0.6]{estrutura}
+	\end{center}
+\end{figure}
+
+\begin{itemize}
+\item \textbf{Camada de Aplicação}: é a camada que disponibiliza os serviços do framework aos usuários. Sendo que para usuários programadores a camada disponibiliza a biblioteca Searchlight.js que permite a integração customizada do framework ao website privado do usuário. Porém, para usuários sem conhecimentos de programação, a camada também disponibiliza o gerador de mapas. O gerador de mapas, permite a geração automática de mapas e o seu compartilhamento através da internet sem que seja preciso programar.
+
+\item \textbf{Camada Framework}: é a camada que implementa os serviços oferecidos para os usuários através da camada de aplicação. A camada framework implementa as classes Controle, ClusterCtr e Dados. Essas classes são responsáveis  por controlar a interface de usuário; controlar os agrupamentos, filtros e foco; e pelo processamento de dados do framework. 
+
+\item \textbf{Camada Bibliotecas}: é a camada que implementa  serviços básicos que são utilizados pela camada framework como visualização de mapas, agrupamentos de marcadores e processamento de dados . Os seus principais componentes são a biblioteca Leaflet, com suas extensões, e a biblioteca Tabletop. Sendo que a biblioteca Leaflet é responsável pelas funções visuais do mapa e a biblioteca Tabletop pelo processamento de dados de planilhas do Google Docs.
+
+\item \textbf{Camada Base}: é camada que fornece os componentes estruturais para a construção das camadas superiores. Sendo que os seus principais componentes são o jQuery, para fornecer compatibilidade com  diversos navegadores, e o grupo HTML, CSS e JavaScript que são os blocos estruturais de todo o framework.
+ 
+
+
+\end{itemize}
+
+
+
+	\subsection{Processamento de dados}
+	Por convenção, o framework Searchlight utiliza o formato JSON como fonte de dados. A entrada dos dados pode ser feia localmente ou pela internet. Dados que não estejam no formato JSON devem ser processados conforme é mostrado na \autoref{fig-processamento}. 
+	
+	\begin{figure}[htb]
+	\caption{\label{fig-processamento}Arquitetura do framework Searchlight.}
+	\begin{center}
+	    \includegraphics[scale=0.45]{processamento}
+	\end{center}
+\end{figure}
+	
+	Vale ressaltar, que os dados fornecidos localmente são utilizados diretamente pelo framework. Porém,  os dados que são fornecidos via internet precisam ser processados e seguir as regras do protocolo JSONP. 
+	
+	Arquivos de dados que não estejam no formato JSON podem ser utilizados desde que sejam convertidos e entregues via protocolo JSONP. O framework Searchlight faz essa conversão automaticamente para planilhas do Google Docs. Neste caso, é utilizado a biblioteca Tabletop para converter os dados da planilha para o formato JSON.
+	
+	
+	 
+	 
+		 
+		
