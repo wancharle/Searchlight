@@ -1,20 +1,20 @@
 Neste capítulo será detalhado o processo de desenvolvimento do framework Searchlight, e as ferramentas utilizadas para a construção do mesmo.
 
 \section{Considerações Iniciais}
-Durante  a fase de pesquisa deste projeto, descobriu-se uma variedade de recursos que poderiam ser usados na elaboração de um framework para visualização de mapas. Muitos destes recursos já estavam no cronograma do projeto, outros foram adicionados  e alguns ficaram fora do cronograma e colocados na lista de trabalhos futuros.
+Durante  a fase de pesquisa deste projeto, descobriu-se uma variedade de recursos que poderiam ser usados na elaboração de um framework para visualização de mapas. Muitos destes recursos já estavam no escopo do projeto, outros foram adicionados  e alguns ficaram fora do escopo e colocados na lista de trabalhos futuros.
 
-Inicialmente a meta do framework era apenas encontrar uma maneira de visualizar mapas de crowdsourcing de forma mais limpa e sucinta através de técnicas de agrupamento aliadas a hierarquia de zoom. Mas no decorrer das pesquisas percebeu-se que seria interessante adicionar alguns recursos como filtro por categoria e foco em grupo. 
+Inicialmente a meta do framework era apenas encontrar uma maneira de visualizar mapas de crowdsourcing de forma mais limpa e sucinta através de técnicas de agrupamento aliadas a hierarquia de zoom. Mas no decorrer das pesquisas percebeu-se que seria interessante adicionar mais alguns recursos, como filtro por categoria e foco em grupo. 
 
-Também foi adicionado ao projeto a possibilidade de gerar e compartilhar um mapa web sem precisar escrever uma linha de código.
-O único requisito é fornecer um endereço web onde o gerador de mapas deve buscar os dados geográficos do mapa. Neste caso, o usuário não precisa mais saber programar para poder usufruir dos recursos do framework e a única preocupação dele fica depositada sobre o conteúdo do mapa.
+Também foi adicionado ao projeto a possibilidade de gerar e compartilhar um mapa web sem precisar escrever linhas de código.
+Para isso é necessário fornecer um endereço web no qual o gerador de mapas possa buscar os dados geográficos do mapa. Desta forma, o usuário não precisa mais saber programar para poder usufruir dos recursos do framework e a sua única preocupação fica depositada sobre o conteúdo do mapa.
 
-Em relação ao conteúdo usado pelo compartilhador de mapas, o framework atualmente suporta o armazenamento numa planilha eletrônica ou em um arquivo de formato JSON\footnote{Formato muito usado para troca de dados entre websites \url{http://www.json.org}}. Quando o conteúdo é oriundo de planilha eletrônica é necessário que esta esteja armazenada no Google Docs e seja pública. De forma similar, quando o conteúdo é armazenado em um arquivo JSON é necessário que o website que hospeda o arquivo suporte o protocolo JSONP. Caso contrário, o usuário deve instalar o framework Searchlight no website que deseja visualizar o mapa.
+Em relação ao conteúdo usado pelo compartilhador de mapas, o framework atualmente suporta o armazenamento numa planilha eletrônica ou em um arquivo de formato JSON\footnote{Formato muito usado para troca de dados entre websites \url{http://www.json.org}}. Quando o conteúdo é oriundo de planilha eletrônica é necessário que esta esteja armazenada no Google Docs e seja pública. De forma similar, quando o conteúdo é armazenado em um arquivo JSON é necessário que o website que hospeda o arquivo suporte o protocolo JSONP. Caso contrário, o usuário deverá instalar o framework Searchlight no website que deseja visualizar o mapa.
 
 
-Em relação a API de mapas utilizada pelo projeto, o objetivo inicial era usar a api do Google Maps para a visualização dos mapas. Porém,  na época em que esta pesquisa era feita, circulava notícias que o Google estaria mudando seus termos de serviço e iria começar a cobrar\footnote{Uma notícia sobre o inicio das cobranças do Google Maps \url{http://goo.gl/f1E3K}} pelo uso da API do Google Maps. Além disso, no mesmo período, a Apple anunciou que iria abandonar o uso do Google Maps em seus smartphones e adotaria uma solução própria. Isto trouxe a necessidade de procurar uma alternativa ao Google Maps. A alternativa encontrada foi a biblioteca open-source Leaflet.jss \cite{leaflet} que será descrita no decorrer deste capítulo.
+Em relação a API de mapas utilizada pelo projeto, o objetivo inicial era usar a api do Google Maps para a visualização dos mapas. Porém,  durante a fase de pesquisa, circulava notícias que o Google estaria mudando seus termos de serviço e iria começar a cobrar\footnote{Uma notícia sobre o inicio das cobranças do Google Maps \url{http://goo.gl/f1E3K}} pelo uso da API do Google Maps. Além disso, no mesmo período, a Apple anunciou que iria abandonar o uso do Google Maps em seus smartphones e adotaria uma solução própria. Isto trouxe a necessidade de procurar uma alternativa ao Google Maps. A alternativa encontrada foi a biblioteca open-source Leaflet.jss \cite{leaflet} que será descrita no decorrer deste capítulo.
 
 \subsection{Agrupamento de Pontos}
-		Durante a fase de pesquisa, deste trabalho, foi feito uma busca por ferramentas acadêmicas, e comerciais, que já fizessem o uso de algorítimos de agrupamento de pontos. Foram encontradas duas ferramentas promissoras: MarkerClusterer e Leaflet.MarkerCluster.
+		Durante a fase de pesquisa deste trabalho, foi feito uma busca por ferramentas acadêmicas e comerciais que já fizessem o uso de algorítimos de agrupamento de pontos. Foram encontradas duas ferramentas promissoras: MarkerClusterer e Leaflet.MarkerCluster.
 		
 		
 		\subsubsection{MarkerClusterer}		
@@ -32,9 +32,9 @@ Em relação a API de mapas utilizada pelo projeto, o objetivo inicial era usar 
 		\subsubsection{Leaflet.MarkerCluster}
 		Assim como a biblioteca MarkerCLusterer estende a API do Google Maps para uso de agrupamento de marcadores, o plugin Leaflet.MarkerCluster\cite{gitleafletmarker} serve como uma extensão para a API Leaflet. 
 		
-		Este plugin, faz basicamente as mesmas funções da ferramenta MarkerCluster, porém com algumas melhorias. Por exemplo, ao fazer zoom o mapa exibe uma pequena animação do processo de agrupamento; ao se passar o mouse sobre um marcador do grupo o mapa exibe um polígono que mostra os limites alcançados pelo grupo; os grupos que não são visíveis  na visualização atual do mapa são retirados do mapa para aumentar a performance. Além dessas melhorias, uma que merece destaque é a sua incrível capacidade de customização. 
+		Este plugin, faz basicamente as mesmas funções da ferramenta MarkerCluster, porém com algumas melhorias. Por exemplo, ao fazer zoom o mapa exibe uma pequena animação do processo de agrupamento; ao se passar o mouse sobre um marcador do grupo o mapa exibe um polígono que mostra os limites alcançados pelo grupo; os grupos que não são visíveis  na visualização atual do mapa são retirados do mapa para aumentar a performance. Além dessas melhorias, uma que merece destaque é a sua capacidade de customização. 
 
-		Ao contrário da biblioteca MarkerClusterer, o plugin Leaflet.MarkerCluster possui um documentação bem completa que pode ser encontrada em \cite{gitleafletmarker}. 
+		Ao contrário da biblioteca MarkerClusterer, o plugin Leaflet.MarkerCluster possui um documentação bastante útil que pode ser encontrada em \cite{gitleafletmarker}. 
 		
 		É importante observar, que inicialmente, procurou-se por uma documentação mais abrangente da biblioteca MarkerCluster do Google Maps, mas até o momento da confecção desse trabalho não foi possível encontrar nada além de alguns poucos exemplos de uso. Isto, e outros fatores, contribuíram para a escolha da biblioteca Leaflet.js como API de visualização de mapas do framework Searchlight.
 		  
@@ -43,18 +43,18 @@ Em relação a API de mapas utilizada pelo projeto, o objetivo inicial era usar 
 
 Um framework, em desenvolvimento de software, é uma abstração que une códigos comuns entre vários projetos de software provendo uma funcionalidade genérica. Um framework pode atingir uma funcionalidade específica, por configuração, durante a programação de uma aplicação. Ao contrário das bibliotecas, é o framework quem dita o fluxo de controle da aplicação, chamado de Inversão de Controle\footnote{Definição completa em: \url{http://pt.wikipedia.org/wiki/Framework}}.
 
-De modo geral, um framework é conjunto de ferramentas que trabalham em conjunto. O que une as ferramentas são as regras do framework que tem como objetivo prover as funcionalidades que motivaram a criação do framework.
+De modo geral, um framework é conjunto de ferramentas que trabalham em conjunto. O que une as ferramentas são as regras do framework que tem como objetivo prover as funcionalidades que motivaram a criação do dele.
 
 O framework Searchlight tem como objetivo facilitar a criação e a visualização de mapas de crowdsourcing por meio de automatização do processo de criação do mapa. O público alvo abrange  programadores e usuários sem nenhum conhecimento de programação. Para atingir este objetivo o framework faz uso do seguinte conjunto de ferramentas: GitHub, Lealflet.js,  Tabletop.js e RapydScript. 
 
 
 
 \subsection{Github\label{github}}
-GitHub é um Serviço de Web Hosting Compartilhado para projetos que usam o controle de versionamento Git. Mais do que isso, Github incorpora recursos sociais e de pesquisa que na prática o transformam em uma rede social para programadores. GitHub incorpora elementos tanto do facebook como do twitter. Por exemplo é possivel favoritar um projeto, seguir um programador, ver quais sãos as tendencias de programação, quais projetos estão se destacando, quais projetos se relacionam entre si e muitos outros recursos.
+GitHub é um Serviço de Web Hosting Compartilhado para projetos que usam o controle de versionamento Git. Mais do que isso, Github incorpora recursos sociais e de pesquisa que na prática o transformam em uma rede social para programadores. GitHub incorpora elementos tanto do facebook como do twitter. Por exemplo é possível favoritar um projeto, seguir um programador, ver quais sãos as tendências de programação, quais projetos estão se destacando, quais projetos se relacionam entre si e muitos outros recursos.
 
 Neste projeto o github foi usado para hospedar o código fonte da solução desenvolvida e o código latex desta monografia. Todos esses dados podem ser acessados através do endereço \url{https://github.com/wancharle/Searchlight}. 
 
-Na \autoref{fig-gitsource} podemos observar a pagina do código fonte do projeto. A partir dela um programador pode reportar um bug, solicitar permissões para contribuir com o projeto, copiar o código fonte e muitos outros recursos. 
+Na \autoref{fig-gitsource} podemos observar a página do código fonte do projeto. A partir dela um programador pode reportar um bug, solicitar permissões para contribuir com o projeto, copiar o código fonte e muitos outros recursos. 
 
 	\begin{figure}[htb]
 	\caption{\label{fig-gitsource}Pagina do github.com que hospeda o código fonte deste projeto.}
@@ -63,7 +63,7 @@ Na \autoref{fig-gitsource} podemos observar a pagina do código fonte do projeto
 	\end{center}
 \end{figure}
 
-Além de hospedar os códigos fontes do projeto, o GitHub também participa ativamente do framework Searchlight. Seu papel no framework é realizado através da ferramenta GitHub Pages. Essa ferramenta estende o uso do GitHub para que ele se comporte como um servidor de paginas web simples. Isto permite ao framework Searchlight hospedar a pagina de geração e compartilhamento de mapas sem que seja preciso contratar um servidor web apenas para esse propósito.
+Além de hospedar os códigos fontes do projeto, o GitHub também participa ativamente do framework Searchlight. Seu papel no framework é realizado através da ferramenta GitHub Pages. Essa ferramenta estende o uso do GitHub para que ele se comporte como um servidor de páginas web simples. Isto permite ao framework Searchlight hospedar a página de geração e compartilhamento de mapas sem que seja preciso contratar um servidor web apenas para esse propósito.
 
 
 \subsection{Leaflet.js}
@@ -79,16 +79,16 @@ Neste projeto, a biblioteca Leaflet é utilizada para fornecer os recursos de ex
 
 Tabletop\cite{tabletop} é uma biblioteca JavaScript que se comunica com o Google Docs e permite a leitura de planilhas eletrônicas por websites via Javascript. 
 
-O framework Searchlight utiliza a biblioteca Tabletop na geração e compartilhamento de mapas. A função da biblioteca neste caso é ler as planilhas com as informações do mapa e converter os dados para o formato JSON que é um dos formatos de dados mais utilizado em JavaScript.
+O framework Searchlight utiliza a biblioteca Tabletop na geração e compartilhamento de mapas. A função da biblioteca, neste caso, é ler as planilhas com as informações do mapa e converter os dados para o formato JSON que é um dos formatos de dados mais utilizado em JavaScript.
 
 
 \subsection{Rapydscript}
 
-Rapydscript \cite{rapydscript} é um pré-compilador para JavaScript com sintaxe bem próxima da linguagem Python. Sua principal vantagem, é a facilidade de se programar orientado a objetos de forma bem similar como é feito Python. 
+Rapydscript \cite{rapydscript} é um pré-compilador para JavaScript com sintaxe bem próxima da linguagem Python. Sua principal vantagem, é a facilidade de se programar orientado a objetos de forma similar à Python. 
 
-A maior parte do framework Searchlight é escrita usando a sintaxe do Rapydscript, as partes restantes são escritas em JavaScript nativo.
+A maior parte do framework Searchlight é escrita usando a sintaxe do Rapydscript. As partes restantes são escritas em JavaScript nativo.
 
-Decidiu-se usar um pré-compilador para JavaScript pois a linguagem JavaScript, apesar de ser uma linguagem com suporte a orientação a objetos, não possui uma sintaxe agradável para criação de classes de objetos. Devido a isso, é possível encontrar na internet algumas dezenas de pré-compiladores de javascript\footnote{O site \url{http://altjs.org} exibe uma lista dos principais pré-compiladores de JavaScript.}
+Decidiu-se usar um pré-compilador para JavaScript,  pois a linguagem JavaScript, apesar de ser uma linguagem com suporte a orientação a objetos, não possui uma sintaxe agradável para criação de classes de objetos. Devido a isso, é possível encontrar na internet algumas dezenas de pré-compiladores de javascript\footnote{O site \url{http://altjs.org} exibe uma lista dos principais pré-compiladores de JavaScript.}
 . 
 
 
