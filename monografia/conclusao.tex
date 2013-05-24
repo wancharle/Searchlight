@@ -1,4 +1,23 @@
-\section{trabalhos futuros}
-\subsection{Redes de Grupo}
+Este capítulo apresenta as conclusões do trabalho realizado, mostrando suas contribuições. Por fim, são apresentadas suas limitações e perspectivas de trabalhos futuros.
 
-\section{Considerações finais}
+\section{Conclusões}
+Com a popularização dos computadores e da internet, está acontecendo um aumento da interação social entre as pessoas no meio virtual. Essa interação permite o cultivo de novos comportamentos e interações sociais como o crowdsourcing. Além disso, tem crescido a necessidade de mecanismos virtuais que permitam as pessoas exercer sua cidadania de forma conectada e contribuir para a cidade com  criticas e sugestões. Entretanto, tais mecanismos precisam lidar com uma enorme quantidade de informação e isso dificulta a visualização dos dados coletados.
+
+Neste contexto, este trabalho apresentou a criação do framework Searchlight com o intuito de facilitar a visualização de informações crowdsourcing em Mapas Web. Pesquisou-se por estratégias para resolver os problemas de sobreposição de informações, zoom arbitrário e informações arbitrárias. E para solucionar esses problemas, foi necessário utilizar as estratégias de redução de número de marcadores e agrupamento de marcadores.
+
+Para a aplicar essas estratégias, o framework Searchlight implementou alguns recursos como o filtro por categorias, o agrupamento de marcadores, Baloes de Resumo e foco em grupo. Esses recursos, ajudaram a melhorar a visualização do mapa e a deixá-lo mais limpo e compreensível.
+
+Durante a fase de pesquisa, percebeu-se, que além de melhorar a visualização do mapa, era necessário  melhorar também o acesso ao mapa. Para isso, foi feito a implementação do recurso de gerar e compartilhar mapas automaticamente. Com esse recurso, usuários que não possuem conhecimento de programação também podem criar  e compartilhar os seus próprios mapas.
+
+
+
+\section{Limitações e Perspectivas Futuras}
+
+
+No cenário alcançado, algumas limitações são observadas, o que dá margem para a realização de trabalhos futuros. Dentre elas destaca-se o fato da geração automática de mapas aceitar apenas planilhas do Google Docs e não ser possível utilizar planilhas de aplicativos como Excel, Calc e Numbers. Atualmente, o usuário pode adicionar seus dados nesses outros formatos de planilhas, mas para usa-las no mapa  é necessário que elas sejam convertidas para  o formato de planilha do Google Docs.
+
+Além disso, na \autoref{sec-estrategias} foi demostrado que uma das estratégias para se reduzir o número de marcadores é a Otimização visual. Um exemplo de otimização visual genérica que poderia ser implementada no framework é a conexão de marcadores de uma mesmas categoria. Por exemplo, se consideramos um mapa que exibe todos os pontos de ônibus de uma cidade e conectarmos os pontos pertencem a uma mesma linha de ônibus, podemos substituir todos os marcadores do trajeto por um desenho de uma linha passando pela localização dos pontos de ônibus. 
+
+Ainda assim,há espaço para acréscimos de novas funcionalidades  como: filtros por data em mapas temporais, campos de busca em mapas com muita informação textual, e muitas outras.  
+
+Portanto, vislumbra-se a possibilidade de trabalhos futuros objetivando o oferecimento de mais serviços por parte do framework Searchlight e uma melhoria continua dos recursos de visualização de mapas de crowdsourcing.

@@ -6,7 +6,7 @@ Pensando em ilustrar os recursos do framework Searchlight, para os usuários do 
 O endereço dele é \url{http://wancharle.github.io/Searchlight/}. Através dele podemos ter acesso ao endereço do código fonte do projeto, que se encontra no GitHub, permitindo assim que outros programadores contribuam para o mesmo.
 
 \begin{figure}[htb]
-	\caption{\label{fig-website}Website com documentação e exemplos do Framework Searchlight.}
+	\caption{\label{fig-website}Website com documentação e exemplos do framework Searchlight.}
 	\begin{center}
 	    \includegraphics[scale=0.6]{website}
 	\end{center}
@@ -16,7 +16,7 @@ O endereço dele é \url{http://wancharle.github.io/Searchlight/}. Através dele
 Este website contém o link da API Searchlight.js para os programadores que querem utilizar o framework de forma customizada. Nele é possível visualizar exemplos de filtros de categorias, agrupamento de marcadores, foco em grupo, geração automática de mapas e compartilhamento de mapas, que são os principais recursos e meios de utilização do framework. Dentre eles, destacam-se a geração e compartilhamento automático de mapas que possuem páginas específicas para sua utilização. 
 
 
-Em suma, o website documenta o projeto como um todo. Fala sobre os objetivos e metas do projeto. É possivel conferir uma parte do dele na \autoref{fig-website}. 
+Em suma, o website documenta o projeto como um todo. Fala sobre os objetivos e metas do projeto. É possível conferir uma parte do dele na \autoref{fig-website}. 
 
 \section{Recursos desenvolvidos}
 A \autoref{sec-estrategias} descreveu duas estratégias que podem ser utilizadas para se lidar com o problema de muitos marcadores num mapa. O framework fornece recursos que se baseiam nessas duas estratégias. 
@@ -39,7 +39,7 @@ Como pode ser observado, o filtro  exibe um número ao lado de cada categoria. E
 É importante ressaltar, que o filtro de categorias é gerado através da leitura dos dados do mapa. Se os dados utilizados pelo mapa não forem classificados por categoria o filtro não é exibido.
 
 \subsection{Agrupamento de marcadores}	
-Outra recurso interessante fornecido pelo framework Searchligth é o agrupamento de marcadores. Por meio, da biblioteca Leaflet.MarkerCluster o framework agrupa os marcadores de acordo com o nível de zoom. Isto resolve somente o problema de sobreposição de informações, que é um dos problemas que motivaram a criação deste projeto. 
+Outra recurso interessante fornecido pelo framework Searchlight é o agrupamento de marcadores. Por meio, da biblioteca Leaflet.MarkerCluster o framework agrupa os marcadores de acordo com o nível de zoom. Isto resolve somente o problema de sobreposição de informações, que é um dos problemas que motivaram a criação deste projeto. 
 
 Outro problema que também é resolvido pelo agrupamento de marcadores é o problema de zoom arbitrário. Quando o usuário clica em um agrupamento de marcadores o mapa calcula um nível de zoom que possibilita ver todos os subelementos do agrupamento que foi clicado. A \autoref{fig-agrupamentos} exemplifica isso. Com apenas um clique no marcador central o mapa muda do zoom A para o zoom B sem precisar de zoons intermediários como no caso analisado na \autoref{fig-zoomab}.
 
@@ -57,7 +57,7 @@ Em mapas com um elevado número de  categorias seria interessante que o framewor
 No framework Searchlight isto foi implementado através de balões de resumo.
 
 \begin{figure}[htb]
-	\caption{\label{fig-baloes}Balãoes de Resumo do agrupamento clicado}
+	\caption{\label{fig-baloes}Balões de Resumo do agrupamento clicado}
 	\begin{center}
 	    \includegraphics[scale=0.6]{baloes}
 	\end{center}
@@ -66,7 +66,7 @@ No framework Searchlight isto foi implementado através de balões de resumo.
 A \autoref{fig-baloes} exibe um balão de resumo. Como pode se observar, o Balão de resumo mostra um pequeno relatório sobre os elementos pertencentes ao agrupamento. É exibido uma listagem de ícones de categorias que pertencem ao agrupamento que foi clicado, com o total de elementos da categoria a baixo do ícone. 
 
 
-Balões de Resumo fornecem duas formas de interação. A primeira forma de interação é com o botão ``expandir grupo'' que basicamente faz um zoom no grupo. A segunda forma de interação é com os icones de categorias. Através dele é possível utilizar o recurso ``Foco em Grupo'' que basicamente faz um zoom no grupo, mas exibindo apenas os elementos pertencentes ao agrupamento e a categoria que foi clicada.
+Balões de Resumo fornecem duas formas de interação. A primeira forma de interação é com o botão ``expandir grupo'' que basicamente faz um zoom no grupo. A segunda forma de interação é com os ícones de categorias. Através dele é possível utilizar o recurso ``Foco em Grupo'' que basicamente faz um zoom no grupo, mas exibindo apenas os elementos pertencentes ao agrupamento e a categoria que foi clicada.
 
  \begin{figure}[htb]
 	\caption{\label{fig-focoemgrupo}Exemplo de Foco em Grupo por categoria segurança}
@@ -83,7 +83,7 @@ O framework Searchlight permite a geração automática de mapas, através de fo
 
 As propriedades \textbf{latitude} e \textbf{longitude} são responsáveis por informar a posição em que o marcador deve aparecer no mapa. A propriedade t\textbf{texto} é responsável por informar o texto que será exibido no balão do marcador. O conteúdo da propriedade texto pode ser qualquer tipo de texto, inclusive código html.
 
- A \autoref{fig-fonte} exibe um exemplo de fonte de dados que utiliza a convenção adota pelo framework Serchlight. Neste caso, foi utilizado uma planilha pública do Google Drive e na coluna texto foi colocado  códigos html e texto simples. 		
+ A \autoref{fig-fonte} exibe um exemplo de fonte de dados que utiliza a convenção adota pelo framework Searchlight. Neste caso, foi utilizado uma planilha pública do Google Drive e na coluna texto foi colocado  códigos html e texto simples. 		
   
  \begin{figure}[htb]
 	\caption{\label{fig-fonte}Exemplo de fonte de dados utilizada para gerar mapas automaticamente}
