@@ -13,10 +13,10 @@ O endereço dele é \url{http://wancharle.github.io/Searchlight/}. Através dele
 \end{figure}
 
 
-Este website contém o link da API Searchlight.js para os programadores que querem utilizar o framework de forma customizada. Nele é possível visualizar exemplos de filtros de categorias, agrupamento de marcadores, foco em grupo, geração automática de mapas e compartilhamento de mapas, que são os principais recursos e meios de utilização do framework. Dentre eles, destacam-se a geração e compartilhamento automático de mapas que possuem paginas específicas para sua utilização. 
+Este website contém o link da API Searchlight.js para os programadores que querem utilizar o framework de forma customizada. Nele é possível visualizar exemplos de filtros de categorias, agrupamento de marcadores, foco em grupo, geração automática de mapas e compartilhamento de mapas, que são os principais recursos e meios de utilização do framework. Dentre eles, destacam-se a geração e compartilhamento automático de mapas que possuem páginas específicas para sua utilização. 
 
 
-Em suma, o website documenta o projeto como um todo. Fala sobre os objetivos e metas do projeto. É possivel conferir uma parte do dele na \autoref{fig-website}: 
+Em suma, o website documenta o projeto como um todo. Fala sobre os objetivos e metas do projeto. É possivel conferir uma parte do dele na \autoref{fig-website}. 
 
 \section{Recursos desenvolvidos}
 A \autoref{sec-estrategias} descreveu duas estratégias que podem ser utilizadas para se lidar com o problema de muitos marcadores num mapa. O framework fornece recursos que se baseiam nessas duas estratégias. 
@@ -36,12 +36,12 @@ Para utilizar o filtro por categorias basta que o usuário acesse o menu Searchl
 A \autoref{fig-categorias} exibe o processo de visualização do filtro por categorias.
 Como pode ser observado, o filtro  exibe um número ao lado de cada categoria. Este número representa o quantidade de marcadores que pertencem a categoria.
 
-É importante ressaltar, que o filtro de categorias é gerado dinamicamente através da leitura dos dados do mapa. Se os dados utilizados pelo mapa não forem classificados por categoria o filtro não é exibido.
+É importante ressaltar, que o filtro de categorias é gerado através da leitura dos dados do mapa. Se os dados utilizados pelo mapa não forem classificados por categoria o filtro não é exibido.
 
 \subsection{Agrupamento de marcadores}	
-Outra recurso interessante fornecido pelo framework Searchligth é o agrupamento de marcadores. Por meio, da biblioteca Leaflet.MarkerCluster o framework agrupa os marcadores de acordo com o nível de zoom. Isto, somente, já resolve o problema de sobreposição de informações que é um dos problemas que motivaram a criação deste projeto. 
+Outra recurso interessante fornecido pelo framework Searchligth é o agrupamento de marcadores. Por meio, da biblioteca Leaflet.MarkerCluster o framework agrupa os marcadores de acordo com o nível de zoom. Isto resolve somente o problema de sobreposição de informações, que é um dos problemas que motivaram a criação deste projeto. 
 
-Outro problema que também é resolvido pelo agrupamento de marcadores é o problema de zoom arbitrário. Pois, quando o usuário clica em um agrupamento de marcadores o mapa calcula um nível de zoom em que é possível ver todos os subelementos do agrupamento que foi clicado. A \autoref{fig-agrupamentos} exemplifica isso. Com apenas um clique no marcador central o mapa pula do zoom A para o zoom B sem precisar de zoons intermediários como no caso analisado na \autoref{fig-zoomab}.
+Outro problema que também é resolvido pelo agrupamento de marcadores é o problema de zoom arbitrário. Quando o usuário clica em um agrupamento de marcadores o mapa calcula um nível de zoom que possibilita ver todos os subelementos do agrupamento que foi clicado. A \autoref{fig-agrupamentos} exemplifica isso. Com apenas um clique no marcador central o mapa muda do zoom A para o zoom B sem precisar de zoons intermediários como no caso analisado na \autoref{fig-zoomab}.
 
 
 \begin{figure}[htb]
@@ -53,10 +53,8 @@ Outro problema que também é resolvido pelo agrupamento de marcadores é o prob
 
 
 \subsection{Balões de Resumo e Foco em grupo}
-Em mapas com um elevado número de  categorias seria interessante que o framework exibi-se algum recurso visual para resumir a informação de cada agrupamento de marcadores. 
+Em mapas com um elevado número de  categorias seria interessante que o framework exibisse algum recurso visual para resumir a informação de cada agrupamento de marcadores. 
 No framework Searchlight isto foi implementado através de balões de resumo.
-
-A \autoref{fig-baloes} exibe um balão de resumo. Como pode se observar, o Balão de resumo exibe um pequeno relatório sobre os elementos pertencentes ao agrupamento. É exibido uma listagem de ícones de categorias, que pertencem ao agrupamento que foi clicado, com o total de elementos da categoria em baixo do ícone. 
 
 \begin{figure}[htb]
 	\caption{\label{fig-baloes}Balãoes de Resumo do agrupamento clicado}
@@ -65,9 +63,10 @@ A \autoref{fig-baloes} exibe um balão de resumo. Como pode se observar, o Balã
 	\end{center}
 \end{figure}
 
-Balões de Resumo fornecem duas formas de interação. A primeira forma de interação é com o botão "expandir grupo" que basicamente faz um zoom no grupo. A segunda forma de interação é com os icones de categorias. Através dele é possível utilizar o recurso "Foco em Grupo" que basicamente faz um zoom no grupo, mas exibindo apenas os elementos pertencentes ao agrupamento e a categoria que foi clicada.
+A \autoref{fig-baloes} exibe um balão de resumo. Como pode se observar, o Balão de resumo mostra um pequeno relatório sobre os elementos pertencentes ao agrupamento. É exibido uma listagem de ícones de categorias que pertencem ao agrupamento que foi clicado, com o total de elementos da categoria a baixo do ícone. 
 
-O recurso de foco em grupo é útil para situações que se deseja visualizar apenas um tipo de categoria de forma rapida sem que seja preciso marcar e desmarcar categorias no filtro de categorias. Para sair do foco em grupo basta clicar no botão DESFOCAR. Veja \autoref{fig-focoemgrupo}.
+
+Balões de Resumo fornecem duas formas de interação. A primeira forma de interação é com o botão ``expandir grupo'' que basicamente faz um zoom no grupo. A segunda forma de interação é com os icones de categorias. Através dele é possível utilizar o recurso ``Foco em Grupo'' que basicamente faz um zoom no grupo, mas exibindo apenas os elementos pertencentes ao agrupamento e a categoria que foi clicada.
 
  \begin{figure}[htb]
 	\caption{\label{fig-focoemgrupo}Exemplo de Foco em Grupo por categoria segurança}
@@ -76,6 +75,23 @@ O recurso de foco em grupo é útil para situações que se deseja visualizar ap
 	\end{center}
 \end{figure}
 
+O recurso de foco em grupo é útil para situações que se deseja visualizar apenas um tipo de categoria de forma rápida sem que seja preciso marcar e desmarcar categorias no filtro de categorias. Para sair do foco em grupo basta clicar no botão DESFOCAR. Veja \autoref{fig-focoemgrupo}.
+
 
 \subsection{Geração e Compartilhamento automático de Mapas}
+O framework Searchlight permite a geração automática de mapas, através de fontes de dados externas, sem a necessidade de programar o mapa. Para que isso seja possível, convencionou-se que todo objeto de informação terá que conter 3 propriedades essenciais: latitude, longitude e texto.  
 
+As propriedades \textbf{latitude} e \textbf{longitude} são responsáveis por informar a posição em que o marcador deve aparecer no mapa. A propriedade t\textbf{texto} é responsável por informar o texto que será exibido no balão do marcador. O conteúdo da propriedade texto pode ser qualquer tipo de texto, inclusive código html.
+
+ A \autoref{fig-fonte} exibe um exemplo de fonte de dados que utiliza a convenção adota pelo framework Serchlight. Neste caso, foi utilizado uma planilha pública do Google Drive e na coluna texto foi colocado  códigos html e texto simples. 		
+  
+ \begin{figure}[htb]
+	\caption{\label{fig-fonte}Exemplo de fonte de dados utilizada para gerar mapas automaticamente}
+	\begin{center}
+	    \includegraphics[scale=0.6]{fonte}
+	\end{center}
+\end{figure}
+
+De modo geral, é necessário criar uma planilha de dados para  gerar um mapa automaticamente. Além disso, é preciso acessar o gerador de mapas no website do projeto e colar o endereço  da planilha no campo ``endereço da planilha''. Por ultimo, deve-se clicar no botão ``compartilhar'' para visualizar o mapa gerado.
+
+É importante perceber, que a fonte de dados não precisa ser necessariamente uma planilha do Google Drive. O framework Searchlight também suporta o formato de dados JSON. E por meio do protocolo JSONP pode usar estes arquivos como fonte dados na geração automática de mapas.  
