@@ -1,0 +1,41 @@
+# vim: set syntax=python:
+#import normais
+import stdlib
+import marcador
+
+class Dados:
+    def __init__(self):
+        self.clear()
+    
+    def clear(self):
+        self.marcadores = []
+        self.categorias = {}
+        self.categorias_id = {}
+
+    def getCat(self, m):
+        cat=self.categorias[m.cat]
+        if cat:
+            return cat
+        else:
+            self.categorias[m.cat] = []
+            self.categorias_id[m.cat] = m.cat_id
+            return self.categorias[m.cat]
+
+    def addItem(self,i,func_convert): 
+        geoItem = func_convert(i)
+        m =  Marcador(geoItem)
+        cat = self.getCat(m)
+        cat.append(m)
+
+    def getCatLatLng(self,name):
+        v = []
+        for m in self.categorias[name]:
+            v.append(m.getMark().getLatLng())
+        return v 
+    def catAddMarkers(self,name,cluster):
+       for m in self.categorias[name]:
+            cluster.addLayer(m.getMark())
+
+    def addMarkersTo(self, cluster):
+        for k in dict.keys(self.categorias):
+            self.catAddMarkers(k,cluster)

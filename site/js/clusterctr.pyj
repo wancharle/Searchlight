@@ -1,0 +1,157 @@
+# vim: set syntax=python:
+class ClusterCtr:
+    def __init__(self,sl):
+        self.sl = sl
+        obj = self
+        self.criaPopup()
+        self.clusters = {} 
+        self.id_analise = "#"+self.sl.map_id+ " div.searchlight-analise" 
+        $(self.id_analise).append("<p class='center'><a href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.desfocar()'>DESFOCAR</a></p>")
+        $(self.id_analise).hide()
+        self.sl.map.on('dblclick', def(a):
+            obj.clusterDuploClick()      
+        )
+        self.registraEventosClusters()
+    def registraEventosClusters(self):
+        obj = self
+        if self.camadaAnalise:
+            self.camadaAnalise.on('clusterdblclick', def (a) :
+                a.layer.zoomToBounds()    
+            );
+            self.camadaAnalise.on('clusterclick', def (a): 
+                a.layer.zoomToBounds()    
+            )
+        else:
+            self.sl.markers.on('clusterdblclick', def (a) :
+                obj.clusterDuploClick(a)
+            );
+            self.sl.markers.on('clusterclick', def (a): 
+                if dict.keys(obj.sl.dados.categorias).length > 1:
+                    obj.clusterClick(a)
+                else:
+                    a.layer.zoomToBounds()    
+            )
+
+        self.clickOrdem = 0
+    
+    def criaPopup(self):
+       popup = L.popup()
+       self.popup = popup
+       self.timeUltimoClick = Date().getTime()
+
+    def clusterClick(self,a=None):
+        d = Date()
+        if (d.getTime() - self.timeUltimoClick)>1500: # 2s
+            self.clickOrdem = 1
+
+            self.popupOrZoom(a)
+        self.timeUltimoClick = d.getTime()
+             
+    def clusterDuploClick(self, a =None):
+        self.cancelPopup()
+
+    def zoomGrupo(self):
+        self.sl.map.closePopup()
+        self.cluster_clicado.layer.zoomToBounds()
+   
+    def cancelPopup(self):
+        self.clickOrdem = 2
+        self.zoomGrupo()
+
+    def mostraPopup(self):
+        self.atualizaPopup()
+        self.popup.openOn(self.sl.map)
+    def showPopup(self): 
+        if self.clickOrdem == 1:
+            self.mostraPopup()
+        self.clickOrdem = 0
+
+    def desfocar(self):
+        self.sl.map.closePopup()
+        $(self.id_analise).hide()
+        self.sl.map.removeLayer(self.camadaAnalise)
+        self.sl.mostrarCamadaMarkers()
+        self.camadaAnalise = None
+        self.desfocou = True 
+        self.registraEventosClusters()
+
+    def focar(self,cat):
+        self.sl.esconderCamadaMarkers()
+        self.camadaAnalise = new L.MarkerClusterGroup({ zoomToBoundsOnClick: false})
+        self.sl.map.addLayer(self.camadaAnalise)
+        self.camadaAnalise.fire("data:loading") 
+        cats = self.getCatsCluster()
+        for c in cats:
+            if cat == c[0]:
+                for m in c[1]:
+                    self.camadaAnalise.addLayer(m)
+        self.sl.map.fitBounds(self.camadaAnalise.getBounds())
+        self.camadaAnalise.fire("data:loaded") 
+        self.sl.control.registraEventosCamadaAnalise()
+        self.registraEventosClusters()
+        $(self.id_analise).show()
+       
+    def update(self):
+        #apaga cache dos clusters 
+        self.clusters = {}
+
+    def getCatsCluster(self):
+        cluster_id = self.cluster_clicado.layer._leaflet_id;
+        cluster_cats = self.clusters[cluster_id]
+        if cluster_cats:
+            return cluster_cats
+
+        cats = {}
+        for m in self.cluster_clicado.layer.getAllChildMarkers():
+            if m.slinfo:
+                cat = m.slinfo.cat
+                if (cats[cat]):
+                    cats[cat].append(m)
+                else:
+                    cats[cat]=[m]
+
+        cats_ord =[]
+        for cat in dict.keys(cats):
+            cats_ord.append([cat,cats[cat]])
+        cats_ord.sort(def (a,b):
+            return b[1].length-a[1].length
+        );  
+        self.clusters[cluster_id]=cats_ord 
+        return cats_ord
+
+    def atualizaPopup(self):
+        cats_ord = self.getCatsCluster()
+        #----
+        html = "<div class='clusterPopup'>"
+        if not self.sl.Icones:
+            html+="<ul>"
+            cat = cats_ord[0]
+            for cat in cats_ord:
+                html += "<li><a title='Focar no subgrupo "+cat[0]+"'  href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.focar(\""+cat[0]+"\")'>"+cat[0]+"</a> ("+cat[1].length+")</li>"
+            html +="</ul>"
+        else:
+            html+='<ul class="icones">'
+            for cat in cats_ord:
+                cat_id = self.sl.dados.categorias_id[cat[0]]
+                iconUrl = self.sl.Icones[cat_id].options.iconUrl
+                html += "<li>"
+                html += "<p class='img'><a title='Focar no subgrupo "+cat[0]+"' href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.focar(\""+cat[0]+"\")'><img src='"+iconUrl+"'></a></p>"
+                html += "<p class='texto'><a title='Focar no subgrupo "+cat[0]+"' href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.focar(\""+cat[0]+"\")'>"+cat[1].length+"</a></p>"
+                html +="</li>"
+            html +="</ul>"
+
+
+        html +="<p class='center'><input type='button' onclick='SL(\""+self.sl.map_id+"\").control.clusterCtr.zoomGrupo();' value='expandir grupo' /></p>"
+        html +="</div>"
+        self.popup.setContent(html)
+            
+    def popupOrZoom(self,cluster):
+        self.sl.map.closePopup() 
+        self.popup.setLatLng(cluster.layer.getLatLng())
+        obj = self
+        if self.clickOrdem == 1:
+            self.cluster_clicado = cluster
+            setTimeout(def (): 
+                obj.showPopup(obj.sl.map_id);
+            , 600)
+

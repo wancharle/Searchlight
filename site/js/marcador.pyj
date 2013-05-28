@@ -1,0 +1,32 @@
+# vim: set syntax=python:
+#import normais
+import stdlib
+class Marcador:
+    def __init__(self,geoItem):
+        self.m = None
+        self.latitude = parseFloat(geoItem.latitude.replace(',','.'))
+        self.longitude = parseFloat(geoItem.longitude.replace(',','.'))
+        self.texto = geoItem.texto
+        if geoItem.icon:
+            self.icon = geoItem.icon
+        else:
+            self.icon = sl_IconePadrao
+        
+        if geoItem.cat:
+            self.cat_id = geoItem.cat_id
+            self.cat = geoItem.cat.replace(",","").replace('"','')
+        else:
+            self.cat = "descategorizado"
+            self.cat_id = 1
+
+    def getMark(self):
+        if self.m == None:
+            p =  [self.latitude,self.longitude ] 
+            m = new L.Marker(p)
+            m.setIcon(self.icon)
+            self.m = m
+            self.m.slinfo = self
+            self.m.bindPopup(m.slinfo.texto)
+        return self.m
+
+
