@@ -837,6 +837,30 @@ var MyControl = L.Control.extend({
         var container = L.DomUtil.create('div', 'searchlight-control leaflet-control-layers');
         container.innerHTML = "<div class='searchlight-opcoes'><ul> </ul></div>";
         container.innerHTML += "<div class='searchlight-analise'></div>";
+       var stop = L.DomEvent.stopPropagation; 
+        // ... initialize other DOM elements, add listeners, etc.
+        L.DomEvent
+		    .on(container, 'click', stop)
+		    .on(container, 'mousedown', stop)
+		    .on(container, 'mouseover', stop)
+		    .on(container, 'touchstart', stop)
+		    .on(container, 'touchend', stop)
+		    .on(container, 'dblclick', stop)
+		    .on(container, 'scroll', stop)
+		    .on(container, 'mousewheel', stop)
+
+        return container;
+    }
+});
+
+var UndoRedoControl = L.Control.extend({
+    options: {
+        position: 'bottomright'
+    },
+
+    onAdd: function (map) {
+        // create the control container with a particular class name
+        var container = L.DomUtil.create('div', 'leaflet-control-layers');
         container.innerHTML += "<div class='searchlight-undozoom'></div>";
        var stop = L.DomEvent.stopPropagation; 
         // ... initialize other DOM elements, add listeners, etc.
@@ -883,11 +907,41 @@ getURLParameter = function(name) {
   return $(document).getUrlParam(name);
 };
 
+PilhaDeZoom = function(sl) {
+  this.pilha = [];
+  this.sl = sl;
+  this.id_undozoom = (("#" + this.sl.map_id) + " div.searchlight-undozoom");
+  $(this.id_undozoom).append((("<p class='center'><a href='javascript:SL(\"" + this.sl.map_id) + "\").control.clusterCtr.pilha_de_zoom.desfazer_zoom()'>Desfazer Zoom</a></p>"));
+  $(this.id_undozoom).hide();
+};
+
+PilhaDeZoom.prototype.salva_zoom = (function() {
+  var center, zoom;
+  zoom = this.sl.map.getZoom();
+  center = this.sl.map.getCenter();
+  this.pilha.append([center, zoom]);
+  $(this.id_undozoom).show();
+});
+PilhaDeZoom.prototype.desfazer_zoom = (function() {
+  var _$rapyd_tuple$_, center, zoom;
+  _$rapyd_tuple$_ = this.pilha.pop();
+  center = _$rapyd_tuple$_[0];
+  zoom = _$rapyd_tuple$_[1];
+  this.sl.map.setView(center, zoom);
+  if (this.esta_vazia()) {
+    $(this.id_undozoom).hide();
+  }
+
+});
+PilhaDeZoom.prototype.esta_vazia = (function() {
+  return (this.pilha.length == 0);
+});
 ClusterCtr = function(sl) {
   var obj;
   this.sl = sl;
   obj = this;
   this.criaPopup();
+  this.pilha_de_zoom = new PilhaDeZoom(sl);
   this.clusters = {
     
   };
@@ -949,6 +1003,7 @@ ClusterCtr.prototype.clusterDuploClick = (function(a) {
 });
 ClusterCtr.prototype.zoomGrupo = (function() {
   this.sl.map.closePopup();
+  this.pilha_de_zoom.salva_zoom();
   this.cluster_clicado.layer.zoomToBounds();
 });
 ClusterCtr.prototype.cancelPopup = (function() {
@@ -1112,6 +1167,7 @@ Controle = function(sl) {
   obj = this;
   this.sl = sl;
   this.sl.map.addControl(new MyControl());
+  this.sl.map.addControl(new UndoRedoControl());
   this.id_control = (("#" + this.sl.map_id) + " div.searchlight-control");
   this.id_opcoes = (("#" + this.sl.map_id) + " div.searchlight-opcoes");
   this.id_camadas = (this.opcoes + "ul");

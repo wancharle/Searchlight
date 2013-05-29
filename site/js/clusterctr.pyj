@@ -1,13 +1,43 @@
 # vim: set syntax=python:
+class PilhaDeZoom:
+    def __init__(self,sl):
+        self.pilha = []
+        self.sl = sl
+
+        self.id_undozoom = "#"+self.sl.map_id+ " div.searchlight-undozoom" 
+        $(self.id_undozoom).append("<p class='center'><a href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.pilha_de_zoom.desfazer_zoom()'>Desfazer Zoom</a></p>")
+        $(self.id_undozoom).hide()
+
+    def salva_zoom(self):
+        zoom =  self.sl.map.getZoom()
+        center = self.sl.map.getCenter()
+        self.pilha.append((center,zoom))
+        $(self.id_undozoom).show()
+
+
+    def desfazer_zoom(self):
+        (center,zoom) = self.pilha.pop()
+        self.sl.map.setView(center, zoom)
+        if self.esta_vazia():
+             $(self.id_undozoom).hide()
+
+
+    def esta_vazia(self):
+        return len(self.pilha)==0
+
+
 class ClusterCtr:
     def __init__(self,sl):
         self.sl = sl
         obj = self
         self.criaPopup()
+        self.pilha_de_zoom = PilhaDeZoom(sl)
         self.clusters = {} 
+        
         self.id_analise = "#"+self.sl.map_id+ " div.searchlight-analise" 
         $(self.id_analise).append("<p class='center'><a href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.desfocar()'>DESFOCAR</a></p>")
         $(self.id_analise).hide()
+
         self.sl.map.on('dblclick', def(a):
             obj.clusterDuploClick()      
         )
@@ -52,6 +82,7 @@ class ClusterCtr:
 
     def zoomGrupo(self):
         self.sl.map.closePopup()
+        self.pilha_de_zoom.salva_zoom()
         self.cluster_clicado.layer.zoomToBounds()
    
     def cancelPopup(self):

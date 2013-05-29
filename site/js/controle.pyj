@@ -7,6 +7,7 @@ class Controle:
         obj = self
         self.sl = sl
         self.sl.map.addControl(new MyControl())
+        self.sl.map.addControl(new UndoRedoControl())
         self.id_control = "#"+self.sl.map_id+" div.searchlight-control"
         self.id_opcoes = "#"+self.sl.map_id+ " div.searchlight-opcoes" 
         self.id_camadas = self.opcoes + "ul"
