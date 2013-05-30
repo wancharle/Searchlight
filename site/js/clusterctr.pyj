@@ -42,7 +42,6 @@ class PilhaDeZoom:
         if self.undo_index==len(self.pilha)-1:
             self.undo_index=len(self.pilha)-2
 
-        console.log(self.undo_index) 
         (center,zoom) = self.pilha[self.undo_index]
         self.undo_index -= 1
         
@@ -55,7 +54,6 @@ class PilhaDeZoom:
     def refazer(self):
         if self.undo_index<0:
             self.undo_index=0
-        console.log(self.undo_index) 
 
         (center,zoom) = self.pilha[self.undo_index+1]
         self.undo_index+=1
