@@ -1,0 +1,138 @@
+# vim: set syntax=python:
+#import normais
+import stdlib
+import clusterctr
+class Controle:
+    def __init__(self,sl):
+        obj = self
+        self.sl = sl
+        self.sl.map.addControl(new MyControl())
+        self.sl.map.addControl(new UndoRedoControl())
+        self.id_control = "#"+self.sl.map_id+" div.searchlight-control"
+        self.id_opcoes = "#"+self.sl.map_id+ " div.searchlight-opcoes" 
+        self.id_camadas = self.opcoes + "ul"
+        self.show = def(event):
+            if obj.clusterCtr.camadaAnalise==None:
+                $(obj.id_opcoes).show()
+        $(self.id_control).mouseenter(self.show )
+        $(self.id_control).bind('touchstart',self.show);
+        self.hide = def(event):
+            $(obj.id_opcoes).hide()
+ 
+        $("#"+self.sl.map_id).mouseover(self.hide)
+        $("#"+self.sl.map_id).bind('touchstart',self.hide)
+    
+        #registrando eventos popup e markers
+        
+        self.sl.map.on('zoomend', def():
+            if obj.marcador_clicado == None:
+                obj.sl.map.closePopup()
+            else:
+                obj.marcador_clicado = None
+            if obj.clusterCtr.desfocou:
+                obj.clusterCtr.desfocou = False
+                obj.clusterCtr.mostraPopup()
+
+            obj.atualizarIconesMarcVisiveis()
+            if obj.sl.carregando == True:
+                obj.sl.carregando = False
+                if window['onSLcarregaDados'] != undefined:
+                    onSLcarregaDados(obj.sl)
+
+        )
+        self.sl.map.on('moveend', def():
+            obj.atualizarIconesMarcVisiveis()
+        )
+        self.sl.markers.on('click',def(ev):
+            obj.markerClick(ev)
+        )
+        self.clusterCtr = ClusterCtr(sl)    
+
+    def registraEventosCamadaAnalise(self):
+        obj = self
+        self.clusterCtr.camadaAnalise.on('click',def(ev):
+            obj.markerClick(ev)
+        )
+
+    def atualizarIconesMarcVisiveis(self):
+        if self.sl.esconder_icones:
+           if self.sl.map.getZoom() >= 16:
+               self.mostrarIconesMarcVisiveis()
+           else:
+               self.esconderIconesMarcVisiveis()
+    
+    def mostrarIconesMarcVisiveis(self):
+        for m in self.getMarcadoresVisiveis():
+            m.setIcon(m.slinfo.icon)
+
+    def esconderIconesMarcVisiveis(self):
+        for m in self.getMarcadoresVisiveis():
+            m.setIcon(sl_IconCluster)
+
+    def getMarcadoresVisiveis(self):
+        if self.clusterCtr.camadaAnalise:
+            marcadores =  self.clusterCtr.camadaAnalise._layers
+        else:
+            marcadores = self.sl.markers._layers
+        marcadores_visiveis = []
+        for m in dict.keys(marcadores):
+            mark = marcadores[m]
+            if mark.hasOwnProperty("slinfo")  :
+                marcadores_visiveis.append(mark)
+        return marcadores_visiveis
+    
+    def markerClick(self,ev):
+        m = ev.layer
+        self.marcador_clicado = m
+        if m.slinfo.ultimo_zoom:
+            self.sl.map.setView(m.slinfo.ultimo_center,m.slinfo.ultimo_zoom)
+            m.slinfo.ultimo_zoom = None 
+            m.slinfo.ultimo_center = None
+            self.sl.map.closePopup()
+        else:
+            m.slinfo.ultimo_zoom =  self.sl.map.getZoom()
+            m.slinfo.ultimo_center = self.sl.map.getCenter()
+            center = new L.LatLng(m.slinfo.latitude,m.slinfo.longitude)
+            self.sl.map.setView(center, 18)
+            #self.showMarcPopup(m)
+
+  
+    def addCatsToControl(self,map_id):
+        if dict.keys(self.sl.dados.categorias).length > 1:
+            op ="#"+map_id+ " div.searchlight-opcoes" 
+            ul =op + " ul"
+            cats = []
+            for k in dict.keys(self.sl.dados.categorias):
+                cats.append([k,self.sl.dados.categorias[k].length])
+            cats.sort(def (a,b):
+                return b[1]-a[1]
+            )
+            $(ul).empty()
+            for c in cats:
+                $(ul).append("<li><input type='checkbox' checked name='"+map_id+"-cat' value='"+c[0]+"' class='categoria'/>"+c[0]+" ("+c[1]+")</li>")
+            
+            $(op).append("<p class='center'><input type='button' onclick='SL(\""+map_id+"\").control.update();' value='Atualizar Mapa' /></p>")
+        else:
+            if not $(self.id_opcoes).hasClass("sem-categoria"):
+                $(self.id_opcoes).addClass("sem-categoria")
+
+    def update(self):
+        $(self.id_opcoes).hide()
+        self.clusterCtr.update()
+        self.sl.markers.clearLayers();
+
+        if $("input:checkbox[name="+self.sl.map_id+"-cat]:checked").size() > 0:
+            self.sl.markers.fire("data:loading")
+            setTimeout("SL('"+self.sl.map_id+"').control.carregaDados()",50);
+
+    def carregaDados(self)
+        sl = self.sl
+        $("input:checkbox[name="+self.sl.map_id+"-cat]:checked").each(def ():
+            cat=$(self).val();
+            sl.dados.catAddMarkers(cat,sl.markers);
+        );
+        sl.map.fitBounds(sl.markers.getBounds())
+        sl.markers.fire("data:loaded") 
+        sl.control.atualizarIconesMarcVisiveis()
+
+

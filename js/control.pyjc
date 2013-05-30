@@ -59,3 +59,28 @@ var MyControl = L.Control.extend({
     }
 });
 
+var UndoRedoControl = L.Control.extend({
+    options: {
+        position: 'bottomleft'
+    },
+
+    onAdd: function (map) {
+        // create the control container with a particular class name
+        var container = L.DomUtil.create('div', 'leaflet-control-layers');
+        container.innerHTML += "<div class='searchlight-undozoom'></div>";
+       var stop = L.DomEvent.stopPropagation; 
+        // ... initialize other DOM elements, add listeners, etc.
+        L.DomEvent
+		    .on(container, 'click', stop)
+		    .on(container, 'mousedown', stop)
+		    .on(container, 'mouseover', stop)
+		    .on(container, 'touchstart', stop)
+		    .on(container, 'touchend', stop)
+		    .on(container, 'dblclick', stop)
+		    .on(container, 'scroll', stop)
+		    .on(container, 'mousewheel', stop)
+
+        return container;
+    }
+});
+

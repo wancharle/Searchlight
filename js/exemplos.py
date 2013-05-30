@@ -26,11 +26,12 @@ def converte_item1(item):
 def exemplo1(): 
     mps = new Searchlight("js/exemplos/121.json",converte_item1,"map1",None,False,False)
 
-window.onSLcarregaDados= def (sl):
-    v=sl.dados.getCatLatLng('IDA')
-    polyline = L.polyline(v, {color: 'blue'}).addTo(sl.map);
-    v=sl.dados.getCatLatLng('VOLTA')
-    polyline = L.polyline(v, {color: 'black'}).addTo(sl.map);
+    window.onSLcarregaDados= def (sl):
+        if sl.map_id== "map1" :
+            v=sl.dados.getCatLatLng('IDA')
+            polyline = L.polyline(v, {color: 'blue'}).addTo(sl.map);
+            v=sl.dados.getCatLatLng('VOLTA')
+            polyline = L.polyline(v, {color: 'black'}).addTo(sl.map);
 
 
  
