@@ -9,10 +9,10 @@ class PilhaDeZoom:
         self.sl = sl
 
         self.id_undozoom = "#"+self.sl.map_id+ " div.searchlight-undozoom" 
-        html = "<div>"
+        html = ""
         html+="<a class='undo' title='desfazer zoom em grupo' href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.pilha_de_zoom.desfazer()'>&nbsp;</a>"
         html+="<a class='redo' title='refazer zoom em grupo' href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.pilha_de_zoom.refazer()'>&nbsp;</a>"
-        html+="&nbsp;</div>"
+        html+="&nbsp;"
         $(self.id_undozoom).append(html)
         $(self.id_undozoom).hide()
         self.undo_visivel = False
@@ -29,6 +29,7 @@ class PilhaDeZoom:
         #self.pilha_redo = [] # TODO: pensar em uma forma melhor de zera a pulha do redo
         self.last_undo=None
         self.show_undo()
+        self.hide_redo()
         self.undo_index = len(self.pilha)-1
 
     def desfazer(self):

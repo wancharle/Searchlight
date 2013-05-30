@@ -912,10 +912,10 @@ PilhaDeZoom = function(sl) {
   this.pilha = [];
   this.sl = sl;
   this.id_undozoom = (("#" + this.sl.map_id) + " div.searchlight-undozoom");
-  html = "<div>";
+  html = "";
   html += (("<a class='undo' title='desfazer zoom em grupo' href='javascript:SL(\"" + this.sl.map_id) + "\").control.clusterCtr.pilha_de_zoom.desfazer()'>&nbsp;</a>");
   html += (("<a class='redo' title='refazer zoom em grupo' href='javascript:SL(\"" + this.sl.map_id) + "\").control.clusterCtr.pilha_de_zoom.refazer()'>&nbsp;</a>");
-  html += "&nbsp;</div>";
+  html += "&nbsp;";
   $(this.id_undozoom).append(html);
   $(this.id_undozoom).hide();
   this.undo_visivel = false;
@@ -933,6 +933,7 @@ PilhaDeZoom.prototype.salva_zoom = (function() {
   this.pilha.append([center, zoom]);
   this.last_undo = null;
   this.show_undo();
+  this.hide_redo();
   this.undo_index = (this.pilha.length - 1);
 });
 PilhaDeZoom.prototype.desfazer = (function() {
