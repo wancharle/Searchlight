@@ -949,7 +949,6 @@ PilhaDeZoom.prototype.desfazer = (function() {
     this.undo_index = (this.pilha.length - 2);
   }
 
-  console.log(this.undo_index);
   _$rapyd_tuple$_ = this.pilha[this.undo_index];
   center = _$rapyd_tuple$_[0];
   zoom = _$rapyd_tuple$_[1];
@@ -967,7 +966,6 @@ PilhaDeZoom.prototype.refazer = (function() {
     this.undo_index = 0;
   }
 
-  console.log(this.undo_index);
   _$rapyd_tuple$_ = this.pilha[(this.undo_index + 1)];
   center = _$rapyd_tuple$_[0];
   zoom = _$rapyd_tuple$_[1];
