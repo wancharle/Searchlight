@@ -855,7 +855,7 @@ var MyControl = L.Control.extend({
 
 var UndoRedoControl = L.Control.extend({
     options: {
-        position: 'bottomright'
+        position: 'bottomleft'
     },
 
     onAdd: function (map) {
@@ -908,11 +908,22 @@ getURLParameter = function(name) {
 };
 
 PilhaDeZoom = function(sl) {
+  var html;
   this.pilha = [];
   this.sl = sl;
   this.id_undozoom = (("#" + this.sl.map_id) + " div.searchlight-undozoom");
-  $(this.id_undozoom).append((("<p class='center'><a href='javascript:SL(\"" + this.sl.map_id) + "\").control.clusterCtr.pilha_de_zoom.desfazer_zoom()'>Desfazer Zoom</a></p>"));
+  html = "<div>";
+  html += (("<a class='undo' title='desfazer zoom em grupo' href='javascript:SL(\"" + this.sl.map_id) + "\").control.clusterCtr.pilha_de_zoom.desfazer()'>&nbsp;</a>");
+  html += (("<a class='redo' title='refazer zoom em grupo' href='javascript:SL(\"" + this.sl.map_id) + "\").control.clusterCtr.pilha_de_zoom.refazer()'>&nbsp;</a>");
+  html += "&nbsp;</div>";
+  $(this.id_undozoom).append(html);
   $(this.id_undozoom).hide();
+  this.undo_visivel = false;
+  this.redo_visivel = false;
+  this.undozoom_visivel = false;
+  this.undo_index = 0;
+  this.redo_index = 0;
+  this.last_undo = null;
 };
 
 PilhaDeZoom.prototype.salva_zoom = (function() {
@@ -920,18 +931,94 @@ PilhaDeZoom.prototype.salva_zoom = (function() {
   zoom = this.sl.map.getZoom();
   center = this.sl.map.getCenter();
   this.pilha.append([center, zoom]);
-  $(this.id_undozoom).show();
+  this.last_undo = null;
+  this.show_undo();
+  this.undo_index = (this.pilha.length - 1);
 });
-PilhaDeZoom.prototype.desfazer_zoom = (function() {
-  var _$rapyd_tuple$_, center, zoom;
-  _$rapyd_tuple$_ = this.pilha.pop();
-  center = _$rapyd_tuple$_[0];
-  zoom = _$rapyd_tuple$_[1];
-  this.sl.map.setView(center, zoom);
-  if (this.esta_vazia()) {
-    $(this.id_undozoom).hide();
+PilhaDeZoom.prototype.desfazer = (function() {
+  var _$rapyd_tuple$_, c, center, z, zoom;
+  if ((!this.last_undo)) {
+    z = this.sl.map.getZoom();
+    c = this.sl.map.getCenter();
+    this.last_undo = [c, z];
+    this.pilha.append(this.last_undo);
   }
 
+  if ((this.undo_index == (this.pilha.length - 1))) {
+    this.undo_index = (this.pilha.length - 2);
+  }
+
+  console.log(this.undo_index);
+  _$rapyd_tuple$_ = this.pilha[this.undo_index];
+  center = _$rapyd_tuple$_[0];
+  zoom = _$rapyd_tuple$_[1];
+  this.undo_index -= 1;
+  if ((this.undo_index < 0)) {
+    this.hide_undo();
+  }
+
+  this.show_redo();
+  this.sl.map.setView(center, zoom);
+});
+PilhaDeZoom.prototype.refazer = (function() {
+  var _$rapyd_tuple$_, center, zoom;
+  if ((this.undo_index < 0)) {
+    this.undo_index = 0;
+  }
+
+  console.log(this.undo_index);
+  _$rapyd_tuple$_ = this.pilha[(this.undo_index + 1)];
+  center = _$rapyd_tuple$_[0];
+  zoom = _$rapyd_tuple$_[1];
+  this.undo_index += 1;
+  this.sl.map.setView(center, zoom);
+  if ((this.undo_index >= (this.pilha.length - 1))) {
+    this.hide_redo();
+  }
+
+  this.show_undo();
+});
+PilhaDeZoom.prototype.show = (function() {
+  if ((!this.undozoom_visivel)) {
+    $(this.id_undozoom).show();
+    this.undozoom_visivel = true;
+  }
+
+  if ((!this.undo_visivel)) {
+    this.hide_undo();
+  }
+
+  if ((!this.redo_visivel)) {
+    this.hide_redo();
+  }
+
+});
+PilhaDeZoom.prototype.hide = (function() {
+  if (((!this.undo_visivel) && (!this.redo_visivel))) {
+    $(this.id_undozoom).hide();
+    this.undozoom_visivel = false;
+  }
+
+});
+PilhaDeZoom.prototype.show_undo = (function() {
+  this.undo_visivel = true;
+  this.show();
+  $((this.id_undozoom + " a.undo")).show();
+});
+PilhaDeZoom.prototype.show_redo = (function() {
+  this.redo_visivel = true;
+  this.show();
+  $((this.id_undozoom + " a.redo")).show();
+});
+PilhaDeZoom.prototype.hide_undo = (function() {
+  $((this.id_undozoom + " a.undo")).hide();
+  this.undo_visivel = false;
+  this.hide();
+});
+PilhaDeZoom.prototype.hide_redo = (function() {
+  $((this.id_undozoom + " a.redo")).hide();
+  this.redo_visivel = false;
+  this.hide();
 });
 PilhaDeZoom.prototype.esta_vazia = (function() {
   return (this.pilha.length == 0);
@@ -1172,7 +1259,10 @@ Controle = function(sl) {
   this.id_opcoes = (("#" + this.sl.map_id) + " div.searchlight-opcoes");
   this.id_camadas = (this.opcoes + "ul");
   this.show = (function(event) {
-    $(obj.id_opcoes).show();
+    if ((obj.clusterCtr.camadaAnalise == null)) {
+      $(obj.id_opcoes).show();
+    }
+
   });
   $(this.id_control).mouseenter(this.show);
   $(this.id_control).bind("touchstart", this.show);

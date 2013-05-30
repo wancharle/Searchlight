@@ -61,7 +61,7 @@ var MyControl = L.Control.extend({
 
 var UndoRedoControl = L.Control.extend({
     options: {
-        position: 'bottomright'
+        position: 'bottomleft'
     },
 
     onAdd: function (map) {

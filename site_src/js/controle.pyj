@@ -12,6 +12,7 @@ class Controle:
         self.id_opcoes = "#"+self.sl.map_id+ " div.searchlight-opcoes" 
         self.id_camadas = self.opcoes + "ul"
         self.show = def(event):
+            if obj.clusterCtr.camadaAnalise==None:
                 $(obj.id_opcoes).show()
         $(self.id_control).mouseenter(self.show )
         $(self.id_control).bind('touchstart',self.show);

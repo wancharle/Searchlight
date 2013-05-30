@@ -1,25 +1,101 @@
 # vim: set syntax=python:
+#
+# TODO: Considar caso com foco e desfoco
+
+
 class PilhaDeZoom:
     def __init__(self,sl):
         self.pilha = []
         self.sl = sl
 
         self.id_undozoom = "#"+self.sl.map_id+ " div.searchlight-undozoom" 
-        $(self.id_undozoom).append("<p class='center'><a href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.pilha_de_zoom.desfazer_zoom()'>Desfazer Zoom</a></p>")
+        html = "<div>"
+        html+="<a class='undo' title='desfazer zoom em grupo' href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.pilha_de_zoom.desfazer()'>&nbsp;</a>"
+        html+="<a class='redo' title='refazer zoom em grupo' href='javascript:SL(\""+self.sl.map_id+"\").control.clusterCtr.pilha_de_zoom.refazer()'>&nbsp;</a>"
+        html+="&nbsp;</div>"
+        $(self.id_undozoom).append(html)
         $(self.id_undozoom).hide()
+        self.undo_visivel = False
+        self.redo_visivel = False
+        self.undozoom_visivel = False
+        self.undo_index = 0
+        self.redo_index = 0
+        self.last_undo=None
 
     def salva_zoom(self):
-        zoom =  self.sl.map.getZoom()
+        zoom =  self.sl.map.getZoom() 
         center = self.sl.map.getCenter()
         self.pilha.append((center,zoom))
-        $(self.id_undozoom).show()
+        #self.pilha_redo = [] # TODO: pensar em uma forma melhor de zera a pulha do redo
+        self.last_undo=None
+        self.show_undo()
+        self.undo_index = len(self.pilha)-1
 
+    def desfazer(self):
+        if not self.last_undo:
+             z =  self.sl.map.getZoom() 
+             c = self.sl.map.getCenter()
+             self.last_undo = (c,z)
+             self.pilha.append(self.last_undo)
+ 
+        if self.undo_index==len(self.pilha)-1:
+            self.undo_index=len(self.pilha)-2
 
-    def desfazer_zoom(self):
-        (center,zoom) = self.pilha.pop()
+        console.log(self.undo_index) 
+        (center,zoom) = self.pilha[self.undo_index]
+        self.undo_index -= 1
+        
+        if self.undo_index<0:
+             self.hide_undo()
+        self.show_redo()
+        
         self.sl.map.setView(center, zoom)
-        if self.esta_vazia():
-             $(self.id_undozoom).hide()
+
+    def refazer(self):
+        if self.undo_index<0:
+            self.undo_index=0
+        console.log(self.undo_index) 
+
+        (center,zoom) = self.pilha[self.undo_index+1]
+        self.undo_index+=1
+        self.sl.map.setView(center, zoom)
+        if self.undo_index>=len(self.pilha)-1:
+             self.hide_redo()
+        self.show_undo()
+
+
+    def show(self):
+        if not self.undozoom_visivel:
+            $(self.id_undozoom).show()
+            self.undozoom_visivel = True
+        if not self.undo_visivel:
+            self.hide_undo()
+        if not self.redo_visivel:
+            self.hide_redo()
+    def hide(self):
+        if not self.undo_visivel and not self.redo_visivel:
+            $(self.id_undozoom).hide()
+            self.undozoom_visivel = False
+
+    def show_undo(self):
+      self.undo_visivel = True
+      self.show()
+      $(self.id_undozoom+" a.undo").show()
+
+    def show_redo(self):
+      self.redo_visivel = True
+      self.show()
+      $(self.id_undozoom+" a.redo").show()
+
+    def hide_undo(self):
+      $(self.id_undozoom+" a.undo").hide()
+      self.undo_visivel = False
+      self.hide()
+
+    def hide_redo(self):
+      $(self.id_undozoom+" a.redo").hide()
+      self.redo_visivel = False
+      self.hide()
 
 
     def esta_vazia(self):
