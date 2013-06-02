@@ -1,4 +1,7 @@
+Neste capítulo são apresentados os principais conceitos teóricos necessários para o desenvolvimento deste trabalho, que são: os fundamentos de mapas web, as estratégias para lidar com muitos marcadores e os algorítimos para agrupamentos de pontos.
+
 \section{Fundamentos de Mapas Web}
+	Entender como funciona o processo de exibição de um mapa web pode parecer um pouco complexo quando não se conhece o funcionamento do sistema de coordenadas geográficas do mapa. Essa complexidade aumenta quando o processo de zoom também é considerado. Porém, ao compreender o funcionamento desses elementos percebe-se que a exibição de mapas web é um processo simples.
 	
 	\subsection{Coordenadas Geográficas}
 	Coordenadas geográficas são usadas para expressar localizações no mundo. Existem vários sistemas de coordenadas diferentes. O sistema de coordenadas usado pelo Google Maps é o Word Geodetic System 84 (WGS84), que é o mesmo sistema que o Global Position System(GPS) usa.
@@ -23,7 +26,7 @@
 	
 	 Esta  coordenada controla qual o tamanho da imagem que será usada para projetar o mapa sobre o plano cartesiano. Usualmente, um mapa com coordenada zoom, ou nível de zoom, igual a zero possui uma imagem de tamanho 256x256 pixels. A cada incremento, da coordenada de zoom, dobra-se o tamanho da imagem usada para representar o mapa, e consequentemente o nível de detalhes. De forma que  para zoom=1 a imagem terá 512x512 pixels, para zoom=2 terá 1024x1024 e assim por diante. A \autoref{fig-zoomlevels} exemplifica esse processo:
 	\begin{figure}[htb]
-	\caption{\label{fig-zoomlevels} A cada incremento de zoom um mapa dobra a sua resolução de imagems}
+	\caption{\label{fig-zoomlevels} A cada incremento no zoom o mapa dobra a resolução das imagens}
 	\begin{center}
 	    \includegraphics[scale=0.45]{tiles3d}
 	\end{center}
@@ -176,6 +179,11 @@
 			Uma boa abordagem para agrupamentos deve ser eficiente e detectar grupos de formas arbitrárias. Ela também tem que ser insensível a dados discrepantes e a ordem de entrada dos dados.
 			
 			O algorítimo WaveCluster atende todos esses requisitos. Sua definição completa é encontrada em \cite{wavecluster} mas em resumo o algorítimo faz o seguinte:
+
+O WaveCluster possui complexidade O(n). Além disso, por causa do uso das técnicas de processamento de sinais a propriedade de multi-resolução, ou agrupamento nos níveis hierárquicos, também é aplicada ao WaveCluster.
+
+O seu uso não é limitado apenas à dados espaciais, o algorítimo WaveCluster pode ser aplicado a qualquer conjunto de atributos com valores numéricos ordenados.
+
 \begin{algorithm}
 \caption{WaveCluster}
 \textbf{Entrada} Vetores de características dos objetos de dados multidimensionais
@@ -183,7 +191,7 @@
 \textbf{Saida} Objetos agrupados
 \begin{enumerate}
 \item Quantizar o espaço de características, atribuir objetos as celulas da grade.
-\item Aplicar a transformação $wavelet^1$ no espaço de características quantizado.
+\item Aplicar a transformação \textit{wavelet} no espaço de características quantizado.
 \item Encontrar os componentes conectados (clusters) nas sub-bandas
 \item Transformar o espaço original, em diferentes níveis.
 \item Atribuir rótulos as células.
@@ -191,19 +199,6 @@
 \item Mapear objetos aos clusters/grupos.
 \end{enumerate}
 \end{algorithm}
-\footnotetext{Uma transformada de wavelet é uma tecnica de processamento de sinais que decompõe o sinal em diferentes sub-bandas de frequencia.} 
 
-O WaveCluster possui complexidade O(n). Além disso, por causa do uso das técnicas de processamento de sinais a propriedade de multi-resolução, ou agrupamento nos níveis hierárquicos, também é aplicada ao WaveCluster.
-
-O seu uso não é limitado apenas à dados espaciais, o algorítimo WaveCluster pode ser aplicado a qualquer conjunto de atributos com valores numéricos ordenados.
+Observe que o algorítimo utiliza-se de uma transformação chamada wavelet. Uma transformada de wavelet é uma técnica de processamento de sinais que decompõe o sinal em diferentes sub-bandas de frequência. 
 	
-%
-%
-%\section{Planilhas eletrônicas e Mapas}
-%\subsection{Domínios de conhecimento}
-%Mostra a importância do uso de planilhas \cite{credinePlanilha} 
-%\subsection{O desafio chinês}
-%mostra o uso de planilhas pelo governo chines e as dificuldades encontradas \cite{chinaPlanilha}
-%
-%\subsection{Usando planilhas como fonte de dados para Mapas Geográficos}
-%Mostra \cite{lieberman2009spatio}

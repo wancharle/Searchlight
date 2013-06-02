@@ -12,15 +12,15 @@ Durante a fase de pesquisa, percebeu-se, que além de melhorar a visualização 
 \section{Dificuldades Encontradas}
 No desenvolvimento do framework Searchlight foram encontradas dificuldades que podem ser resumidas em 3 áreas distintas: Design, Compatibilidade e Detecção de Erros.
 
-Na área de Design a maior dificuldade foi decidir qual seria os objetos de interface para interagir com o usuário. Por exemplo, para exibir os balões de resumo inicialmente pensou-se em utilizar o botão direito do mouse e o botão esquerdo para expandir o zoom do grupo. Porém, isso ia de encontro com a utilização do framework por tablets e smartphones, pois estes aparelhos não possuem a opção de click com botão direito do mouse. 
+Na área de Design a maior dificuldade foi decidir qual seria os objetos de interface para interagir com o usuário. Por exemplo, para exibir os balões de resumo inicialmente pensou-se em utilizar o botão direito do mouse. Porém, isso gera um empecilho para a utilização do framework em tablets e smartphones, pois estes aparelhos não possuem a opção de click com botão direito do mouse. 
 
 Para resolver esse problema, adotou-se um click para abrir o balão de resumo e duplo click para realizar zoom em grupo. Isso aumentou a complexidade do controle de interface, pois foi necessário criar algumas variáveis de controle para tratar o toque e duplo toque no contexto de tablets e smartphones.
 
-Na área de Compatibilidade, a maior dificuldade foi com as diferentes regras e políticas de segurança adotadas pelos navegadores. Por exemplo, o firefox não permite acesso direto aos arquivos JSON quando o pagina html é acessada localmente via protocolo file. Porém, se a pagina é acessada localmente mas via protocolo http o firefox libera o acesso. 
+Na área de Compatibilidade, a maior dificuldade foi com as diferentes regras e políticas de segurança adotadas pelos navegadores. Por exemplo, o navegador Firefox não permite acesso direto aos arquivos JSON quando o pagina html é acessada localmente via protocolo file. Porém, se a pagina é acessada localmente mas via protocolo http o Firefox libera o acesso. 
 
-Também ocorreram dificuldades para exibir os balões de resumo nos navegadores Firefox e Internet Explorer. Para solucionar esse problema, foi preciso definir um largura fixa para o balão de resumo que aparece nesses navegadores.
+Também ocorreram dificuldades para exibir os balões de resumo nos navegadores Firefox e Internet Explorer. Para solucionar esse problema, foi preciso definir uma largura fixa para o balão de resumo que é exibido nesses navegadores.
  
-De todas as dificuldades encontradas a que mais atrapalhou o desenvolvimento do projeto foi a detecção de erros. JavaScript é uma linguagem de script  e por causa disso boa parte dos erros acontecem durante a execução do código. Isso dificulta o desenvolvimento pois é difícil localizar o que provocou o erro. Em muitos casos, as mensagens de erro são consequências de um erro que não é exibido pelo navegador. Por causa disso, pode-se perder dias procurando um erro que em uma linguagem compilada seria detectado no momento da compilação.
+No entanto, de todos os problemas encontrados, o que mais atrapalhou o desenvolvimento do projeto foi a detecção de erros. JavaScript é uma linguagem de script  e por isso boa parte dos erros acontecem durante a execução do código. Isso dificulta o desenvolvimento pois é difícil localizar o que provocou o erro. Em muitos casos, as mensagens de erro são consequências de um erro que não é exibido pelo navegador. Por causa disso, pode-se perder dias procurando um erro que em uma linguagem compilada seria detectado no momento da compilação.
 
 
 \section{Limitações e Perspectivas Futuras}
@@ -30,6 +30,6 @@ No cenário alcançado, algumas limitações são observadas, o que dá margem p
 
 Além disso, na \autoref{sec-estrategias} foi demostrado que uma das estratégias para se reduzir o número de marcadores é a Otimização visual. Um exemplo de otimização visual genérica que poderia ser implementada no framework é a conexão de marcadores de uma mesmas categoria. Por exemplo, se consideramos um mapa que exibe todos os pontos de ônibus de uma cidade e conectarmos os pontos pertencem a uma mesma linha de ônibus, podemos substituir todos os marcadores do trajeto por um desenho de uma linha passando pela localização dos pontos de ônibus. 
 
-Ainda assim,há espaço para acréscimos de novas funcionalidades  como: filtros por data em mapas temporais, campos de busca em mapas com muita informação textual, e muitas outras.  
+Ainda assim, há espaço para acréscimos de novas funcionalidades  como: filtros por data em mapas temporais; campos de busca em mapas com muita informação textual; utilização de mais de uma planilha como fonte de dados e muitas outras funcionalidades.  
 
 Portanto, vislumbra-se a possibilidade de trabalhos futuros objetivando o oferecimento de mais serviços por parte do framework Searchlight e uma melhoria continua dos recursos de visualização de mapas de crowdsourcing.
