@@ -9,6 +9,18 @@ Para a aplicar essas estratégias, o framework Searchlight implementou alguns re
 
 Durante a fase de pesquisa, percebeu-se, que além de melhorar a visualização do mapa, era necessário  melhorar também o acesso ao mapa. Para isso, foi feito a implementação do recurso de gerar e compartilhar mapas automaticamente. Com esse recurso, usuários que não possuem conhecimento de programação também podem criar  e compartilhar os seus próprios mapas.
 
+\section{Dificuldades Encontradas}
+No desenvolvimento do framework Searchlight foram encontradas dificuldades que podem ser resumidas em 3 áreas distintas: Design, Compatibilidade e Detecção de Erros.
+
+Na área de Design a maior dificuldade foi decidir qual seria os objetos de interface para interagir com o usuário. Por exemplo, para exibir os balões de resumo inicialmente pensou-se em utilizar o botão direito do mouse e o botão esquerdo para expandir o zoom do grupo. Porém, isso ia de encontro com a utilização do framework por tablets e smartphones, pois estes aparelhos não possuem a opção de click com botão direito do mouse. 
+
+Para resolver esse problema, adotou-se um click para abrir o balão de resumo e duplo click para realizar zoom em grupo. Isso aumentou a complexidade do controle de interface, pois foi necessário criar algumas variáveis de controle para tratar o toque e duplo toque no contexto de tablets e smartphones.
+
+Na área de Compatibilidade, a maior dificuldade foi com as diferentes regras e políticas de segurança adotadas pelos navegadores. Por exemplo, o firefox não permite acesso direto aos arquivos JSON quando o pagina html é acessada localmente via protocolo file. Porém, se a pagina é acessada localmente mas via protocolo http o firefox libera o acesso. 
+
+Também ocorreram dificuldades para exibir os balões de resumo nos navegadores Firefox e Internet Explorer. Para solucionar esse problema, foi preciso definir um largura fixa para o balão de resumo que aparece nesses navegadores.
+ 
+De todas as dificuldades encontradas a que mais atrapalhou o desenvolvimento do projeto foi a detecção de erros. JavaScript é uma linguagem de script  e por causa disso boa parte dos erros acontecem durante a execução do código. Isso dificulta o desenvolvimento pois é difícil localizar o que provocou o erro. Em muitos casos, as mensagens de erro são consequências de um erro que não é exibido pelo navegador. Por causa disso, pode-se perder dias procurando um erro que em uma linguagem compilada seria detectado no momento da compilação.
 
 
 \section{Limitações e Perspectivas Futuras}

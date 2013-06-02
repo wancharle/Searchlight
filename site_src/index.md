@@ -36,9 +36,9 @@ Quando temos muitos marcadores podemos agrupá-los para melhorar a visualizaçã
 Um recurso interessante é o zoom contextual. No mapa acima, esse zoom pode ser feito ao clicarmos em um grupo. Observe que nesse caso é feito um zoom que mostra toda a area do agrupamento. Esse zoon varia de acordo com o contexto, de forma que para exibir alguns grupos o zoom terá que avancar nivéis diferences na hieraquia padrão de zoom.
 
 ### Balãoes de Resumo e Foco
-No mapa anterior usamos o grupo como contexto do zoom, porém em mapas maiores, com grupos maiores, isso ponde não ser suficiente. Em casos assim, focar em um subgrupo específico, exbindo no mapa  apenas os elementos pertencentes do subgrupo, pode ser uma estratégia útil. 
+No mapa anterior usamos o grupo como contexto do zoom, porém em mapas maiores, com grupos maiores, isso pode não ser suficiente. Em casos assim, focar em um subgrupo específico, exbindo apenas os elementos pertencentes do subgrupo, pode ser uma estratégia útil. 
 
-O mapa abaixo exemplifica isso. Ao clicarmos num grupo, o mapa nos apresenta um balão com um resumo sobre os subgrupos pertencentes ao grupo. Se clicarmos em subgrupo o mapa exibe apenas os elementos do subgrupo. Para voltar a visualizção anterior basta clicar na opção DESFOCAR: 
+O mapa abaixo exemplifica isso. Ao clicarmos num grupo, o mapa nos apresenta um balão com um resumo sobre os subgrupos pertencentes ao grupo. Se clicarmos em um subgrupo o mapa exibe apenas os elementos do subgrupo. Para voltar a visualizção anterior basta clicar na opção DESFOCAR: 
 
 <div id="map"> </div>
 ### Geração automática de mapa

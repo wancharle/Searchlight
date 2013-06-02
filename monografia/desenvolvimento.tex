@@ -114,13 +114,13 @@ A \autoref{fig-camadas} mostra as camadas que fazem parte da arquitetura do fram
 
 \end{itemize}
 
-
-
-	\subsection{Processamento de dados}
-	Por convenção, o framework Searchlight utiliza o formato JSON como fonte de dados. A entrada dos dados pode ser feita localmente ou pela internet. Dados que não estejam no formato JSON devem ser processados conforme é mostrado na \autoref{fig-processamento}. 
+\section{Processamento de dados}
+	O processamento de dados do framework Searchlight é feito em duas etapas. Na primeira etapa, o framework faz a leitura dos dados e converte no formato JSON. Na segunda etapa, ele organiza os dados para a utilização nas classes do framework.	
 	
-	\begin{figure}[htb]
-	\caption{\label{fig-processamento}Processamendo de dados do framework Searchlight.}
+	Por convenção, utiliza-se o formato JSON como fonte de dados. A entrada dos dados pode ser feita localmente ou pela internet. Dados que não estejam no formato JSON devem ser processados conforme é mostrado na \autoref{fig-processamento}. 
+	
+\begin{figure}[htb]
+	\caption{\label{fig-processamento}Processamento de dados do framework Searchlight.}
 	\begin{center}
 	    \includegraphics[scale=0.45]{processamento}
 	\end{center}
@@ -130,6 +130,24 @@ A \autoref{fig-camadas} mostra as camadas que fazem parte da arquitetura do fram
 	
 	Arquivos de dados que não estejam no formato JSON podem ser utilizados desde que sejam convertidos e entregues via protocolo JSONP. O framework Searchlight faz essa conversão automaticamente para planilhas do Google Docs. Neste caso, é utilizado a biblioteca Tabletop para converter os dados da planilha para o formato JSON.
 	
+	Ao passar pela primeira etapa, com os dados já em formato JSON, o framework inicia o processo de organização desses dados. A \autoref{fig-estrutura-de-dados} exibe um diagrama com as estruturas de dados utilizadas e suas classes simplificadas.
+		
+\begin{figure}[htb]
+	\caption{\label{fig-estrutura-de-dados}Estruturas de dados do framework Searchlight.}
+	\begin{center}
+	    \includegraphics[scale=0.6]{estrutura-de-dados}
+	\end{center}
+\end{figure}
+
+	De modo geral, a principal estrutura de dados utilizada pelo framework é a arvore de clusters criada pela biblioteca \textit{Leaflet.MarkerCluster}. Esta árvore é representada na \autoref{fig-estrutura-de-dados} pela classe \textit{L.MarkerCluster}. Esta classe herda os dados da classe \textit{L.Marker} que representa marcadores comuns que são exibidos num mapa pela biblioteca \textit{Leaflet}.  
+	
+	Cada nó dessa arvore é um marcador, cada nível define um novo conjunto de agrupamentos de marcadores, e cada agrupamento está relacionado a um zoom específico. Isso faz com que todos os nós da arvore sejam marcadores virtuais, ou seja, representem apenas agrupamentos de marcadores e não informações concretas. 
+	
+	As folhas da arvore representam marcadores reais, ou seja, que exibem dados concretos e da fonte dados do mapa. As folhas, são representados na \autoref{fig-estrutura-de-dados} pela classe \textit{Marcador}. Essa classe, é responsável por armazenar informações básicas sobre o marcador e informações extras como categoria do marcador, texto do popup e ícone.  
+	
+	A classe Dados é responsável por armazenar todos os dados processados na primeira etapa e separá-los em categorias. Para isso utiliza-se um dicionário de categorias. Dessa forma, a chave do dicionário é o nome da categoria, e o valor é uma lista de marcadores que pertencem a essa categoria. Além disso, como recurso para a otimização do framework, também é armazenado uma lista de identificadores numéricos para cada categoria.
+
+	Assim, por meio dessas estruturas de dados é possível controlar o agrupamento de marcadores, popups, zoom  e o filtro de categorias. Além disso, o framework faz uso de outras estruturas de dados que não precisam de pré-processamento. Por exemplo, para desenvolver o recurso de fazer e desfazer ações de zoom é necessário a utilização de algumas variáveis de controle e uma estrutura de pilha para salvar as ações do usuário.  
 	
 	 
 	 
