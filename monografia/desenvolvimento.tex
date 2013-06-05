@@ -13,16 +13,15 @@ Para isso é necessário fornecer um endereço web no qual o gerador de mapas po
 Em relação ao conteúdo usado pelo compartilhador de mapas, o framework atualmente suporta o armazenamento numa planilha eletrônica ou em um arquivo de formato JSON\footnote{Formato muito usado para troca de dados entre websites \url{http://www.json.org}}. Quando o conteúdo é oriundo de planilha eletrônica é necessário que esta esteja armazenada no Google Docs e seja pública. De forma similar, quando o conteúdo é armazenado em um arquivo JSON é necessário que o website que hospeda o arquivo suporte o protocolo JSONP. Caso contrário, o usuário deverá instalar o framework Searchlight no website que deseja visualizar o mapa.
 
 
-Em relação a API de mapas utilizada pelo projeto, o objetivo inicial era usar a api do Google Maps para a visualização dos mapas. Porém,  durante a fase de pesquisa, circulava notícias que o Google estaria mudando seus termos de serviço e iria começar a cobrar\footnote{Uma notícia sobre o inicio das cobranças do Google Maps \url{http://goo.gl/f1E3K}} pelo uso da API do Google Maps. Além disso, no mesmo período, a Apple anunciou que iria abandonar o uso do Google Maps em seus smartphones e adotaria uma solução própria. Isto trouxe a necessidade de procurar uma alternativa ao Google Maps. A alternativa encontrada foi a biblioteca open-source Leaflet.jss \cite{leaflet} que será descrita no decorrer deste capítulo.
+Em relação a API de mapas utilizada pelo projeto, o objetivo inicial era usar a API do Google Maps para a visualização dos mapas. Porém,  durante a fase de pesquisa, circulava notícias que o Google estaria mudando seus termos de serviço e poderia tornar pago \footnote{Uma notícia sobre o inicio das cobranças do Google Maps \url{http://goo.gl/f1E3K}} o uso da API. Além disso, no mesmo período, a Apple anunciou que iria abandonar o uso do Google Maps em seus smartphones e adotaria uma solução própria. Isto trouxe a necessidade de procurar uma alternativa ao Google Maps. A alternativa encontrada foi o uso da biblioteca open-source Leaflet.js \cite{leaflet} que será descrita no decorrer deste capítulo.
 
-\subsection{Agrupamento de Pontos}
-		Durante a fase de pesquisa deste trabalho, foi feito uma busca por ferramentas acadêmicas e comerciais que já fizessem o uso de algorítimos de agrupamento de pontos. Foram encontradas duas ferramentas promissoras: MarkerClusterer e Leaflet.MarkerCluster.
+\subsection{Agrupamento de Pontos\label{sec:markercluster}}
+		Durante a fase de pesquisa deste trabalho, foi feito uma busca por ferramentas acadêmicas e comerciais que já fizessem o uso de algoritmos de agrupamento de pontos. Foram encontradas duas ferramentas promissoras: MarkerClusterer e Leaflet.MarkerCluster.
 		
 		
-		\subsubsection{MarkerClusterer}		
-		MarkerClusterer \cite[188]{livroGoogleApiV3} é uma ferramenta fornecida pelo google que estende o uso da API do Google Maps para o uso de algorítimos de agrupamentos.
+		MarkerClusterer \cite[p. 188]{livroGoogleApiV3} é uma ferramenta fornecida pelo google que estende o uso da API do Google Maps para o uso de algoritmos de agrupamentos.
 		
-		MarkerClusterer é uma solução baseada em grelha. Ela agrupa marcadores de acordo com sua distância ao centro de um grupo. Quando um marcador é adicionado, ele pesquisa sua posição em todos os grupos. Caso não seja colocado em nenhum grupo, um novo grupo é criado para este marcador. A \autoref{fig-markerclusterer} demonstra a aplicação da ferramenta nos marcadores de um mapa.
+		MarkerClusterer é uma solução baseada em grade. Ela agrupa marcadores de acordo com sua distância ao centro de um grupo. Quando um marcador é adicionado, ele pesquisa sua posição em todos os grupos. Caso não seja colocado em nenhum grupo, um novo grupo é criado para este marcador. A \autoref{fig-markerclusterer} demonstra a aplicação da ferramenta nos marcadores de um mapa.
 	\begin{figure}[htb]
 	\caption{\label{fig-markerclusterer}Exemplo de utilização da API MarkerClusterer }
 	\begin{center}
@@ -31,8 +30,7 @@ Em relação a API de mapas utilizada pelo projeto, o objetivo inicial era usar 
 		\legend{Fonte: \cite[figura 20]{silva2010solap+}  }
 \end{figure}
 
-		\subsubsection{Leaflet.MarkerCluster\label{sec:markercluster}}
-		Assim como a biblioteca MarkerCLusterer estende a API do Google Maps para uso de agrupamento de marcadores, o plugin Leaflet.MarkerCluster\cite{gitleafletmarker} serve como uma extensão para a API Leaflet. 
+		Assim como a biblioteca MarkerClusterer estende a API do Google Maps para uso de agrupamento de marcadores, o plugin Leaflet.MarkerCluster\cite{gitleafletmarker} serve como uma extensão para a API Leaflet. 
 		
 		Este plugin, faz basicamente as mesmas funções da ferramenta MarkerCluster, porém com algumas melhorias. Por exemplo, ao fazer zoom o mapa exibe uma pequena animação do processo de agrupamento; ao se passar o mouse sobre um marcador do grupo o mapa exibe um polígono que mostra os limites alcançados pelo grupo; os grupos que não são visíveis  na visualização atual do mapa são retirados do mapa para aumentar a performance. Além dessas melhorias, uma que merece destaque é a sua capacidade de customização. 
 
@@ -72,7 +70,7 @@ Além de hospedar os códigos fontes do projeto, o GitHub também participa ativ
 
 Leaflet é uma biblioteca open-source feita em JavaScript para visualização de mapas interativos. Seu design é baseado em simplicidade, performance e usabilidade. Devido a isso é bastante amigável a dispositivos móveis como tablets e smartphones.
 
-Leaflet é uma biblioteca moderna e robusta, que tira vantagem dos recursos de navegadores modernos como o uso de HTML5  e CSS3 mas ainda mantém suporte aos navegadores antigos.  É bastante confiável e sua estabilidade já foi testada por grandes sites da internet como Foursquare\footnote{Foursquare abandona Google Maps em prol de leaflet.js \url{http://goo.gl/JXPCW}} e Flickr.
+Leaflet é uma biblioteca moderna e robusta, que tira vantagem dos recursos de navegadores modernos como o uso de HTML5  e CSS3 mas ainda mantém suporte aos navegadores antigos.  É bastante confiável e sua estabilidade já foi testada por grandes sites da Web como Foursquare\footnote{Foursquare abandona Google Maps em prol de leaflet.js \url{http://goo.gl/JXPCW}} e Flickr.
 
 Neste projeto, a biblioteca Leaflet é utilizada para fornecer os recursos de exibição e interação com mapas na web.  Além disso, o framework a extensão  Leaflet.Spin, para controlar o processo de carregamento de dados, e Leaflet.MarkerCluster, para agrupar marcadores.
 
