@@ -1,32 +1,32 @@
 \chapter{Fundamentação Teórica}
 
-Neste capítulo são apresentados os principais conceitos teóricos necessários para o desenvolvimento deste trabalho, que são: os fundamentos de mapas web, as estratégias para lidar com muitos marcadores e os algorítimos para agrupamentos de pontos.
+Neste capítulo são apresentados os principais conceitos teóricos necessários para o desenvolvimento deste trabalho, que são: os fundamentos de mapas Web, as estratégias para lidar com muitos marcadores e os algoritmos para agrupamentos de pontos.
 
 \section{Fundamentos de Mapas Web}
-	Entender como funciona o processo de exibição de um mapa web pode parecer um pouco complexo quando não se conhece o funcionamento do sistema de coordenadas geográficas do mapa. Essa complexidade aumenta quando o processo de zoom também é considerado. Porém, ao compreender o funcionamento desses elementos percebe-se que a exibição de mapas web é um processo simples.
+	Entender como funciona o processo de exibição de um mapa Web pode parecer um pouco complexo quando não se conhece o funcionamento do sistema de coordenadas geográficas do mapa. Essa complexidade aumenta quando o processo de zoom também é considerado. Porém, ao compreender o funcionamento desses elementos percebe-se que a exibição de mapas dentro de um navegador Web é um processo relativamente simples.
 	
 	\subsection{Coordenadas Geográficas}
 	Coordenadas geográficas são usadas para expressar localizações no mundo. Existem vários sistemas de coordenadas diferentes. O sistema de coordenadas usado pelo Google Maps é o Word Geodetic System 84 (WGS84), que é o mesmo sistema que o Global Position System(GPS) usa.
 	
-	As coordenadas são expressas usando o conceito de latitude e longitude. Onde latitude mede do sul ao norte e longitude mede do oeste para o leste. No equador a latitude é 0. Isso significa que tudo abaixo do equador (hemisfério sul) possui uma latitude negativa, e tudo acima possui uma latitude positiva. Similarmente também existe uma linha zero para longitude. Ela é conhecida como meridiano, e por razões históricas passa por Greenwich, Inglaterra. Cada posição que é localizada a leste desta linha tem um número positivo e tudo a oeste tem um número negativo\cite[4]{livroGoogleApiV3}. 
+	As coordenadas são expressas usando o conceito de latitude e longitude. No equador a latitude é 0 e, consequentemente, tudo abaixo do Equador (hemisfério sul) possui uma latitude negativa, e tudo acima possui uma latitude positiva. Similarmente também existe uma linha zero para longitude. Ela é conhecida como meridiano, e por razões históricas passa por Greenwich, Inglaterra. Cada posição que é localizada a leste desta linha tem um número positivo e tudo a oeste tem um número negativo  \cite[p. 4]{livroGoogleApiV3}. 
 	
-	A \autoref{fig-coordenadas} permite uma melhor observação desses conceitos:
+	A \autoref{fig-coordenadas} ilustra esses conceitos e mostra que é possível representar o mapa do mundo em uma imagem retangular projetada sobre o plano cartesiano.
+	
 	\begin{figure}[htb]
 	\caption{\label{fig-coordenadas} O centro do mundo na latitude 0 e longitude 0 reside em algum lugar a oeste da costa da África}
 	\begin{center}
 	    \includegraphics[scale=0.5]{goo-coordenadas}
 	\end{center}
-	\legend{Fonte: \cite[5]{livroGoogleApiV3}}
+	\legend{Fonte: \cite[p. 5]{livroGoogleApiV3}}
 	\end{figure}
-	
-	Dessa forma é possível representar o mapa do mundo em uma imagem retangular que é projetada sobre o plano cartesiano.
 	
 	Caso seja necessário um maior grau de detalhamento, do mapa, basta que se aumente a resolução da imagem mantendo as proporções e relações entre as coordenadas (x,y), do plano cartesiano, com as coordenadas (longitude, latitude) que são usadas pelo mapa.
 		
 	\subsection{Zoom}
-	As coordenadas de longitude e latitude servem para localizar um ponto numa imagem retangular, através de suas correspondentes x e y do plano cartesiano. Porém mapas também fornecem uma terceira coordenada conhecida como coordenada de Zoom.
+	As coordenadas de longitude e latitude servem para localizar um ponto numa imagem retangular, através de suas correspondentes x e y do plano cartesiano. Porém mapas também fornecem uma terceira coordenada conhecida como coordenada de zoom.
 	
-	 Esta  coordenada controla qual o tamanho da imagem que será usada para projetar o mapa sobre o plano cartesiano. Usualmente, um mapa com coordenada zoom, ou nível de zoom, igual a zero possui uma imagem de tamanho 256x256 pixels. A cada incremento, da coordenada de zoom, dobra-se o tamanho da imagem usada para representar o mapa, e consequentemente o nível de detalhes. De forma que  para zoom=1 a imagem terá 512x512 pixels, para zoom=2 terá 1024x1024 e assim por diante. A \autoref{fig-zoomlevels} exemplifica esse processo:
+	 Esta  coordenada controla qual o tamanho da imagem que será usada para projetar o mapa sobre o plano cartesiano. Usualmente, um mapa com coordenada zoom, ou nível de zoom, igual a zero possui uma imagem de tamanho 256x256 pixels. A cada incremento, da coordenada de zoom, dobra-se o tamanho da imagem usada para representar o mapa, e consequentemente o nível de detalhes. De forma que  para zoom=1 a imagem terá 512x512 pixels, para zoom=2 terá 1024x1024 e assim por diante, mantendo-se a mesma quantidade de informações por unidade de área (pixel). Em outras palavras, mais informações por unidade de área significa menos detalhes sendo exibidos na imagem que representa o mapa. A \autoref{fig-zoomlevels} exemplifica esse processo.
+	 
 	\begin{figure}[htb]
 	\caption{\label{fig-zoomlevels} A cada incremento no zoom o mapa dobra a resolução das imagens}
 	\begin{center}
@@ -35,19 +35,19 @@ Neste capítulo são apresentados os principais conceitos teóricos necessários
 	\legend{Fonte: http://workshops.opengeo.org/suiteintro/geowebcache/basics.html}
 	\end{figure}
 
-	Portanto para localizar uma posição  em um mapa web, de forma detalhada, precisamos de três coordenadas: latitude, longitude e zoom. Além disso, como o tamanho da imagem da projeção varia de acordo com o nível de zoom, o mapa precisa ajustar os valores das coordenadas latitude e longitude para que mantenham suas proporções para os diversos níveis de zoom.
+	Portanto para localizar uma informação georreferenciada em um mapa Web, de forma detalhada, precisamos de três coordenadas: latitude, longitude e zoom. Além disso, como o tamanho da imagem da projeção varia de acordo com o nível de zoom, o mapa precisa ajustar os valores das coordenadas latitude e longitude para que mantenham suas proporções para os diversos níveis de zoom.
 
 \section{Estratégias para lidar com muitos marcadores\label{sec-estrategias}}
-	Um problema comum, ao se trabalhar com mapas de crowdsourcing, é a enorme quantidade de marcadores necessários para representar os dados do mapa. Isto geralmente afeta a performance do mapa, pois quanto mais marcadores são inseridos mais lenta fica a exibição do mapa. 
+	Um problema comum ao se trabalhar com mapas de crowdsourcing é a enorme quantidade de marcadores utilizados para representar os dados do mapa. Isto geralmente afeta a performance da aplicação para visualização do mapa (e das suas informações), pois quanto mais marcadores são inseridos mais lenta fica a exibição do mapa. 
 	
-	É difícil calcular exatamente o número máximo de marcadores que um mapa suporta antes de começar a ficar lento, pois a velocidade de exibição do mapa depende tanto do navegador quando do computador em que é exibido. Por exemplo, um mapa pode ser exibido bem rápido em um navegador como o Google Chrome e ao mesmo tempo ser lento quando exibido no Internet Explorer.\cite[177]{livroGoogleApiV3}
+	É difícil calcular exatamente o número máximo de marcadores que um mapa suporta antes de começar a ficar lento, pois a velocidade de exibição do mapa depende tanto do navegador quando da plataforma em que é exibido. Por exemplo, um mapa pode ser exibido bem rápido em um navegador como o Google Chrome e ao mesmo tempo ser lento quando exibido no Internet Explorer   \cite[p. 177]{livroGoogleApiV3}.
 	
-    Portanto, é necessário um estudo sobre as  estratégias para se lidar com o problema de exibição de muitos marcadores em um mapa. Em \cite[capítulo~9]{livroGoogleApiV3} o autor comenta sobre duas estratégias básicas para esse problema. A primeira, e mais óbvia, é reduzir o número de marcadores. A segunda estratégia consiste em agrupar os marcadores por algum grau de similaridades.
+    Portanto, é necessário um estudo sobre as  estratégias para se lidar com o problema de exibição de muitos marcadores em um mapa. Em \cite[capítulo~9]{livroGoogleApiV3} o autor comenta sobre duas estratégias básicas para esse problema. A primeira, e mais óbvia, é reduzir o número de marcadores. A segunda estratégia consiste em agrupar os marcadores por algum grau de similaridade.
     
   \subsection{Reduzindo o número de marcadores}
   Existem muitos meios de se reduzir o número de marcadores, entre eles destacam-se as reduções via busca, filtro e otimização visual.
 	\subsubsection{Busca}
-	Para se reduzir  o número de marcadores exibidos no mapa pode-se fornecer um mecanismo de pesquisa ou busca no mapa. Dessa forma mesmo que o mapa possua milhões de marcadores, somente aqueles que satisfaçam os critérios da busca são exibidos.
+	Para se reduzir  o número de marcadores exibidos no mapa pode-se fornecer um mecanismo de pesquisa ou busca no mapa. Desta forma, mesmo que o mapa possua milhões de marcadores, somente aqueles que satisfaçam os critérios da busca são exibidos.
 	
 	 \begin{figure}[htb]
 	\caption{\label{fig-estrategiabusca}Busca como estratégia para redução do número de marcadores}
@@ -57,19 +57,19 @@ Neste capítulo são apresentados os principais conceitos teóricos necessários
 	\legend{Fonte: http://maps.google.com}
 	\end{figure}
 	 
-	 A \autoref{fig-estrategiabusca}  exemplifica isso ao mostrar o exemplo de busca no google maps. O google maps possui um catálogo enorme de informações, sobre diversas regiões geográficas. Mostrar todas essas informações ao mesmo tempo deixaria o mapa muito poluído, e praticamente inutilizável. Para que isso não aconteça é implementado o mecanismo de busca.
+	 A \autoref{fig-estrategiabusca}  exemplifica isso ao mostrar o exemplo de busca no Google Maps. O Google Maps possui um catálogo enorme de informações, sobre diversas regiões geográficas. Mostrar todas essas informações ao mesmo tempo deixaria o mapa muito poluído, e praticamente inutilizável. Para que isso não aconteça é implementado o mecanismo de filtragem a partir da satisfação de critérios de busca.
 	
-	 Na \autoref{fig-estrategiabusca} observa-se a exibição de uma busca pela palavra chave shopping. Nesta mesma região de interesse existem estabelecimentos de outras categorias como supermercados, lojas, padarias etc. Mas o google maps exibe apenas os marcadores relativos a categoria shopping, que é a palavra chave da busca. Ao fazer isso o mapa fica mais limpo e compreensivo.
+	 Na \autoref{fig-estrategiabusca} observa-se a exibição de uma busca pela palavra chave shopping. Nesta mesma região de interesse existem estabelecimentos de outras categorias como supermercados, lojas, padarias etc. Mas o Google Maps exibe apenas os marcadores relativos a categoria shopping, que é a palavra chave da busca. Ao fazer isso o mapa fica mais limpo e compreensivo.
 	 
 	
 	\subsubsection{Filtro}
-	De forma similar ao mecanismo de busca, um mapa também pode possuir um mecanismo para filtrar grupos de marcadores de acordo com algum critério de seleção do grupo. Dessa forma somente os marcadores que pertençam aos grupos marcados no filtro são exibidos no mapa. 
+	De forma similar ao mecanismo de busca, um mapa também pode possuir um mecanismo para filtrar grupos de marcadores de acordo com algum critério de seleção do grupo. Desta forma, somente os marcadores que pertençam aos grupos marcados no filtro serão exibidos no mapa. 
 	
-	Diferente do método de busca, este método permite ser mais específico e direto, pois cada campo do filtro é relacionado diretamente com alguma categoria contida nas informações. No método de busca esta relação é menos direta e depende do algorítimo de busca utilizado.  
+	Diferente do método de busca, este método permite ser mais específico e direto, pois cada campo do filtro é relacionado diretamente com alguma categoria contida nas informações. No método de busca esta relação é menos direta e depende do algoritmo de busca utilizado.  
 	
-	Como exemplo, ao utilizar-se do método de filtro para marcar duas categorias, obrigatoriamente, deve ser retornado o resultado para as duas categorias que foram marcadas. Já com o método de busca isto nem sempre é verdade, pois dependendo do algorítimo de busca ele pode entender que a busca por ``categoria 1 categoria 2'' é uma busca por duas categorias ou uma busca por uma categoria conhecida como ``categoria 1 categoria 2'', que obviamente não seria encontrada. 
+	Como exemplo, ao utilizar-se do método de filtro para marcar duas categorias, obrigatoriamente, deve ser retornado o resultado para as duas categorias que foram marcadas. Já com o método de busca isto nem sempre é verdade, pois dependendo do algoritmo de busca ele pode entender que a busca por ``categoria 1 categoria 2'' é uma busca por duas categorias ou uma busca por uma categoria conhecida como ``categoria 1 categoria 2'', que obviamente não seria encontrada. 
 		
-	A \autoref{fig-estrategiafiltro} mostra um mapa com filtro a esquerda. Observa-se que apenas os marcadores dos grupos  ``Student Housing'' e ``Food/Dining''  são exibidos no mapa.
+	A \autoref{fig-estrategiafiltro} mostra um mapa com filtro à esquerda. Observa-se que apenas os marcadores dos grupos  ``Student Housing'' e ``Food/Dining''  são exibidos no mapa.
 	 \begin{figure}[htb]
 	\caption{\label{fig-estrategiafiltro}Filtro como estratégia para redução do número de marcadores}
 	\begin{center}
@@ -87,7 +87,9 @@ Neste capítulo são apresentados os principais conceitos teóricos necessários
 	\caption{\label{fig-otimizacao}Otimização Visual como estratégia para redução do número de marcadores}
 	\begin{center}
 	    \includegraphics[scale=0.7]{estrategia-otimizacao}
-	\end{center}
+	\end{center}	
+	\legend{Fontes: \url{http://wancharle.github.io/Searchlight/}  e \url{https://dl.dropboxusercontent.com/u/877911/UFES/grafos/grafos.html}}
+
 	\end{figure}
 	
 	Nesse exemplo, cada vértice da rota representa um ponto de parada para os ônibus que percorrem esse trajeto. Inicialmente, pode se achar necessário a exibição de marcadores nesses vértices como mecanismos de interação com os dados que eles representam. Por exemplo, os usuários do transporte público poderiam querer saber quais são os horários que determinados ônibus passam naquele ponto específico, e com um simples clique no marcador o mapa poderia exibir essa informação. 
@@ -125,18 +127,18 @@ Neste capítulo são apresentados os principais conceitos teóricos necessários
 			Alguns podem achar esta técnica problemática para certos mapas. Pois por agrupar marcadores próximos entre si, os grupos não possuem uma localização fixa como acontece no agrupamento por grade. Assim no agrupamento por distancia os grupos podem aparecer em posições aleatórias que podem não fazer sentido para o usuário que observa o mapa.
 	
 		\subsubsection{Agrupamento Por Região}
-			No agrupamento por região, define-se diferentes regiões geográficas como países, estados, cidades. E todos os marcadores, de cada região, podem ser agrupados em um grupo para representar a região. Além disso, também é possível definir em que nível de zoom os grupos serão quebrados em subgrupos. 
+			No agrupamento por região, definem-se diferentes regiões geográficas como países, estados, cidades. E todos os marcadores, de cada região, podem ser agrupados em um grupo para representar a região. Além disso, também é possível definir em que nível de zoom os grupos serão quebrados em subgrupos. 
 			
-			A vantagem é que fica fácil criar grupos que fazem mais sentido para o usuário. Pois, um agrupamento que siga a ordem Pais > Estado > Cidade é mais natural para o usuário do que um que considere apenas a proximidade.
+			A vantagem é que fica fácil criar grupos que fazem mais sentido para o usuário. Pois, um agrupamento que siga a ordem País > Estado > Cidade é mais natural para o usuário do que um que considere apenas a proximidade.
 			
-			A desvantagem dessa técnica é o esforço para implementá-la  \cite[182]{livroGoogleApiV3} já que a definição dos grupos não pode ser facilmente automatizada. Essa dificuldade ocorre devido a natureza de como é organizado a hierarquia das regiões, que varia de país para país, sendo necessário em alguns casos o uso de tabelas para conversão\footnote{Até a definição do que é uma autoestrada precisa de uma tabela de conversão entre paises: \url{http://wiki.openstreetmap.org/wiki/Highway:International_equivalence}}.
+			A desvantagem dessa técnica é o esforço para implementá-la  \cite[p. 182]{livroGoogleApiV3} já que a definição dos grupos não pode ser facilmente automatizada. Essa dificuldade ocorre devido à natureza de como é organizada a hierarquia das regiões, que varia de país para país, sendo necessário em alguns casos o uso de tabelas para conversão\footnote{Até a definição do que é uma autoestrada precisa de uma tabela de conversão entre países: \url{http://wiki.openstreetmap.org/wiki/Highway:International_equivalence}}.
 			
 		\subsubsection{Estilos de visualização de agrupamento}
 		A representação mais simples de um agrupamento pode ser feita por meio de um marcador. Porém, o marcador por si só não expressa muita informação. Não é possível saber a dimensão do grupo ou a natureza de seus elementos observando apenas um marcador.
 		
 		Uma alternativa é usar marcadores com tamanhos diferentes de acordo com o tamanho do grupo. Mas, neste caso,tem-se o problema de ter que classificar um tamanho padrão para determinados marcadores. Pode-se, também, usar cores para representar a dimensão do grupo, onde grupos menores tenderiam para o verde e grupos maiores para o vermelho.
 		
-		Uma solução bastante comum é uma mistura das soluções anteriores. Onde usa-se um marcador com tamanho diferente de acordo com o número de elementos e cores para maximizar a percepção. Além disso, acrescenta-se uma legenda exibindo o número total de elementos do grupo. Veja a \autoref{fig-visual-agrupamento}
+		Uma solução bastante comum é uma mistura das soluções anteriores. Onde usa-se um marcador com tamanho diferente de acordo com o número de elementos e cores para maximizar a percepção. Além disso, acrescenta-se uma legenda exibindo o número total de elementos do grupo. A \autoref{fig-visual-agrupamento} ilustra um exemplo de uso desta técnica de agrupamento.
 		
 		
 \begin{figure}[htb]
@@ -159,13 +161,12 @@ Neste capítulo são apresentados os principais conceitos teóricos necessários
 
 	Além disso, os gerentes dessas lojas,  poderiam efetuar um zoom no gráfico da loja que gerenciam e ver os subgrupos divididos por bairros, com cada grupo exibindo o gráfico de vendas do bairro, permitindo aos gerentes a criação de uma estratégia de marketing localizada.
 	
-\section{Algorítimos de agrupamento}	
-	Basicamente os algorítimos de agrupamentos de pontos podem ser classificados em quatro categorias: (i) método por partição (ii) método hierárquico (iii) método baseado em densidade (iv) método baseado em grade. Isto é ilustrado na \autoref{fig-algoritimos} onde SILVA destaca os potenciais melhores algorítimos para este tipo de problema. Com exceção dos algorítimos k-Means e k-Medoid que foram introduzidos apenas por motivos históricos \cite[35]{silva2010solap+}.
+\section{Algoritmos de agrupamento}	
+	Basicamente os algoritmos de agrupamentos de pontos podem ser classificados em quatro categorias: (i) método por partição (ii) método hierárquico (iii) método baseado em densidade (iv) método baseado em grade. Isto é ilustrado na \autoref{fig-algoritimos} onde \cite[p. 35]{silva2010solap+} destaca os potenciais melhores algoritmos para este tipo de problema. Com exceção dos algoritmos k-Means e k-Medoid que foram introduzidos apenas por motivos históricos \cite[p. 36]{silva2010solap+}.
 	
-	Observa-se que em \cite[capítulo 2]{silva2010solap+} é feito um estudo mais aprofundado sobre os principais algorítimos de agrupamentos de pontos. Por isso, nesta seção será descrito apenas o algorítimo que engloba o contexto deste trabalho. Ou seja, o algorítimo WaveCluster que é baseado no método de grade. 
-		
+	Observa-se que em \cite[capítulo 2]{silva2010solap+} é feito um estudo mais aprofundado sobre os principais algoritmos de agrupamentos de pontos. Por isso, nesta seção será descrito apenas o algoritmo  utilizado na solução implementada neste trabalho, isto é, o algoritmo WaveCluster, que é baseado no método de grade.
 \begin{figure}[htb]
-	\caption{\label{fig-algoritimos}Principais algorítimos de agrupamentos de pontos}
+	\caption{\label{fig-algoritimos}Principais algoritmos de agrupamentos de pontos}
 	\begin{center}
 	    \includegraphics[scale=0.8]{algoritimos}
 	\end{center}
@@ -173,34 +174,37 @@ Neste capítulo são apresentados os principais conceitos teóricos necessários
 \end{figure}
 
 		\subsection{Métodos baseados em grade}
-		Como já foi comentado na \autoref{secagrupamento}, agrupamentos baseados em grade são aqueles que dividem o espaço do mapa em uma grade e agrupa os marcadores de cada quadrado ou célula da grade.  Ou seja, algorítimos baseados em grade são aqueles que usam o agrupamento por grade como parâmetro de agrupamento. 
-		Pode se observar na \autoref{fig-algoritimos} que os principais algorítimos são: STING, STING+, CLIQUE, WaveCluster e MOSAIC. E, apesar de não ser o mais indicado para o contexto SOLAP+ que SILVA estudava, o melhor entre os algorítimos baseados em grade é o WaveCluster.
+		Como já foi comentado na \autoref{secagrupamento}, agrupamentos baseados em grade são aqueles que dividem o espaço do mapa em uma grade e agrupa os marcadores de cada quadrado ou célula da grade.  Ou seja, algoritmos baseados em grade são aqueles que usam o agrupamento por grade como parâmetro de agrupamento. 
+		Pode se observar na \autoref{fig-algoritimos} que os principais algoritmos são: STING, STING+, CLIQUE, WaveCluster e MOSAIC. E, apesar de não ser o mais indicado para o contexto SOLAP+ que \cite{silva2010solap+} estudava, o melhor entre os algoritmos baseados em grade é o WaveCluster.
 		
 		
 		\subsubsection{WaveCluster}
-			Uma boa abordagem para agrupamentos deve ser eficiente e detectar grupos de formas arbitrárias. Ela também tem que ser insensível a dados discrepantes e a ordem de entrada dos dados.
+			Uma boa abordagem para agrupamentos deve ser eficiente e detectar grupos de formas arbitrárias. Ela também tem que ser insensível a dados discrepantes e à ordem de entrada dos dados.
 			
-			O algorítimo WaveCluster atende todos esses requisitos. Sua definição completa é encontrada em \cite{wavecluster} mas em resumo o algorítimo faz o seguinte:
-
-O WaveCluster possui complexidade O(n). Além disso, por causa do uso das técnicas de processamento de sinais a propriedade de multi-resolução, ou agrupamento nos níveis hierárquicos, também é aplicada ao WaveCluster.
-
-O seu uso não é limitado apenas à dados espaciais, o algorítimo WaveCluster pode ser aplicado a qualquer conjunto de atributos com valores numéricos ordenados.
+			O algoritmo WaveCluster atende todos esses requisitos. Sua definição completa é encontrada em \cite{wavecluster} mas um resumo é exibido no \autoref{alg:wave}.
 
 \begin{algorithm}
-\caption{WaveCluster}
+\caption{WaveCluster}\label{alg:wave}
+
 \textbf{Entrada} Vetores de características dos objetos de dados multidimensionais
 
 \textbf{Saida} Objetos agrupados
 \begin{enumerate}
-\item Quantizar o espaço de características, atribuir objetos as celulas da grade.
+\item Quantizar o espaço de características, atribuir objetos as células da grade.
 \item Aplicar a transformação \textit{wavelet} no espaço de características quantizado.
 \item Encontrar os componentes conectados (clusters) nas sub-bandas
 \item Transformar o espaço original, em diferentes níveis.
-\item Atribuir rótulos as células.
+\item Atribuir rótulos às células.
 \item Criar a tabela de pesquisa.
 \item Mapear objetos aos clusters/grupos.
 \end{enumerate}
 \end{algorithm}
 
-Observe que o algorítimo utiliza-se de uma transformação chamada wavelet. Uma transformada de wavelet é uma técnica de processamento de sinais que decompõe o sinal em diferentes sub-bandas de frequência. 
+O WaveCluster possui complexidade O(n). Além disso, por causa do uso das técnicas de processamento de sinais a propriedade de multi-resolução, ou agrupamento nos níveis hierárquicos, também é aplicada ao WaveCluster.
+
+O seu uso não é limitado apenas a dados espaciais, o algoritmo WaveCluster pode ser aplicado a qualquer conjunto de atributos com valores numéricos ordenados.
+
+Observe que o algoritmo utiliza-se de uma transformada chamada \textit{wavelet}. A transformada wavelet é uma ferramenta que permite decompor um sinal em diferentes componentes de frequências, permitindo assim, estudar cada componente separadamente em sua escala correspondente\footnote{ Informações sobre a transformada wavelet em: \url{http://www.dainf.ct.utfpr.edu.br/~ionildo/wavelet/cap3.htm}}. 
+
+A implementação da transformada wavelet não faz parte do escopo deste trabalho. Além disso, o framework Searchlight utiliza uma ferramenta que realiza essa transformação a partir de um conjunto de valores de entrada. A \autoref{sec:markercluster} descreve essa ferramenta e motivo de sua utilização pelo framework para realizar o agrupamento de marcadores.
 	
