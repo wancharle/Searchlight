@@ -27,15 +27,15 @@ Alguns exemplos, dos recursos fornecidos pelo framework Searchlight, podem ser v
 O mapa abaixo exibe a localização de todos os pontos de ônibus da linha 163 da cidade de Vitória - ES. O filtro de categorias, no canto superior direito, nos permite filtrar os pontos de ônibus pelas categorias IDA e VOLTA, separando assim os pontos que o ônibus para na ida e volta da viagem.
 <div id="map1"> </div>
 
-### Agrupamento e Zoom Contextual
+### Agrupamento e Zoom Seletivo
 
 Quando temos muitos marcadores podemos agrupá-los para melhorar a visualização. Além disso, algumas informações são irrelevantes para determinados níveis de zoom, e podem ser agrupadas de acordo com o zoom.
 
 <div id="map_cluster"> </div>
 
-Um recurso interessante é o zoom contextual. No mapa acima, esse zoom pode ser feito ao clicarmos em um grupo. Observe que nesse caso é feito um zoom que mostra toda a area do agrupamento. Esse zoon varia de acordo com o contexto, de forma que para exibir alguns grupos o zoom terá que avancar nivéis diferences na hieraquia padrão de zoom.
+Um recurso interessante é o zoom seletivo ou contextual. No mapa acima, esse zoom pode ser feito ao clicarmos em um grupo. Observe que nesse caso é feito um zoom que mostra toda a area do agrupamento. Esse zoon varia de acordo com o contexto, de forma que para exibir alguns grupos o zoom terá que avancar nivéis diferences na hieraquia padrão de zoom.
 
-### Balãoes de Resumo e Foco
+### Balões de Resumo e Foco
 No mapa anterior usamos o grupo como contexto do zoom, porém em mapas maiores, com grupos maiores, isso pode não ser suficiente. Em casos assim, focar em um subgrupo específico, exbindo apenas os elementos pertencentes do subgrupo, pode ser uma estratégia útil. 
 
 O mapa abaixo exemplifica isso. Ao clicarmos num grupo, o mapa nos apresenta um balão com um resumo sobre os subgrupos pertencentes ao grupo. Se clicarmos em um subgrupo o mapa exibe apenas os elementos do subgrupo. Para voltar a visualizção anterior basta clicar na opção DESFOCAR: 
