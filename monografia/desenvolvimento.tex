@@ -37,7 +37,33 @@ Em relação a API de mapas utilizada pelo projeto, o objetivo inicial era usar 
 		Ao contrário da biblioteca MarkerClusterer, o plugin Leaflet.MarkerCluster possui um documentação bastante útil que pode ser encontrada em \cite{gitleafletmarker}. 
 		
 		É importante observar, que inicialmente, procurou-se por uma documentação mais abrangente da biblioteca MarkerCluster do Google Maps, mas até o momento da confecção desse trabalho não foi possível encontrar nada além de alguns poucos exemplos de uso. Isto, e outros fatores, contribuíram para a escolha da biblioteca Leaflet.js como API de visualização de mapas do framework Searchlight.
-		  
+
+\section{Requisitos do Sistema}
+Tomando por base o contexto do sistema, foram identificados alguns requisitos para o desenvolvimento do framework Searchlight.
+
+
+\subsection{Requisitos Funcionais}
+
+\begin{itemize}
+\item O framework deve agrupar os marcadores do mapa de forma automática com o objetivo de sumarizar a informação e eliminar a sobreposição de marcadores.
+
+\item O framework deve possuir um mecanismo de zoom que siga a hierarquia de divisão dos agrupamentos. O objetivo desse mecanismo é resolver o problema de zoom arbitrário.
+
+\item O framework deve separar os dados do mapa de acordo com suas categorias por meio de um filtro de categorias. 
+
+\item O framework deve possuir um mecanismo de sumarizar a informação contida num agrupamento. Esse mecanismo deve informar quais categorias estão presentes no grupo e o total de elementos em cada categoria.
+\end{itemize}
+
+
+\subsection{Requisitos Não-Funcionais}
+\begin{itemize}
+\item Deve-se priorizar a escolha de tecnologias open-source para os componentes externos que forem utilizados pelo framework.
+\item O framework deve estar disponível como uma aplicação Web, acessível a partir dos principais navegadores disponíveis no mercado. 
+\item O framework deve ser acessível a dispositivos móveis como tablets e smartphones.
+\item A interface do framework deve ser de fácil operação, não sendo necessário uso contínuo para uma boa operação.
+\end{itemize}
+
+	  
 
 \section{Ferramentas Utilizadas}
 
@@ -72,7 +98,27 @@ Leaflet é uma biblioteca open-source feita em JavaScript para visualização de
 
 Leaflet é uma biblioteca moderna e robusta, que tira vantagem dos recursos de navegadores modernos como o uso de HTML5  e CSS3 mas ainda mantém suporte aos navegadores antigos.  É bastante confiável e sua estabilidade já foi testada por grandes sites da Web como Foursquare\footnote{Foursquare abandona Google Maps em prol de leaflet.js \url{http://goo.gl/JXPCW}} e Flickr.
 
-Neste projeto, a biblioteca Leaflet é utilizada para fornecer os recursos de exibição e interação com mapas na web.  Além disso, o framework a extensão  Leaflet.Spin, para controlar o processo de carregamento de dados, e Leaflet.MarkerCluster, para agrupar marcadores.
+Neste projeto, a biblioteca Leaflet é utilizada para fornecer os recursos de exibição e interação com mapas na web.  Além disso, o framework usa a extensão  Leaflet.Spin, para controlar o processo de carregamento de dados, e Leaflet.MarkerCluster, para agrupar marcadores. 
+
+A biblioteca Leaflet foi escolhida considerando os requisitos do sistema e a análise feita em \cite{gmapalternatives} que permitiu a criação da \autoref{tabela-comparativa} que exibe uma comparação entre as sete principais alternativas à  API do Google Maps.
+
+  \begin{table}
+  \caption{\label{tabela-comparativa}Comparação entre as principais alternativas à API do Google Maps }
+   
+  \scalebox{0.8}{   
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+    API            & Dispositivos Móveis  & Renderização         & Diferencial                                                \\ \hline
+    Microsoft Bing & Amigável             & Direta               & Perspectiva aérea em vários ângulos           \\
+    Nokia          & Amigável             & Direta               & Foco em dispositivos móveis                                \\
+    MapQuest       & Amigável             & Direta               & Permite Mapas Licenciados e Mapas Abertos                  \\
+    OpenLayers     & Pouco Amigável       & Direta               & Projeto OpenStreetMaps                                     \\
+    Leaflet        & Muito Amigável       & Direta ou SVG ou VML & Flexibilidade e Personalização                             \\
+    Modest Maps    & Amigável             & Direta               & Design Minimalista.                                        \\
+    Polymaps       & Amigável       & SVG                  & Otimizada para grandes volumes de dados. \\ \hline
+    \end{tabular}
+  }
+\end{table}
 
 
 \subsection{TableTop.js}
@@ -90,7 +136,6 @@ A maior parte do framework Searchlight é escrita usando a sintaxe do Rapydscrip
 
 Decidiu-se usar um pré-compilador para JavaScript,  pois a linguagem JavaScript, apesar de ser uma linguagem com suporte a orientação a objetos, não possui uma sintaxe agradável para criação de classes de objetos. Devido a isso, é possível encontrar na internet algumas dezenas de pré-compiladores de javascript\footnote{O site \url{http://altjs.org} exibe uma lista dos principais pré-compiladores de JavaScript.}
 . 
-
 
 \section{Arquitetura do Sistema}
 A \autoref{fig-camadas} mostra as camadas que fazem parte da arquitetura do framework Searchlight. A arquitetura do sistema, tal como mostrada na figura, é assim explicada:
