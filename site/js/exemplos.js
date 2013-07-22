@@ -175,32 +175,38 @@ converte_item1 = function(item) {
   return item_convertido;
 };
 
+onSlcarregaDados = function(sl) {
+  var polyline, v;
+  if ((sl.map_id == "map1")) {
+    v = sl.dados.getCatLatLng("IDA");
+    polyline = L.polyline(v, {
+      color: "blue"
+    }).addTo(sl.map);
+    v = sl.dados.getCatLatLng("VOLTA");
+    polyline = L.polyline(v, {
+      color: "black"
+    }).addTo(sl.map);
+  }
+
+  if ((sl.map_id == "map_gdoc")) {
+    sl.autoZoom();
+  }
+
+};
+
 exemplo1 = function() {
   var mps;
   mps = new Searchlight("js/exemplos/121.json", converte_item1, "map1", null, false, false);
-  window.onSLcarregaDados = (function(sl) {
-    var polyline, v;
-    if ((sl.map_id == "map1")) {
-      v = sl.dados.getCatLatLng("IDA");
-      polyline = L.polyline(v, {
-        color: "blue"
-      }).addTo(sl.map);
-      v = sl.dados.getCatLatLng("VOLTA");
-      polyline = L.polyline(v, {
-        color: "black"
-      }).addTo(sl.map);
-    }
-
-  });
 };
 
 exemplo_gdoc = function() {
   var mps, public_spreadsheet_url;
   public_spreadsheet_url = "https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html";
-  mps = new Searchlight(public_spreadsheet_url, null, "map_gdoc");
+  mps = new Searchlight(public_spreadsheet_url, null, "map_gdoc", null, true, false);
 };
 
 exemplos = function() {
+  window.onSLcarregaDados = onSlcarregaDados;
   exemplo1();
   exemplo_markercluster();
   exemplo_gdoc();

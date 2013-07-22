@@ -23,27 +23,34 @@ def converte_item1(item):
     
     return item_convertido
 
-def exemplo1(): 
-    mps = new Searchlight("js/exemplos/121.json",converte_item1,"map1",None,False,False)
 
-    window.onSLcarregaDados= def (sl):
-        if sl.map_id== "map1" :
+def onSlcarregaDados(sl):
+    if sl.map_id== "map1" :
             v=sl.dados.getCatLatLng('IDA')
             polyline = L.polyline(v, {color: 'blue'}).addTo(sl.map);
             v=sl.dados.getCatLatLng('VOLTA')
             polyline = L.polyline(v, {color: 'black'}).addTo(sl.map);
+     
+    if sl.map_id == "map_gdoc":
+            sl.autoZoom()   
+         
+def exemplo1(): 
+    mps = new Searchlight("js/exemplos/121.json",converte_item1,"map1",None,False,False)
 
+       
 
  
 
 def exemplo_gdoc():
     public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?key=0AhU-mW4ERuT5dHBRcGF5eml1aGhnTzl0RXh3MHdVakE&single=true&gid=0&output=html';
-    mps = new Searchlight(public_spreadsheet_url,null,'map_gdoc')
+    mps = new Searchlight(public_spreadsheet_url,null,'map_gdoc',None, True, False)
 
 
 
 
 def exemplos():
+
+    window.onSLcarregaDados = onSlcarregaDados 
     exemplo1() 
     exemplo_markercluster()
     exemplo_gdoc()

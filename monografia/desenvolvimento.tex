@@ -15,9 +15,10 @@ Em relação ao conteúdo usado pelo compartilhador de mapas, o framework atualm
 
 Em relação a API de mapas utilizada pelo projeto, o objetivo inicial era usar a API do Google Maps para a visualização dos mapas. Porém,  durante a fase de pesquisa, circulava notícias que o Google estaria mudando seus termos de serviço e poderia tornar pago \footnote{Uma notícia sobre o inicio das cobranças do Google Maps \url{http://goo.gl/f1E3K}} o uso da API. Além disso, no mesmo período, a Apple anunciou que iria abandonar o uso do Google Maps em seus smartphones e adotaria uma solução própria. Isto trouxe a necessidade de procurar uma alternativa ao Google Maps. A alternativa encontrada foi o uso da biblioteca open-source Leaflet.js \cite{leaflet} que será descrita no decorrer deste capítulo.
 
+Para o desenvolvimento deste projeto foi utilizada a metodologia Extreme Programming, que também é conhecida pela sigla XP. Extreme programming é uma metodologia ágil para equipes pequenas e médias e que irão desenvolver software com requisitos vagos e em constante mudança. Para isso, adota a estratégia de constante acompanhamento e realização de vários pequenos ajustes durante o desenvolvimento de software\footnote{Mais informações sobre eXtreme Programing em: \url{http://pt.wikipedia.org/wiki/Extreme_programming}}. Essa metodologia ajudou no desenvolvimento do framework Searchligh, pois para lidar com o excesso de marcadores, novos requisitos foram adicionados ao projeto, durante o estudo de estratégias,  como por exemplo, o filtro de categorias e o compartilhamento de mapas.
+
 \subsection{Agrupamento de Pontos\label{sec:markercluster}}
 		Durante a fase de pesquisa deste trabalho, foi feito uma busca por ferramentas acadêmicas e comerciais que já fizessem o uso de algoritmos de agrupamento de pontos. Foram encontradas duas ferramentas promissoras: MarkerClusterer e Leaflet.MarkerCluster.
-		
 		
 		MarkerClusterer \cite[p. 188]{livroGoogleApiV3} é uma ferramenta fornecida pelo google que estende o uso da API do Google Maps para o uso de algoritmos de agrupamentos.
 		
