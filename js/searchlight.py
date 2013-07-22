@@ -18,6 +18,7 @@ import utilidades
 import controle
 import dados
 # marcadores
+SENADO_FEDERAL = [-15.799088, -47.865350]
 UFES = [-20.277233,-40.303752 ]
 CT = [-20.273530, -40.305448]
 CEMUNI = [ -20.279483,-40.302690]
@@ -33,6 +34,8 @@ def main():
        eval(mainf+"()")
     else:
        mps = new Searchlight()
+       window.onSLcarregaDados=def(sl):
+            sl.autoZoom()
     
 
 sl_IconCluster = new L.DivIcon({ html: '<div><span>1</span></div>', className: 'marker-cluster marker-cluster-small', iconSize: new L.Point(40, 40) });
@@ -75,7 +78,7 @@ class Searchlight:
 
     def create(self):
         self.CamadaBasica = L.tileLayer(self.urlosm,  { 'attribution': attribution, 'maxZoom': 18 })
-        self.map = L.map(self.map_id, {layers:[self.CamadaBasica],'center': UFES,'zoom': 13}) #TODO: mudar centro e zoom 
+        self.map = L.map(self.map_id, {layers:[self.CamadaBasica],'center': SENADO_FEDERAL,'zoom': 13}) #TODO: mudar centro e zoom 
         
         # criando camada com clusters
         if self.clusterizar:
@@ -113,6 +116,9 @@ class Searchlight:
             L.marker(p).addTo(self.basel).bindPopup(d.textomarcador)
         self.map.addLayer(self.basel);
         self.map.fitBounds(self.basel.getBounds())
+
+    def autoZoom(self):
+        self.map.fitBounds(self.markers.getBounds())
 
     def carregaDados(self, data):
         try:

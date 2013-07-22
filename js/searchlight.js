@@ -1540,6 +1540,7 @@ Dados.prototype.addMarkersTo = (function(cluster) {
 
 });
 L.Icon.Default.imagePath = "images/leaflet";
+SENADO_FEDERAL = [(-15.799088), (-47.86535)];
 UFES = [(-20.277233), (-40.303752)];
 CT = [(-20.27353), (-40.305448)];
 CEMUNI = [(-20.279483), (-40.30269)];
@@ -1554,6 +1555,9 @@ main = function() {
     eval((mainf + "()"));
   } else {
     mps = new Searchlight();
+    window.onSLcarregaDados = (function(sl) {
+      sl.autoZoom();
+    });
   }
 
 };
@@ -1615,7 +1619,7 @@ Searchlight.prototype.create = (function() {
   });
   this.map = L.map(this.map_id, {
     layers: [this.CamadaBasica],
-    "center": UFES,
+    "center": SENADO_FEDERAL,
     "zoom": 13
   });
   if (this.clusterizar) {
@@ -1668,6 +1672,9 @@ Searchlight.prototype.add_itens_gdoc = (function(data) {
 
   this.map.addLayer(this.basel);
   this.map.fitBounds(this.basel.getBounds());
+});
+Searchlight.prototype.autoZoom = (function() {
+  this.map.fitBounds(this.markers.getBounds());
 });
 Searchlight.prototype.carregaDados = (function(data) {
   var d;
